@@ -11,7 +11,7 @@ def main():
     """批量处理示例"""
 
     # 模板文件路径
-    template_path = "fixtures/templates/simple.docx"
+    template_path = "fixtures/templates/sample.docx"
 
     # 准备数据
     data = [

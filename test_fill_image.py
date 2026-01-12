@@ -9,7 +9,7 @@ def main():
     print("测试 fill_image 函数...")
 
     # 加载模板文档
-    doc = load_docx("fixtures/templates/simple.docx")
+    doc = load_docx("fixtures/templates/sample.docx")
 
     # 测试1: 从文件路径填充图片
     print("\n测试1: 从文件路径填充图片")

@@ -16,7 +16,7 @@ class TestGetCell:
 
     def test_get_cell_invalid_position(self):
         """测试无效位置时抛出异常"""
-        # doc = load_docx("fixtures/templates/simple.docx")
+        # doc = load_docx("fixtures/templates/sample.docx")
         # with pytest.raises(PositionError):
         #     get_cell(doc, 99, 99, 99, 99)
         pass

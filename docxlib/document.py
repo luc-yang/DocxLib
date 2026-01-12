@@ -32,10 +32,10 @@ def load_docx(source: Union[str, bytes, Path]) -> Document:
         ValidationError: 文件格式不是 .docx
 
     Examples:
-        >>> doc = load_docx("template.docx")
+        >>> doc = load_docx("sample.docx")
 
         >>> # 从字节数据加载
-        >>> with open("template.docx", "rb") as f:
+        >>> with open("sample.docx", "rb") as f:
         ...     data = f.read()
         >>> doc = load_docx(data)
     """
@@ -259,7 +259,7 @@ def copy_doc(doc: Document) -> Document:
         Document: 文档副本
 
     Examples:
-        >>> template = load_docx("template.docx")
+        >>> template = load_docx("sample.docx")
         >>> for i in range(10):
         ...     doc = copy_doc(template)
         ...     # 修改文档...

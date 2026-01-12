@@ -69,11 +69,11 @@ lint:
 
 # 验证文档
 validate:
-	python -m docxlib.cli validate fixtures/templates/simple.docx
+	python -m docxlib.cli validate fixtures/templates/sample.docx
 
 # 检查文档
 inspect:
-	python -m docxlib.cli inspect fixtures/templates/simple.docx
+	python -m docxlib.cli inspect fixtures/templates/sample.docx
 
 # 显示信息
 info:

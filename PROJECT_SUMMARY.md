@@ -163,7 +163,7 @@ DocxLib/
 from docxlib import load_docx, fill_text, save_docx
 
 # 加载模板
-doc = load_docx("template.docx")
+doc = load_docx("sample.docx")
 
 # 填充内容
 fill_text(doc, "姓名：", "张三", mode="match_right")

@@ -188,3 +188,46 @@ def parse_date_string(date_str: str) -> tuple:
         separators.append(sep)
 
     return numbers, separators
+
+
+def validate_date_string(date_str: str) -> None:
+    """验证日期字符串是否为真实有效的日期
+
+    检查日期格式是否正确，以及日期是否真实存在。
+    例如：2025年13月1日（月份无效）、2025年2月30日（日期不存在）都会报错。
+
+    Args:
+        date_str: 日期字符串，如 "2024年1月15日"
+
+    Raises:
+        ValidationError: 日期格式无效或日期不存在
+
+    Examples:
+        >>> validate_date_string("2024年1月15日")  # 有效
+        >>> validate_date_string("2024年13月1日")  # 抛出 ValidationError
+        >>> validate_date_string("2024年2月30日")  # 抛出 ValidationError
+    """
+    import re
+    from datetime import datetime
+
+    # 匹配完整的日期格式：数字年数字月数字日
+    pattern = r"^(\d+)年(\d+)月(\d+)日$"
+    match = re.match(pattern, date_str)
+
+    if not match:
+        raise ValidationError(
+            f"日期格式无效: '{date_str}'，期望格式如 '2024年1月15日'"
+        )
+
+    year_str, month_str, day_str = match.groups()
+
+    try:
+        # 尝试创建日期对象，这会自动验证日期的有效性
+        year = int(year_str)
+        month = int(month_str)
+        day = int(day_str)
+        datetime(year=year, month=month, day=day)
+    except ValueError as e:
+        raise ValidationError(
+            f"日期不存在: '{date_str}' - {str(e)}"
+        )

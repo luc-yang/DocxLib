@@ -13,7 +13,7 @@ DocxLib - Word 文档处理库
     >>> from docxlib import load_docx, fill_text, save_docx
     >>>
     >>> # 加载模板
-    >>> doc = load_docx("template.docx")
+    >>> doc = load_docx("sample.docx")
     >>>
     >>> # 填充内容
     >>> fill_text(doc, (1, 1, 2, 2), "测试文本")
@@ -76,6 +76,7 @@ from .utils import (
     parse_csv,
     parse_date_string,
     parse_json,
+    validate_date_string,
     validate_docx,
 )
 
@@ -135,4 +136,5 @@ __all__ = [
     "parse_json",
     "ensure_directory",
     "parse_date_string",
+    "validate_date_string",
 ]

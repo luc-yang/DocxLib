@@ -12,7 +12,7 @@ from spire.doc.common import *
 
 from .table import get_cell, find_text
 from .style import apply_font_style, apply_paragraph_alignment, apply_cell_alignment
-from .errors import PositionError, FillError
+from .errors import PositionError, FillError, ValidationError
 from .constants import (
     DEFAULT_FONT,
     DEFAULT_FONT_SIZE,
@@ -327,7 +327,6 @@ def fill_date(
     date_str: str,
     font_name: str = DEFAULT_FONT,
     font_size: float = DEFAULT_FONT_SIZE,
-    parse_date: bool = True,
     h_align: str = None,
     v_align: str = None,
 ) -> None:
@@ -342,12 +341,20 @@ def fill_date(
         date_str: 日期字符串，如 "2024年1月15日"
         font_name: 数字字体（年月日使用宋体）
         font_size: 字体大小
-        parse_date: 是否解析日期字符串，默认True
-        alignment: 对齐方式
+        h_align: 水平对齐方式
             - "left": 左对齐
             - "center": 居中对齐
             - "right": 右对齐
             - "justify": 两端对齐
+        v_align: 垂直对齐方式
+            - "top": 顶部对齐
+            - "center": 居中对齐
+            - "bottom": 底部对齐
+
+    Raises:
+        PositionError: 位置无效
+        ValidationError: 日期格式无效或日期不存在
+        FillError: 填充失败
 
     Examples:
         >>> fill_date(doc, (1, 1, 4, 2), "2024年1月15日")
@@ -355,21 +362,18 @@ def fill_date(
         >>> fill_date(doc, (1, 1, 4, 2), "2024年1月15日", alignment="center")
     """
     try:
-        # 解析日期字符串
-        if parse_date:
-            from .utils import parse_date_string
 
-            numbers, separators = parse_date_string(date_str)
+        from .utils import parse_date_string, validate_date_string
 
-            if not numbers or not separators:
-                # 如果解析失败，直接填充文本
-                return fill_text(
-                    doc, position, date_str, font_name=font_name, font_size=font_size
-                )
-        else:
-            # 不解析，直接填充文本
-            return fill_text(
-                doc, position, date_str, font_name=font_name, font_size=font_size
+        # 验证日期格式和有效性
+        validate_date_string(date_str)
+
+        numbers, separators = parse_date_string(date_str)
+
+        if not numbers or not separators:
+            raise FillError(
+                f"无效的日期字符串: '{date_str}'，"
+                f"期望格式如 '2024年1月15日' 或 '2024年01月15日'"
             )
 
         # 确定目标单元格位置
@@ -408,7 +412,7 @@ def fill_date(
         if v_align:
             apply_cell_alignment(cell, v_align)
 
-    except (PositionError, FillError):
+    except (PositionError, FillError, ValidationError):
         raise
     except Exception as e:
         raise FillError(f"填充日期失败: {e}")

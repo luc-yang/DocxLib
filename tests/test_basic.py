@@ -27,6 +27,7 @@ from docxlib import (
     is_valid_docx,
     parse_color,
     parse_date_string,
+    validate_date_string,
 )
 
 
@@ -99,6 +100,41 @@ def test_date_parsing():
     assert separators == ["年", "月", "日"]
 
 
+def test_date_validation():
+    """测试日期验证"""
+    # 测试有效日期
+    validate_date_string("2024年1月15日")
+    print("[OK] 验证有效日期: '2024年1月15日'")
+
+    validate_date_string("2024年12月31日")
+    print("[OK] 验证有效日期: '2024年12月31日'")
+
+    # 测试闰年日期
+    validate_date_string("2024年2月29日")
+    print("[OK] 验证闰年日期: '2024年2月29日'")
+
+    # 测试无效日期格式
+    try:
+        validate_date_string("hello")
+        print("[FAIL] 应该抛出 ValidationError")
+    except ValidationError as e:
+        print(f"[OK] 无效格式抛出异常: {e}")
+
+    # 测试不存在的日期
+    try:
+        validate_date_string("2025年2月30日")
+        print("[FAIL] 应该抛出 ValidationError")
+    except ValidationError as e:
+        print(f"[OK] 不存在的日期抛出异常: {e}")
+
+    # 测试无效月份
+    try:
+        validate_date_string("2025年13月1日")
+        print("[FAIL] 应该抛出 ValidationError")
+    except ValidationError as e:
+        print(f"[OK] 无效月份抛出异常: {e}")
+
+
 def main():
     """运行所有测试"""
     print("=" * 50)
@@ -112,6 +148,7 @@ def main():
         ("填充模式", test_fill_modes),
         ("颜色解析", test_color_parsing),
         ("日期解析", test_date_parsing),
+        ("日期验证", test_date_validation),
     ]
 
     passed = 0

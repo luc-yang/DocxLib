@@ -13,7 +13,7 @@ class TestLoadDocx:
     def test_load_docx_success(self):
         """测试成功加载文档"""
         # 这个测试需要一个真实的测试文档
-        doc = load_docx("fixtures/templates/simple.docx")
+        doc = load_docx("fixtures/templates/sample.docx")
         assert doc is not None
         assert doc.Sections.Count > 0
         pass

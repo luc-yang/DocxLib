@@ -42,7 +42,7 @@ pip install -e .
 from docxlib import load_docx, fill_text, save_docx
 
 # 加载模板
-doc = load_docx("template.docx")
+doc = load_docx("sample.docx")
 
 # 填充内容
 fill_text(doc, (1, 1, 2, 2), "测试文本")
@@ -56,7 +56,7 @@ save_docx(doc, "output.docx")
 ```python
 from docxlib import load_docx, fill_text, save_docx
 
-doc = load_docx("template.docx")
+doc = load_docx("sample.docx")
 
 # 直接定位填充
 fill_text(doc, (1, 1, 2, 2), "测试文本")
@@ -82,7 +82,7 @@ save_docx(doc, "output.docx")
 ```python
 from docxlib import load_docx, fill_image, save_docx
 
-doc = load_docx("template.docx")
+doc = load_docx("sample.docx")
 
 # 填充图片
 fill_image(doc, (1, 1, 2, 2), "logo.png",
@@ -101,7 +101,7 @@ save_docx(doc, "output.docx")
 ```python
 from docxlib import load_docx, fill_date, save_docx
 
-doc = load_docx("template.docx")
+doc = load_docx("sample.docx")
 
 # 填充日期（数字和年月日使用不同字体）
 fill_date(doc, (1, 1, 4, 2), "2024年1月15日")
@@ -114,7 +114,7 @@ save_docx(doc, "output.docx")
 ```python
 from docxlib import load_docx, fill_grid, save_docx
 
-doc = load_docx("template.docx")
+doc = load_docx("sample.docx")
 
 # 填充网格数据
 data = [
@@ -135,7 +135,7 @@ import copy
 from docxlib import load_docx, fill_text, save_docx
 
 # 加载模板（只加载一次）
-template = load_docx("template.docx")
+template = load_docx("sample.docx")
 
 # 批量生成文档
 data = [
@@ -180,7 +180,7 @@ for i, img_bytes in enumerate(images):
 ```python
 from docxlib import load_docx, iterate_cells
 
-doc = load_docx("template.docx")
+doc = load_docx("sample.docx")
 
 # 遍历所有单元格
 for sec, tbl, row, col, cell in iterate_cells(doc):
@@ -194,7 +194,7 @@ for sec, tbl, row, col, cell in iterate_cells(doc):
 ```python
 from docxlib import load_docx, find_text
 
-doc = load_docx("template.docx")
+doc = load_docx("sample.docx")
 
 # 查找包含"姓名"的单元格
 positions = find_text(doc, "姓名")

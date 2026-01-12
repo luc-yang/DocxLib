@@ -43,7 +43,7 @@ python -c "from docxlib import __version__; print(__version__)"
 
 由于无法直接创建 Word 文档，请按以下步骤手动创建测试模板：
 
-### 创建基础测试模板 (fixtures/templates/simple.docx)
+### 创建基础测试模板 (fixtures/templates/sample.docx)
 
 1. 打开 Microsoft Word
 2. 创建一个新文档
@@ -58,7 +58,7 @@ python -c "from docxlib import __version__; print(__version__)"
 | 行4 | 项目 | | |
 | 行5 | | | |
 
-5. 保存为 `fixtures/templates/simple.docx`
+5. 保存为 `fixtures/templates/sample.docx`
 
 ### 创建带图片的模板 (fixtures/templates/with_image.docx)
 
@@ -134,7 +134,7 @@ A: 使用 `iterate_cells` 函数查看实际的单元格内容：
 ```python
 from docxlib import load_docx, iterate_cells
 
-doc = load_docx("template.docx")
+doc = load_docx("sample.docx")
 for sec, tbl, row, col, cell in iterate_cells(doc):
     text = cell.Range.Text.strip()
     if text:

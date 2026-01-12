@@ -12,7 +12,7 @@ def main():
 
     # 加载模板文档
     print("加载模板文档...")
-    doc = load_docx("fixtures/templates/simple.docx")
+    doc = load_docx("fixtures/templates/sample.docx")
 
     # 直接定位填充
     print("填充字段...")

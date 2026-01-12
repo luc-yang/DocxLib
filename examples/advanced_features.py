@@ -21,7 +21,7 @@ def main():
     """高级功能示例"""
 
     print("加载模板...")
-    doc = load_docx("fixtures/templates/simple.docx")
+    doc = load_docx("fixtures/templates/sample.docx")
 
     # 获取表格信息
     print("\n=== 表格信息 ===")
