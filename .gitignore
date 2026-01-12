@@ -1,10 +1,87 @@
-# Python-generated files
+# Byte-compiled / optimized / DLL files
 __pycache__/
-*.py[oc]
+*.py[cod]
+*$py.class
+*.so
+
+# C extensions
+*.pyd
+
+# Distribution / packaging
 build/
 dist/
 wheels/
-*.egg-info
+*.egg-info/
+.eggs/
+pip-wheel-metadata/
 
 # Virtual environments
-.venv
+.venv/
+venv/
+ENV/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*.sublime-*
+.spyderproject
+.spyproject
+
+# Output
+output/
+*.docx
+*.pdf
+!fixtures/templates/*.docx
+!fixtures/images/*.png
+!fixtures/images/*.jpg
+!fixtures/images/*.jpeg
+
+# Claude
+.claude/
+
+# Testing
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+coverage.xml
+*.cover
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# Logs
+*.log
+
+# Local configuration
+.env
+.env.local
+*.local
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.swp
+*~.nib
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Package Manager
+pip-log.txt
+pip-delete-this-directory.txt

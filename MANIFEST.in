@@ -1,0 +1,19 @@
+include README.md
+include LICENSE
+include INSTALL.md
+include CHANGELOG.md
+include CONTRIBUTING.md
+include PROJECT_SUMMARY.md
+include MANIFEST.in
+include pyproject.toml
+include setup.py
+include Makefile
+
+recursive-include docxlib *.py
+recursive-include examples *.py
+recursive-include tests *.py
+recursive-include fixtures *
+recursive-exclude * __pycache__
+recursive-exclude * *.py[oc]
+recursive-exclude * .DS_Store
+recursive-exclude * *.so
