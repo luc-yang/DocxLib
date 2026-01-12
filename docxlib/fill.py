@@ -147,11 +147,13 @@ def fill_image(
         >>> # 查找文本并填充，指定尺寸
         >>> fill_image(doc, "印章：", "seal.png", mode="match_right", width=100, height=100)
     """
-    import io
+    import tempfile
+    import os
 
     # 用于存储图片原始尺寸
     original_width_px = None
     original_height_px = None
+    temp_file_path = None
 
     # 处理不同类型的输入（参考 load_docx 的实现模式）
     if isinstance(source, (str, Path)):
@@ -162,8 +164,7 @@ def fill_image(
         if not file_path.exists():
             raise FillError(f"图片文件不存在: {source}")
 
-        use_stream = False
-        image_source = str(file_path)
+        image_path = str(file_path)
 
         # 使用 PIL 获取原始尺寸（可选）
         try:
@@ -174,19 +175,24 @@ def fill_image(
             pass
 
     elif isinstance(source, bytes):
-        # 字节数据
-        use_stream = True
-        image_source = io.BytesIO(source)
+        # 字节数据 - 创建临时文件
 
         # 使用 PIL 获取原始尺寸（可选）
         try:
             from PIL import Image as PILImage
-            pil_image = PILImage.open(image_source)
+            from io import BytesIO
+
+            pil_image = PILImage.open(BytesIO(source))
             original_width_px, original_height_px = pil_image.size
-            # 重置 stream 位置
-            image_source.seek(0)
         except ImportError:
             pass
+
+        # 创建临时文件
+        with tempfile.NamedTemporaryFile(delete=False, suffix='.png') as tmp:
+            tmp.write(source)
+            temp_file_path = tmp.name
+
+        image_path = temp_file_path
 
     else:
         raise ValueError(f"不支持的源类型: {type(source)}")
@@ -221,15 +227,8 @@ def fill_image(
         # 添加段落
         paragraph = cell.AddParagraph()
 
-        # 加载图片
-        if use_stream:
-            from spire.doc import DocPicture
-            picture = DocPicture(doc)
-            picture.LoadImage(source)
-            paragraph.ChildObjects.Add(picture)
-        else:
-            # 从文件路径加载
-            picture = paragraph.AppendPicture(image_source)
+        # 加载图片 - 统一使用文件路径
+        picture = paragraph.AppendPicture(image_path)
 
         # 设置图片为内联样式（参考 image_filler.py）
         from spire.doc import TextWrappingStyle
@@ -269,6 +268,14 @@ def fill_image(
         raise
     except Exception as e:
         raise FillError(f"填充图片失败: {e}")
+
+    finally:
+        # 清理临时文件
+        if temp_file_path and os.path.exists(temp_file_path):
+            try:
+                os.unlink(temp_file_path)
+            except Exception:
+                pass
 
 
 def fill_date(
