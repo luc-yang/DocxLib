@@ -164,3 +164,34 @@ def set_cell_border(
         borders.BorderType.Right.LineWidth = border_width
         borders.BorderType.Top.LineWidth = border_width
         borders.BorderType.Bottom.LineWidth = border_width
+
+
+def apply_paragraph_alignment(
+    paragraph,
+    alignment: str
+) -> None:
+    """应用段落对齐方式
+
+    Args:
+        paragraph: Spire.Doc Paragraph 对象
+        alignment: 对齐方式
+            - "left": 左对齐
+            - "center": 居中对齐
+            - "right": 右对齐
+            - "justify": 两端对齐
+
+    Examples:
+        >>> apply_paragraph_alignment(paragraph, "center")
+        >>> apply_paragraph_alignment(paragraph, Alignment.RIGHT)
+    """
+    from spire.doc import HorizontalAlignment
+
+    alignment_map = {
+        "left": HorizontalAlignment.Left,
+        "center": HorizontalAlignment.Center,
+        "right": HorizontalAlignment.Right,
+        "justify": HorizontalAlignment.Justify,
+    }
+
+    if alignment in alignment_map:
+        paragraph.Format.HorizontalAlignment = alignment_map[alignment]

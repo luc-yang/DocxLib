@@ -11,9 +11,9 @@ from spire.doc import *
 from spire.doc.common import *
 
 from .table import get_cell, find_text
-from .style import apply_font_style, parse_color
+from .style import apply_font_style, parse_color, apply_paragraph_alignment
 from .errors import PositionError, FillError
-from .constants import DEFAULT_FONT, DEFAULT_FONT_SIZE, DEFAULT_COLOR, FillMode, Position
+from .constants import DEFAULT_FONT, DEFAULT_FONT_SIZE, DEFAULT_COLOR, FillMode, Position, Alignment
 
 
 def fill_text(
@@ -26,7 +26,8 @@ def fill_text(
     color: str = DEFAULT_COLOR,
     bold: bool = False,
     italic: bool = False,
-    underline: bool = False
+    underline: bool = False,
+    alignment: str = None
 ) -> None:
     """填充文本到文档
 
@@ -44,6 +45,11 @@ def fill_text(
         bold: 是否粗体
         italic: 是否斜体
         underline: 是否下划线
+        alignment: 对齐方式
+            - "left": 左对齐
+            - "center": 居中对齐
+            - "right": 右对齐
+            - "justify": 两端对齐
 
     Raises:
         PositionError: 位置无效
@@ -61,6 +67,9 @@ def fill_text(
 
         >>> # 带样式
         >>> fill_text(doc, "标题", "内容", mode="match_right", font_name="黑体", font_size=16, bold=True)
+
+        >>> # 带对齐
+        >>> fill_text(doc, (1, 1, 2, 2), "标题", alignment="center")
     """
     try:
         # 确定目标单元格位置
@@ -105,6 +114,10 @@ def fill_text(
             bold, italic, underline
         )
 
+        # 应用对齐方式
+        if alignment:
+            apply_paragraph_alignment(paragraph, alignment)
+
     except (PositionError, FillError):
         raise
     except Exception as e:
@@ -116,6 +129,7 @@ def fill_image(
     position: Union[Position, str],
     source: Union[str, bytes, Path],
     mode: str = FillMode.POSITION,
+    alignment: str = None,
     width: float = None,
     height: float = None,
     maintain_ratio: bool = True
@@ -127,6 +141,11 @@ def fill_image(
         position: 位置元组或查找文本
         source: 图片文件路径（str/Path）或字节数据（bytes）
         mode: 填充模式（同 fill_text）
+        alignment: 对齐方式
+            - "left": 左对齐
+            - "center": 居中对齐
+            - "right": 右对齐
+            - "justify": 两端对齐
         width: 宽度（磅）
         height: 高度（磅）
         maintain_ratio: 是否保持宽高比
@@ -227,12 +246,18 @@ def fill_image(
         # 添加段落
         paragraph = cell.AddParagraph()
 
+
+
         # 加载图片 - 统一使用文件路径
         picture = paragraph.AppendPicture(image_path)
 
         # 设置图片为内联样式（参考 image_filler.py）
         from spire.doc import TextWrappingStyle
         picture.TextWrappingStyle = TextWrappingStyle.Inline
+        
+        # 应用对齐方式
+        if alignment:
+            apply_paragraph_alignment(paragraph, alignment)
 
         # 调整图片大小
         if width is not None or height is not None:
@@ -284,7 +309,8 @@ def fill_date(
     date_str: str,
     font_name: str = DEFAULT_FONT,
     font_size: float = DEFAULT_FONT_SIZE,
-    parse_date: bool = True
+    parse_date: bool = True,
+    alignment: str = None
 ) -> None:
     """填充日期
 
@@ -298,10 +324,16 @@ def fill_date(
         font_name: 数字字体（年月日使用宋体）
         font_size: 字体大小
         parse_date: 是否解析日期字符串，默认True
+        alignment: 对齐方式
+            - "left": 左对齐
+            - "center": 居中对齐
+            - "right": 右对齐
+            - "justify": 两端对齐
 
     Examples:
         >>> fill_date(doc, (1, 1, 4, 2), "2024年1月15日")
         >>> fill_date(doc, "日期：", "2024年1月15日", mode="match_right")
+        >>> fill_date(doc, (1, 1, 4, 2), "2024年1月15日", alignment="center")
     """
     try:
         # 解析日期字符串
@@ -345,6 +377,10 @@ def fill_date(
             # 添加年月日（使用宋体）
             run_sep = paragraph.AppendText(sep)
             apply_font_style(run_sep, "宋体", font_size, DEFAULT_COLOR)
+
+        # 应用对齐方式
+        if alignment:
+            apply_paragraph_alignment(paragraph, alignment)
 
     except (PositionError, FillError):
         raise

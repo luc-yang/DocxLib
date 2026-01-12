@@ -59,6 +59,17 @@ class FillMode:
     MATCH_DOWN = "match_down"
 
 
+# ==================== 对齐方式 ====================
+
+class Alignment:
+    """对齐方式常量"""
+
+    LEFT = "left"
+    CENTER = "center"
+    RIGHT = "right"
+    JUSTIFY = "justify"
+
+
 # ==================== 类型定义 ====================
 
 # 位置元组类型：(section, table, row, col)
