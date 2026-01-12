@@ -52,10 +52,10 @@ python -c "from docxlib import __version__; print(__version__)"
 
 | | 列1 | 列2 | 列3 |
 |---|---|---|---|
-| 行1 | 姓名： | | |
-| 行2 | 年龄： | | |
-| 行3 | 日期： | | |
-| 行4 | 项目： | | |
+| 行1 | 姓名 | | |
+| 行2 | 年龄 | | |
+| 行3 | 日期 | | |
+| 行4 | 项目 | | |
 | 行5 | | | |
 
 5. 保存为 `fixtures/templates/simple.docx`

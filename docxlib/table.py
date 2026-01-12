@@ -149,10 +149,15 @@ def find_text(doc: Document, text: str) -> List[Position]:
     """
     positions = []
 
-    for sec_idx, tbl_idx, row_idx, col_idx, cell in iterate_cells(doc):
-        cell_text = cell.Range.Text.strip()
-        if text in cell_text:
-            positions.append((sec_idx, tbl_idx, row_idx, col_idx))
+    for section_idx, table_idx, row_idx, col_idx, cell in iterate_cells(doc):
+        # 获取单元格文本
+        cell_text = ""
+        for m in range(cell.Paragraphs.Count):
+            paragraph = cell.Paragraphs.get_Item(m)
+            paragraph_text = paragraph.Text.strip()
+            cell_text += paragraph_text
+        if text == cell_text:
+            positions.append((section_idx, table_idx, row_idx, col_idx))
 
     return positions
 

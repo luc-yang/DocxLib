@@ -180,9 +180,9 @@ def to_pdf(doc: Document) -> bytes:
         Spire.Doc 免费版转换的 PDF 会有水印
     """
     try:
-        stream = io.BytesIO()
+        stream = Stream()
         doc.SaveToStream(stream, SpireFileFormat.PDF)
-        return stream.getvalue()
+        return stream.ToArray()
     except Exception as e:
         raise DocumentError(f"转换为 PDF 失败: {e}")
 
@@ -209,21 +209,13 @@ def to_images(doc: Document) -> List[bytes]:
         ...         f.write(img_bytes)
     """
     try:
-        from spire.doc.common import ImageType
-
         images = []
-
-        # 转换每一页为图片
-        stream = io.BytesIO()
-        doc.SaveToStream(stream, ImageType.Bitmap)
-
-        # Spire.Doc 的 SaveToStream 会将所有页保存为一张图片
-        # 如果需要分页，需要使用其他方法
-        image_bytes = stream.getvalue()
-        images.append(image_bytes)
-
+        for page_index in range(doc.PageCount):
+            image_stream = doc.SaveImageToStreams(
+                page_index, ImageType.Bitmap
+                )
+            images.append(image_stream.ToArray())
         return images
-
     except Exception as e:
         raise DocumentError(f"转换为图片失败: {e}")
 

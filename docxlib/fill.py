@@ -60,7 +60,7 @@ def fill_text(
         >>> fill_text(doc, "项目1", "智慧城市", mode="match_down")
 
         >>> # 带样式
-        >>> fill_text(doc, "标题", "内容", font_name="黑体", font_size=16, bold=True)
+        >>> fill_text(doc, "标题", "内容", mode="match_right", font_name="黑体", font_size=16, bold=True)
     """
     try:
         # 确定目标单元格位置
@@ -114,7 +114,7 @@ def fill_text(
 def fill_image(
     doc: Document,
     position: Union[Position, str],
-    image_path: str,
+    source: Union[str, bytes, Path],
     mode: str = FillMode.POSITION,
     width: float = None,
     height: float = None,
@@ -125,7 +125,7 @@ def fill_image(
     Args:
         doc: Document 对象
         position: 位置元组或查找文本
-        image_path: 图片文件路径
+        source: 图片文件路径（str/Path）或字节数据（bytes）
         mode: 填充模式（同 fill_text）
         width: 宽度（磅）
         height: 高度（磅）
@@ -133,18 +133,65 @@ def fill_image(
 
     Raises:
         FillError: 图片文件不存在或格式不支持
+        ValueError: 不支持的源类型
 
     Examples:
+        >>> # 从文件路径填充
         >>> fill_image(doc, (1, 1, 2, 2), "logo.png")
 
+        >>> # 从字节数据填充
+        >>> with open("logo.png", "rb") as f:
+        ...     data = f.read()
+        >>> fill_image(doc, (1, 1, 2, 2), data)
+
+        >>> # 查找文本并填充，指定尺寸
         >>> fill_image(doc, "印章：", "seal.png", mode="match_right", width=100, height=100)
     """
-    try:
-        # 验证图片文件
-        img_path = Path(image_path)
-        if not img_path.exists():
-            raise FillError(f"图片文件不存在: {image_path}")
+    import io
 
+    # 用于存储图片原始尺寸
+    original_width_px = None
+    original_height_px = None
+
+    # 处理不同类型的输入（参考 load_docx 的实现模式）
+    if isinstance(source, (str, Path)):
+        # 文件路径
+        file_path = Path(source)
+
+        # 检查文件是否存在
+        if not file_path.exists():
+            raise FillError(f"图片文件不存在: {source}")
+
+        use_stream = False
+        image_source = str(file_path)
+
+        # 使用 PIL 获取原始尺寸（可选）
+        try:
+            from PIL import Image as PILImage
+            pil_image = PILImage.open(str(file_path))
+            original_width_px, original_height_px = pil_image.size
+        except ImportError:
+            pass
+
+    elif isinstance(source, bytes):
+        # 字节数据
+        use_stream = True
+        image_source = io.BytesIO(source)
+
+        # 使用 PIL 获取原始尺寸（可选）
+        try:
+            from PIL import Image as PILImage
+            pil_image = PILImage.open(image_source)
+            original_width_px, original_height_px = pil_image.size
+            # 重置 stream 位置
+            image_source.seek(0)
+        except ImportError:
+            pass
+
+    else:
+        raise ValueError(f"不支持的源类型: {type(source)}")
+
+    try:
         # 确定目标单元格位置
         if mode == FillMode.POSITION:
             if isinstance(position, str):
@@ -175,28 +222,42 @@ def fill_image(
         paragraph = cell.AddParagraph()
 
         # 加载图片
-        from spire.doc import DocPicture
-        picture = paragraph.AppendPicture()
+        if use_stream:
+            from spire.doc import DocPicture
+            picture = DocPicture(doc)
+            picture.LoadImage(source)
+            paragraph.ChildObjects.Add(picture)
+        else:
+            # 从文件路径加载
+            picture = paragraph.AppendPicture(image_source)
 
-        # 加载图片文件
-        picture.LoadImage(image_path)
+        # 设置图片为内联样式（参考 image_filler.py）
+        from spire.doc import TextWrappingStyle
+        picture.TextWrappingStyle = TextWrappingStyle.Inline
 
         # 调整图片大小
         if width is not None or height is not None:
-            original_width = picture.Width
-            original_height = picture.Height
+            # 优先使用 PIL 获取的尺寸，否则使用 Spire.Doc 的尺寸
+            if original_width_px and original_height_px:
+                # 像素转换为磅（96 DPI: 1 磅 = 96/72 像素）
+                px_to_points = 96.0 / 72.0
+                original_width = original_width_px / px_to_points
+                original_height = original_height_px / px_to_points
+            else:
+                original_width = picture.Width
+                original_height = picture.Height
 
             if width is None and height is not None:
                 # 只指定高度
-                if maintain_ratio:
+                if maintain_ratio and original_width and original_height:
                     width = original_width * (height / original_height)
-                else:
+                elif original_width:
                     width = original_width
             elif height is None and width is not None:
                 # 只指定宽度
-                if maintain_ratio:
+                if maintain_ratio and original_width and original_height:
                     height = original_height * (width / original_width)
-                else:
+                elif original_height:
                     height = original_height
 
             if width is not None:
@@ -204,7 +265,7 @@ def fill_image(
             if height is not None:
                 picture.Height = height
 
-    except (PositionError, FillError):
+    except (PositionError, FillError, ValueError):
         raise
     except Exception as e:
         raise FillError(f"填充图片失败: {e}")

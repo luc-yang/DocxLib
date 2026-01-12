@@ -37,16 +37,33 @@ def main():
     print("\n=== 遍历单元格 ===")
     count = 0
     for sec, tbl, row, col, cell in iterate_cells(doc):
-        text = cell.Range.Text.strip()
+        # 获取单元格文本（遍历所有段落）
+        text = ""
+        for i in range(cell.Paragraphs.Count):
+            para = cell.Paragraphs.get_Item(i)
+            text += para.Text.strip()
+
         if text:
             count += 1
             if count <= 5:  # 只显示前5个
                 print(f"({sec}, {tbl}, {row}, {col}): {text}")
 
     # 填充图片
-    print("\n=== 填充图片 ===")
+    print("\n=== 路径填充图片 ===")
     try:
-        fill_image(doc, "照片：", "fixtures/images/logo.png",
+        fill_image(doc, "图片", "fixtures/images/logo.png",
+                   mode="match_right",
+                   width=80,
+                   height=80)
+        print("图片填充成功")
+    except Exception as e:
+        print(f"图片填充失败: {e}")
+    
+    print("\n=== 字节数据填充图片 ===")
+    try:
+        with open("fixtures/images/logo.png", "rb") as f:
+            image_data = f.read()
+        fill_image(doc, "图片", image_data,
                    mode="match_right",
                    width=80,
                    height=80)
@@ -68,7 +85,7 @@ def main():
         ["3", "材料费", "20000"],
     ]
     try:
-        fill_grid(doc, data, position=(1, 1, 7, 1))
+        fill_grid(doc, data, position=(1, 1, 1, 1))
         print("网格数据填充成功")
     except Exception as e:
         print(f"网格数据填充失败: {e}")

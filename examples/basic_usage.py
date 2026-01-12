@@ -4,7 +4,7 @@ DocxLib 基础用法示例
 演示如何加载文档、填充字段、保存文档。
 """
 
-from docxlib import load_docx, fill_text, save_docx
+from docxlib import load_docx, fill_text, save_docx,fill_date
 
 
 def main():
@@ -19,13 +19,17 @@ def main():
     fill_text(doc, (1, 1, 2, 2), "测试文本")
 
     # 右侧填充
-    fill_text(doc, "姓名：", "张三", mode="match_right")
+    fill_text(doc, "姓名", "张三", mode="match_right")
 
     # 下方填充
-    fill_text(doc, "项目1", "智慧城市", mode="match_down")
+    fill_text(doc, "项目", "智慧城市", mode="match_down")
+    
+    # 日期填充
+    fill_date(doc, (1, 1, 3, 2), "2024年1月15日" )
 
     # 带样式填充
-    fill_text(doc, "标题", "内容",
+    fill_text(doc, "年龄", "32",
+              mode="match_right",
               font_name="黑体",
               font_size=16,
               bold=True,
