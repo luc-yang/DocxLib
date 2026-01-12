@@ -85,7 +85,7 @@ def main():
         ["3", "材料费", "20000"],
     ]
     try:
-        fill_grid(doc, data, position=(1, 1, 1, 1))
+        fill_grid(doc, data, position=(1, 1, 7, 1))
         print("网格数据填充成功")
     except Exception as e:
         print(f"网格数据填充失败: {e}")

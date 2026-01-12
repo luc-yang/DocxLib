@@ -283,7 +283,8 @@ def fill_date(
     position: Union[Position, str],
     date_str: str,
     font_name: str = DEFAULT_FONT,
-    font_size: float = DEFAULT_FONT_SIZE
+    font_size: float = DEFAULT_FONT_SIZE,
+    parse_date: bool = True
 ) -> None:
     """填充日期
 
@@ -296,6 +297,7 @@ def fill_date(
         date_str: 日期字符串，如 "2024年1月15日"
         font_name: 数字字体（年月日使用宋体）
         font_size: 字体大小
+        parse_date: 是否解析日期字符串，默认True
 
     Examples:
         >>> fill_date(doc, (1, 1, 4, 2), "2024年1月15日")
@@ -303,11 +305,15 @@ def fill_date(
     """
     try:
         # 解析日期字符串
-        from .utils import parse_date_string
-        numbers, separators = parse_date_string(date_str)
+        if parse_date:
+            from .utils import parse_date_string
+            numbers, separators = parse_date_string(date_str)
 
-        if not numbers or not separators:
-            # 如果解析失败，直接填充文本
+            if not numbers or not separators:
+                # 如果解析失败，直接填充文本
+                return fill_text(doc, position, date_str, font_name=font_name, font_size=font_size)
+        else:
+            # 不解析，直接填充文本
             return fill_text(doc, position, date_str, font_name=font_name, font_size=font_size)
 
         # 确定目标单元格位置

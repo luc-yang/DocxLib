@@ -167,11 +167,11 @@ def parse_date_string(date_str: str) -> tuple:
 
     Returns:
         tuple: (数字部分列表, 年月日部分列表)
-        例如：(['2024', '1', '15'], ['年', '月', '日'])
+        例如：(['2024', '01', '15'], ['年', '月', '日'])
 
     Examples:
         >>> parse_date_string("2024年1月15日")
-        (['2024', '1', '15'], ['年', '月', '日'])
+        (['2024', '01', '15'], ['年', '月', '日'])
     """
     import re
 
@@ -183,7 +183,7 @@ def parse_date_string(date_str: str) -> tuple:
     separators = []
 
     for num, sep in matches:
-        numbers.append(num)
+        numbers.append(num.zfill(2))  # 不足两位补零
         separators.append(sep)
 
     return numbers, separators
