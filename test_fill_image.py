@@ -2,6 +2,7 @@
 
 from docxlib import load_docx, fill_image, save_docx
 
+
 def main():
     """测试图片填充功能"""
 
@@ -36,6 +37,7 @@ def main():
     print("\n保存测试文档...")
     save_docx(doc, "output/test_fill_image.docx")
     print("✓ 文档已保存到 output/test_fill_image.docx")
+
 
 if __name__ == "__main__":
     main()

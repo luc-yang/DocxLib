@@ -35,14 +35,14 @@ def is_valid_docx(source: Union[str, bytes, Path]) -> bool:
             return False
 
         # 检查文件扩展名
-        if file_path.suffix.lower() not in ['.docx', '.dotx']:
+        if file_path.suffix.lower() not in [".docx", ".dotx"]:
             return False
 
         # 尝试打开为 ZIP 文件
         try:
-            with zipfile.ZipFile(file_path, 'r') as zip_file:
+            with zipfile.ZipFile(file_path, "r") as zip_file:
                 # 检查是否包含必要的 DOCX 文件
-                required_files = ['[Content_Types].xml', 'word/document.xml']
+                required_files = ["[Content_Types].xml", "word/document.xml"]
                 zip_file_names = zip_file.namelist()
                 return any(req in zip_file_names for req in required_files)
         except (zipfile.BadZipFile, zipfile.LargeZipFile):
@@ -52,8 +52,9 @@ def is_valid_docx(source: Union[str, bytes, Path]) -> bool:
         # 检查字节数据是否为有效的 ZIP 格式
         try:
             import io
-            with zipfile.ZipFile(io.BytesIO(source), 'r') as zip_file:
-                required_files = ['[Content_Types].xml', 'word/document.xml']
+
+            with zipfile.ZipFile(io.BytesIO(source), "r") as zip_file:
+                required_files = ["[Content_Types].xml", "word/document.xml"]
                 zip_file_names = zip_file.namelist()
                 return any(req in zip_file_names for req in required_files)
         except (zipfile.BadZipFile, zipfile.LargeZipFile):
@@ -101,7 +102,7 @@ def parse_csv(file_path: Union[str, Path]) -> List[List[str]]:
         raise FileNotFoundError(f"文件不存在: {file_path}")
 
     try:
-        with open(path, 'r', encoding='utf-8-sig') as f:
+        with open(path, "r", encoding="utf-8-sig") as f:
             reader = csv.reader(f)
             return [list(row) for row in reader]
     except csv.Error as e:
@@ -133,7 +134,7 @@ def parse_json(file_path: Union[str, Path]) -> Dict[str, Any]:
         raise FileNotFoundError(f"文件不存在: {file_path}")
 
     try:
-        with open(path, 'r', encoding='utf-8') as f:
+        with open(path, "r", encoding="utf-8") as f:
             return json.load(f)
     except json.JSONDecodeError as e:
         raise ValidationError(f"JSON 格式错误: {e}")
@@ -176,7 +177,7 @@ def parse_date_string(date_str: str) -> tuple:
     import re
 
     # 匹配数字和中文
-    pattern = r'(\d+)([年月日])'
+    pattern = r"(\d+)([年月日])"
     matches = re.findall(pattern, date_str)
 
     numbers = []

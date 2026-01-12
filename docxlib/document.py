@@ -49,7 +49,7 @@ def load_docx(source: Union[str, bytes, Path]) -> Document:
             raise DocumentError(f"文件不存在: {source}")
 
         # 检查文件扩展名
-        if file_path.suffix.lower() not in ['.docx', '.dotx']:
+        if file_path.suffix.lower() not in [".docx", ".dotx"]:
             raise ValidationError(f"文件格式不是 .docx: {source}")
 
         # 验证 DOCX 格式
@@ -211,9 +211,7 @@ def to_images(doc: Document) -> List[bytes]:
     try:
         images = []
         for page_index in range(doc.PageCount):
-            image_stream = doc.SaveImageToStreams(
-                page_index, ImageType.Bitmap
-                )
+            image_stream = doc.SaveImageToStreams(page_index, ImageType.Bitmap)
             images.append(image_stream.ToArray())
         return images
     except Exception as e:

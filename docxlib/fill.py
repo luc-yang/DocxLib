@@ -11,9 +11,16 @@ from spire.doc import *
 from spire.doc.common import *
 
 from .table import get_cell, find_text
-from .style import apply_font_style, parse_color, apply_paragraph_alignment
+from .style import apply_font_style, apply_paragraph_alignment, apply_cell_alignment
 from .errors import PositionError, FillError
-from .constants import DEFAULT_FONT, DEFAULT_FONT_SIZE, DEFAULT_COLOR, FillMode, Position, Alignment
+from .constants import (
+    DEFAULT_FONT,
+    DEFAULT_FONT_SIZE,
+    DEFAULT_COLOR,
+    FillMode,
+    Position,
+    Alignment,
+)
 
 
 def fill_text(
@@ -27,7 +34,8 @@ def fill_text(
     bold: bool = False,
     italic: bool = False,
     underline: bool = False,
-    alignment: str = None
+    h_align: str = None,
+    v_align: str = None,
 ) -> None:
     """填充文本到文档
 
@@ -45,11 +53,15 @@ def fill_text(
         bold: 是否粗体
         italic: 是否斜体
         underline: 是否下划线
-        alignment: 对齐方式
+        h_align: 水平对齐方式
             - "left": 左对齐
             - "center": 居中对齐
             - "right": 右对齐
             - "justify": 两端对齐
+        v_align: 垂直对齐方式
+            - "top": 顶部对齐
+            - "center": 居中对齐
+            - "bottom": 底部对齐
 
     Raises:
         PositionError: 位置无效
@@ -109,14 +121,13 @@ def fill_text(
         run = paragraph.AppendText(value)
 
         # 应用样式
-        apply_font_style(
-            run, font_name, font_size, color,
-            bold, italic, underline
-        )
+        apply_font_style(run, font_name, font_size, color, bold, italic, underline)
 
         # 应用对齐方式
-        if alignment:
-            apply_paragraph_alignment(paragraph, alignment)
+        if h_align:
+            apply_paragraph_alignment(paragraph, h_align)
+        if v_align:
+            apply_cell_alignment(cell, v_align)
 
     except (PositionError, FillError):
         raise
@@ -129,10 +140,11 @@ def fill_image(
     position: Union[Position, str],
     source: Union[str, bytes, Path],
     mode: str = FillMode.POSITION,
-    alignment: str = None,
+    h_align: str = None,
+    v_align: str = None,
     width: float = None,
     height: float = None,
-    maintain_ratio: bool = True
+    maintain_ratio: bool = True,
 ) -> None:
     """填充图片到文档
 
@@ -141,11 +153,15 @@ def fill_image(
         position: 位置元组或查找文本
         source: 图片文件路径（str/Path）或字节数据（bytes）
         mode: 填充模式（同 fill_text）
-        alignment: 对齐方式
+        h_align: 水平对齐方式
             - "left": 左对齐
             - "center": 居中对齐
             - "right": 右对齐
             - "justify": 两端对齐
+        v_align: 垂直对齐方式
+            - "top": 顶部对齐
+            - "center": 居中对齐
+            - "bottom": 底部对齐
         width: 宽度（磅）
         height: 高度（磅）
         maintain_ratio: 是否保持宽高比
@@ -188,6 +204,7 @@ def fill_image(
         # 使用 PIL 获取原始尺寸（可选）
         try:
             from PIL import Image as PILImage
+
             pil_image = PILImage.open(str(file_path))
             original_width_px, original_height_px = pil_image.size
         except ImportError:
@@ -207,7 +224,7 @@ def fill_image(
             pass
 
         # 创建临时文件
-        with tempfile.NamedTemporaryFile(delete=False, suffix='.png') as tmp:
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as tmp:
             tmp.write(source)
             temp_file_path = tmp.name
 
@@ -246,18 +263,19 @@ def fill_image(
         # 添加段落
         paragraph = cell.AddParagraph()
 
-
-
         # 加载图片 - 统一使用文件路径
         picture = paragraph.AppendPicture(image_path)
 
         # 设置图片为内联样式（参考 image_filler.py）
         from spire.doc import TextWrappingStyle
+
         picture.TextWrappingStyle = TextWrappingStyle.Inline
-        
+
         # 应用对齐方式
-        if alignment:
-            apply_paragraph_alignment(paragraph, alignment)
+        if h_align:
+            apply_paragraph_alignment(paragraph, h_align)
+        if v_align:
+            apply_cell_alignment(cell, v_align)
 
         # 调整图片大小
         if width is not None or height is not None:
@@ -310,7 +328,8 @@ def fill_date(
     font_name: str = DEFAULT_FONT,
     font_size: float = DEFAULT_FONT_SIZE,
     parse_date: bool = True,
-    alignment: str = None
+    h_align: str = None,
+    v_align: str = None,
 ) -> None:
     """填充日期
 
@@ -339,14 +358,19 @@ def fill_date(
         # 解析日期字符串
         if parse_date:
             from .utils import parse_date_string
+
             numbers, separators = parse_date_string(date_str)
 
             if not numbers or not separators:
                 # 如果解析失败，直接填充文本
-                return fill_text(doc, position, date_str, font_name=font_name, font_size=font_size)
+                return fill_text(
+                    doc, position, date_str, font_name=font_name, font_size=font_size
+                )
         else:
             # 不解析，直接填充文本
-            return fill_text(doc, position, date_str, font_name=font_name, font_size=font_size)
+            return fill_text(
+                doc, position, date_str, font_name=font_name, font_size=font_size
+            )
 
         # 确定目标单元格位置
         if isinstance(position, str):
@@ -379,8 +403,10 @@ def fill_date(
             apply_font_style(run_sep, "宋体", font_size, DEFAULT_COLOR)
 
         # 应用对齐方式
-        if alignment:
-            apply_paragraph_alignment(paragraph, alignment)
+        if h_align:
+            apply_paragraph_alignment(paragraph, h_align)
+        if v_align:
+            apply_cell_alignment(cell, v_align)
 
     except (PositionError, FillError):
         raise
@@ -388,11 +414,7 @@ def fill_date(
         raise FillError(f"填充日期失败: {e}")
 
 
-def fill_grid(
-    doc: Document,
-    data: List[List[str]],
-    position: Position
-) -> None:
+def fill_grid(doc: Document, data: List[List[str]], position: Position) -> None:
     """填充网格数据
 
     从二维数组填充数据到表格。
@@ -425,13 +447,7 @@ def fill_grid(
 
                 # 填充单元格
                 try:
-                    cell = get_cell(
-                        doc,
-                        section_idx,
-                        table_idx,
-                        target_row,
-                        target_col
-                    )
+                    cell = get_cell(doc, section_idx, table_idx, target_row, target_col)
 
                     # 清空并设置文本
                     cell.Paragraphs.Clear()
@@ -468,8 +484,7 @@ def replace_all(doc: Document, old_text: str, new_text: str) -> None:
         raise FillError(f"全局替换失败: {e}")
 
 
-def clear_cell(doc: Document, section: int, table: int,
-               row: int, col: int) -> None:
+def clear_cell(doc: Document, section: int, table: int, row: int, col: int) -> None:
     """清空单元格内容
 
     Args:

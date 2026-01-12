@@ -13,8 +13,7 @@ from .errors import PositionError
 from .constants import Position
 
 
-def get_cell(doc: Document, section: int, table: int,
-             row: int, col: int):
+def get_cell(doc: Document, section: int, table: int, row: int, col: int):
     """获取指定位置的单元格
 
     所有索引从 1 开始（不是 0）。
@@ -59,8 +58,9 @@ def get_cell(doc: Document, section: int, table: int,
         )
 
 
-def get_cells(doc: Document, section: int = 0, table: int = 0,
-              row: int = 0, col: int = 0) -> List[Tuple]:
+def get_cells(
+    doc: Document, section: int = 0, table: int = 0, row: int = 0, col: int = 0
+) -> List[Tuple]:
     """通配符获取单元格
 
     0 表示所有。用于批量获取符合条件的单元格。
@@ -127,7 +127,9 @@ def get_cells(doc: Document, section: int = 0, table: int = 0,
 
                     cell = row_obj.Cells.get_Item(c_idx)
                     # 索引从1开始返回
-                    result.append((sec_idx + 1, tbl_idx + 1, r_idx + 1, c_idx + 1, cell))
+                    result.append(
+                        (sec_idx + 1, tbl_idx + 1, r_idx + 1, c_idx + 1, cell)
+                    )
 
     return result
 
@@ -198,8 +200,7 @@ def iterate_cells(doc: Document) -> Generator:
                     yield (sec_idx + 1, tbl_idx + 1, row_idx + 1, col_idx + 1, cell)
 
 
-def get_cell_text(doc: Document, section: int, table: int,
-                  row: int, col: int) -> str:
+def get_cell_text(doc: Document, section: int, table: int, row: int, col: int) -> str:
     """获取单元格文本内容
 
     Args:
@@ -254,9 +255,7 @@ def get_table_dimensions(doc: Document, section: int, table: int) -> Tuple[int, 
         return rows, cols
 
     except Exception as e:
-        raise PositionError(
-            f"无法获取表格 ({section}, {table}) 的尺寸: {e}"
-        )
+        raise PositionError(f"无法获取表格 ({section}, {table}) 的尺寸: {e}")
 
 
 def get_section_table_count(doc: Document, section: int) -> int:

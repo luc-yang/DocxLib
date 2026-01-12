@@ -11,6 +11,7 @@ import argparse
 def cmd_version(args):
     """显示版本信息"""
     from docxlib import __version__
+
     print(f"DocxLib version {__version__}")
     return 0
 
@@ -34,7 +35,9 @@ def cmd_info(args):
     print(f"Default Font Size: {DEFAULT_FONT_SIZE}")
     print(f"Default Color: {DEFAULT_COLOR}")
     print(f"Supported Image Formats: {', '.join(SUPPORTED_IMAGE_FORMATS)}")
-    print(f"Fill Modes: {FillMode.POSITION}, {FillMode.MATCH_RIGHT}, {FillMode.MATCH_DOWN}")
+    print(
+        f"Fill Modes: {FillMode.POSITION}, {FillMode.MATCH_RIGHT}, {FillMode.MATCH_DOWN}"
+    )
     print("=" * 50)
     return 0
 
@@ -45,8 +48,7 @@ def cmd_test(args):
 
     print("Running basic tests...")
     result = subprocess.run(
-        [sys.executable, "tests/test_basic.py"],
-        cwd=args.project_dir
+        [sys.executable, "tests/test_basic.py"], cwd=args.project_dir
     )
     return result.returncode
 
@@ -97,6 +99,7 @@ def cmd_inspect(args):
 
             try:
                 from docxlib import get_section_table_count
+
                 table_count = get_section_table_count(doc, sec_idx)
                 print(f"  Tables: {table_count}")
 
@@ -120,14 +123,11 @@ def cmd_inspect(args):
 def main():
     """主函数"""
     parser = argparse.ArgumentParser(
-        prog="docxlib",
-        description="DocxLib - Word document processing library"
+        prog="docxlib", description="DocxLib - Word document processing library"
     )
 
     parser.add_argument(
-        "--version",
-        action="store_true",
-        help="Show version information"
+        "--version", action="store_true", help="Show version information"
     )
 
     subparsers = parser.add_subparsers(dest="command", help="Available commands")
@@ -143,7 +143,7 @@ def main():
     test_parser.add_argument(
         "--project-dir",
         default=".",
-        help="Project directory (default: current directory)"
+        help="Project directory (default: current directory)",
     )
 
     # validate 命令

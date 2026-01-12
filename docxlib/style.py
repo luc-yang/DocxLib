@@ -44,11 +44,11 @@ def parse_color(color_str: str) -> Color:
         hex_str = color_str
 
     # 去除 # 前缀
-    if hex_str.startswith('#'):
+    if hex_str.startswith("#"):
         hex_str = hex_str[1:]
 
     # 验证十六进制格式
-    if not re.match(r'^[0-9a-f]{6}$', hex_str):
+    if not re.match(r"^[0-9a-f]{6}$", hex_str):
         # 解析失败，返回黑色
         return Color.get_Black()
 
@@ -71,7 +71,7 @@ def apply_font_style(
     color: str,
     bold: bool = False,
     italic: bool = False,
-    underline: bool = False
+    underline: bool = False,
 ) -> None:
     """应用字体样式到文本范围
 
@@ -114,6 +114,7 @@ def apply_font_style(
     # 设置下划线
     if underline:
         from spire.doc import UnderlineStyle
+
         run.CharacterFormat.UnderlineStyle = UnderlineStyle.Single
 
 
@@ -130,10 +131,7 @@ def get_cell_format(cell):
 
 
 def set_cell_border(
-    cell,
-    border_style=None,
-    border_color=None,
-    border_width=None
+    cell, border_style=None, border_color=None, border_width=None
 ) -> None:
     """设置单元格边框样式
 
@@ -166,10 +164,7 @@ def set_cell_border(
         borders.BorderType.Bottom.LineWidth = border_width
 
 
-def apply_paragraph_alignment(
-    paragraph,
-    alignment: str
-) -> None:
+def apply_paragraph_alignment(paragraph, alignment: str) -> None:
     """应用段落对齐方式
 
     Args:
@@ -195,3 +190,29 @@ def apply_paragraph_alignment(
 
     if alignment in alignment_map:
         paragraph.Format.HorizontalAlignment = alignment_map[alignment]
+
+
+def apply_cell_alignment(cell, alignment: str) -> None:
+    """应用单元格对齐方式
+
+    Args:
+        cell: Spire.Doc Cell 对象
+        alignment: 对齐方式
+            - "left": 左对齐
+            - "center": 居中对齐
+            - "right": 右对齐
+            - "justify": 两端对齐
+
+    Examples:
+        >>> apply_cell_alignment(cell, "center")
+    """
+    from spire.doc import VerticalAlignment
+
+    alignment_map = {
+        "top": VerticalAlignment.Top,
+        "center": VerticalAlignment.Middle,
+        "bottom": VerticalAlignment.Bottom,
+    }
+
+    if alignment in alignment_map:
+        cell.CellFormat.VerticalAlignment = alignment_map[alignment]

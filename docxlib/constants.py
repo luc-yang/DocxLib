@@ -16,28 +16,29 @@ DEFAULT_COLOR: str = "black"
 
 # ==================== 支持的图片格式 ====================
 
-SUPPORTED_IMAGE_FORMATS: tuple = ('.png', '.jpg', '.jpeg', '.gif', '.bmp')
+SUPPORTED_IMAGE_FORMATS: tuple = (".png", ".jpg", ".jpeg", ".gif", ".bmp")
 
 
 # ==================== 颜色映射表 ====================
 
 COLOR_MAP: Dict[str, str] = {
-    'black': '#000000',
-    'red': '#FF0000',
-    'blue': '#0000FF',
-    'green': '#008000',
-    'yellow': '#FFFF00',
-    'white': '#FFFFFF',
-    'gray': '#808080',
-    'silver': '#C0C0C0',
-    'maroon': '#800000',
-    'purple': '#800080',
-    'orange': '#FFA500',
-    'pink': '#FFC0CB',
+    "black": "#000000",
+    "red": "#FF0000",
+    "blue": "#0000FF",
+    "green": "#008000",
+    "yellow": "#FFFF00",
+    "white": "#FFFFFF",
+    "gray": "#808080",
+    "silver": "#C0C0C0",
+    "maroon": "#800000",
+    "purple": "#800080",
+    "orange": "#FFA500",
+    "pink": "#FFC0CB",
 }
 
 
 # ==================== 文件格式 ====================
+
 
 class FileFormat:
     """文件格式常量"""
@@ -51,6 +52,7 @@ class FileFormat:
 
 # ==================== 填充模式 ====================
 
+
 class FillMode:
     """填充模式常量"""
 
@@ -60,6 +62,7 @@ class FillMode:
 
 
 # ==================== 对齐方式 ====================
+
 
 class Alignment:
     """对齐方式常量"""
@@ -82,6 +85,7 @@ Position = tuple
 # 尝试导入 Spire.Doc，如果失败则设置为 None
 try:
     from spire.doc import *
+
     SPIRE_AVAILABLE = True
 except ImportError:
     SPIRE_AVAILABLE = False

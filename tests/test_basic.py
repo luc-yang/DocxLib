@@ -5,7 +5,8 @@ DocxLib 基础功能测试脚本
 """
 
 import sys
-sys.path.insert(0, r'd:\Code\DocxLib')
+
+sys.path.insert(0, r"d:\Code\DocxLib")
 
 from docxlib import (
     __version__,
@@ -54,8 +55,8 @@ def test_constants():
     assert DEFAULT_FONT == "仿宋_GB2312"
     assert DEFAULT_FONT_SIZE == 10.5
     assert DEFAULT_COLOR == "black"
-    assert '.png' in SUPPORTED_IMAGE_FORMATS
-    assert '.jpg' in SUPPORTED_IMAGE_FORMATS
+    assert ".png" in SUPPORTED_IMAGE_FORMATS
+    assert ".jpg" in SUPPORTED_IMAGE_FORMATS
 
 
 def test_fill_modes():
@@ -94,8 +95,8 @@ def test_date_parsing():
     print(f"  - 数字: {numbers}")
     print(f"  - 年月日: {separators}")
 
-    assert numbers == ['2024', '1', '15']
-    assert separators == ['年', '月', '日']
+    assert numbers == ["2024", "1", "15"]
+    assert separators == ["年", "月", "日"]
 
 
 def main():

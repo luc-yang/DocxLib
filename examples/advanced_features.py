@@ -51,22 +51,24 @@ def main():
     # 填充图片
     print("\n=== 路径填充图片 ===")
     try:
-        fill_image(doc, "图片", "fixtures/images/logo.png",
-                   mode="match_right",
-                   width=80,
-                   height=80)
+        fill_image(
+            doc,
+            "图片",
+            "fixtures/images/logo.png",
+            mode="match_right",
+            width=80,
+            height=80,
+            alignment="center",
+        )
         print("图片填充成功")
     except Exception as e:
         print(f"图片填充失败: {e}")
-    
+
     print("\n=== 字节数据填充图片 ===")
     try:
         with open("fixtures/images/logo.png", "rb") as f:
             image_data = f.read()
-        fill_image(doc, "图片", image_data,
-                   mode="match_right",
-                   width=80,
-                   height=80)
+        fill_image(doc, "图片", image_data, mode="match_right", width=80, height=80)
         print("图片填充成功")
     except Exception as e:
         print(f"图片填充失败: {e}")
