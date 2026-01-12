@@ -55,9 +55,9 @@ setup(
     ],
     keywords="word docx document spire office",
     project_urls={
-        "Homepage": "https://github.com/yourusername/docxlib",
-        "Repository": "https://github.com/yourusername/docxlib",
-        "Documentation": "https://github.com/yourusername/docxlib/blob/main/README.md",
-        "Bug Tracker": "https://github.com/yourusername/docxlib/issues",
+        "Homepage": "https://github.com/luc-yang/DocxLib",
+        "Repository": "https://github.com/luc-yang/DocxLib",
+        "Documentation": "https://github.com/luc-yang/DocxLib/blob/main/README.md",
+        "Bug Tracker": "https://github.com/luc-yang/DocxLib/issues",
     },
 )

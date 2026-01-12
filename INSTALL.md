@@ -5,7 +5,7 @@
 ### 1. 克隆项目
 
 ```bash
-git clone https://github.com/yourusername/docxlib.git
+git clone https://github.com/luc-yang/DocxLib.git
 cd docxlib
 ```
 

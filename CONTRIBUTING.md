@@ -32,7 +32,7 @@
 1. Fork 项目仓库
 2. 克隆您的 Fork：
    ```bash
-   git clone https://github.com/yourusername/docxlib.git
+   git clone https://github.com/luc-yang/DocxLib.git
    cd docxlib
    ```
 3. 创建开发分支：
@@ -171,7 +171,7 @@ docxlib/
 
 如有问题，请通过以下方式联系：
 
-- GitHub Issues: https://github.com/yourusername/docxlib/issues
+- GitHub Issues: https://github.com/luc-yang/DocxLib/issues
 - Email: your.email@example.com
 
 ---

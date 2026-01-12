@@ -29,7 +29,7 @@ pip install docxlib
 或从源码安装：
 
 ```bash
-git clone https://github.com/yourusername/docxlib.git
+git clone https://github.com/luc-yang/DocxLib.git
 cd docxlib
 pip install -e .
 ```
@@ -274,4 +274,4 @@ MIT License
 ## 链接
 
 - [Spire.Doc 官方文档](https://www.e-iceblue.com/)
-- [GitHub 仓库](https://github.com/yourusername/docxlib)
+- [GitHub 仓库](https://github.com/luc-yang/DocxLib)
