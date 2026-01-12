@@ -13,9 +13,9 @@ class TestLoadDocx:
     def test_load_docx_success(self):
         """测试成功加载文档"""
         # 这个测试需要一个真实的测试文档
-        # doc = load_docx("fixtures/templates/simple.docx")
-        # assert doc is not None
-        # assert doc.Sections.Count > 0
+        doc = load_docx("fixtures/templates/simple.docx")
+        assert doc is not None
+        assert doc.Sections.Count > 0
         pass
 
     def test_load_docx_file_not_exists(self):
@@ -25,8 +25,19 @@ class TestLoadDocx:
 
     def test_load_docx_invalid_format(self):
         """测试无效格式时抛出异常"""
-        with pytest.raises(ValidationError):
-            load_docx("test.txt")
+        from pathlib import Path
+        import tempfile
+
+        # 创建一个存在但格式错误的文件
+        with tempfile.NamedTemporaryFile(suffix=".txt", delete=False, mode="w") as f:
+            f.write("This is not a docx file")
+            temp_file = f.name
+
+        try:
+            with pytest.raises(ValidationError):
+                load_docx(temp_file)
+        finally:
+            Path(temp_file).unlink()
 
 
 class TestSaveDocx:
