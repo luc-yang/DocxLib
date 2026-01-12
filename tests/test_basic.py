@@ -95,7 +95,7 @@ def test_date_parsing():
     print(f"  - 数字: {numbers}")
     print(f"  - 年月日: {separators}")
 
-    assert numbers == ["2024", "1", "15"]
+    assert numbers == ["2024", "01", "15"]
     assert separators == ["年", "月", "日"]
 
 
