@@ -27,73 +27,56 @@ __version__ = "0.1.0"
 __author__ = "DocxLib Contributors"
 
 # ==================== 文档操作 ====================
-from .document import (
-    load_docx,
-    save_docx,
-    merge_docs,
-    to_pdf,
-    to_images,
-    to_pdf_file,
-    copy_doc,
-)
-
-# ==================== 表格操作 ====================
-from .table import (
-    get_cell,
-    get_cells,
-    find_text,
-    iterate_cells,
-    get_cell_text,
-    get_table_dimensions,
-    get_section_table_count,
-    get_section_count,
-)
-
-# ==================== 字段填充 ====================
-from .fill import (
-    fill_text,
-    fill_image,
-    fill_date,
-    fill_grid,
-    replace_all,
-    clear_cell,
-)
-
-# ==================== 样式管理 ====================
-from .style import (
-    parse_color,
-    apply_font_style,
-    set_cell_border,
-)
-
-# ==================== 异常类 ====================
-from .errors import (
-    DocxLibError,
-    DocumentError,
-    PositionError,
-    FillError,
-    ValidationError,
-)
-
-# ==================== 常量 ====================
 from .constants import (
+    DEFAULT_COLOR,
     DEFAULT_FONT,
     DEFAULT_FONT_SIZE,
-    DEFAULT_COLOR,
-    SUPPORTED_IMAGE_FORMATS,
     FileFormat,
     FillMode,
     Position,
+    SUPPORTED_IMAGE_FORMATS,
 )
-
-# ==================== 工具函数 ====================
+from .document import (
+    copy_doc,
+    load_docx,
+    merge_docs,
+    save_docx,
+    to_images,
+    to_pdf,
+    to_pdf_file,
+)
+from .errors import (
+    DocumentError,
+    DocxLibError,
+    FillError,
+    PositionError,
+    ValidationError,
+)
+from .fill import clear_cell, fill_date, fill_grid, fill_image, fill_text, replace_all
+from .style import (
+    apply_cell_alignment,
+    apply_font_style,
+    apply_paragraph_alignment,
+    parse_color,
+    set_cell_border,
+)
+from .table import (
+    find_text,
+    get_cell,
+    get_cell_text,
+    get_cells,
+    get_section_count,
+    get_section_table_count,
+    get_table_dimensions,
+    iterate_cells,
+)
 from .utils import (
-    is_valid_docx,
-    validate_docx,
-    parse_csv,
-    parse_json,
     ensure_directory,
+    is_valid_docx,
+    parse_csv,
     parse_date_string,
+    parse_json,
+    validate_docx,
 )
 
 # ==================== 导出列表 ====================
@@ -128,6 +111,8 @@ __all__ = [
     # 样式管理
     "parse_color",
     "apply_font_style",
+    "apply_paragraph_alignment",
+    "apply_cell_alignment",
     "set_cell_border",
     # 异常类
     "DocxLibError",
