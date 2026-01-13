@@ -61,6 +61,13 @@ class FillMode:
     MATCH_DOWN = "match_down"
 
 
+class MatchMode:
+    """匹配模式常量（控制批量填充行为）"""
+
+    ALL = "all"  # 填充所有匹配位置（默认）
+    FIRST = "first"  # 仅填充第一个匹配位置
+
+
 # ==================== 对齐方式 ====================
 
 

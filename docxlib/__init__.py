@@ -33,6 +33,7 @@ from .constants import (
     DEFAULT_FONT_SIZE,
     FileFormat,
     FillMode,
+    MatchMode,
     Position,
     SUPPORTED_IMAGE_FORMATS,
 )
@@ -128,6 +129,7 @@ __all__ = [
     "SUPPORTED_IMAGE_FORMATS",
     "FileFormat",
     "FillMode",
+    "MatchMode",
     "Position",
     # 工具函数
     "is_valid_docx",
