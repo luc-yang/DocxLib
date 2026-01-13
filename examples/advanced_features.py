@@ -58,7 +58,8 @@ def main():
             mode="match_right",
             width=80,
             height=80,
-            alignment="center",
+            h_align="center",
+            v_align="middle",
         )
         print("图片填充成功")
     except Exception as e:

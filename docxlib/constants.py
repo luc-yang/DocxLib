@@ -71,13 +71,20 @@ class MatchMode:
 # ==================== 对齐方式 ====================
 
 
-class Alignment:
+class HorizontalAlignment:
     """对齐方式常量"""
 
     LEFT = "left"
     CENTER = "center"
     RIGHT = "right"
     JUSTIFY = "justify"
+    
+class VerticalAlignment:
+    """垂直对齐方式常量"""
+
+    TOP = "top"
+    MIDDLE = "middle"
+    BOTTOM = "bottom"
 
 
 # ==================== 类型定义 ====================

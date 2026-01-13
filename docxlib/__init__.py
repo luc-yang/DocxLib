@@ -33,9 +33,11 @@ from .constants import (
     DEFAULT_FONT_SIZE,
     FileFormat,
     FillMode,
+    HorizontalAlignment,
     MatchMode,
     Position,
     SUPPORTED_IMAGE_FORMATS,
+    VerticalAlignment,
 )
 from .document import (
     copy_doc,
@@ -127,6 +129,8 @@ __all__ = [
     "DEFAULT_FONT_SIZE",
     "DEFAULT_COLOR",
     "SUPPORTED_IMAGE_FORMATS",
+    "HorizontalAlignment",
+    "VerticalAlignment",
     "FileFormat",
     "FillMode",
     "MatchMode",

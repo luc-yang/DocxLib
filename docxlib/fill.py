@@ -5,19 +5,20 @@ DocxLib 字段填充模块
 """
 
 from pathlib import Path
-from typing import List, Tuple, Union
+from typing import List, Union
 
 from spire.doc import *
 from spire.doc.common import *
 
 from .constants import (
-    Alignment,
     DEFAULT_COLOR,
     DEFAULT_FONT,
     DEFAULT_FONT_SIZE,
     FillMode,
+    HorizontalAlignment,
     MatchMode,
     Position,
+    VerticalAlignment,
 )
 from .errors import FillError, PositionError, ValidationError
 from .style import apply_cell_alignment, apply_font_style, apply_paragraph_alignment
@@ -45,8 +46,8 @@ def _fill_single_cell_text(
     bold: bool,
     italic: bool,
     underline: bool,
-    h_align: str,
-    v_align: str,
+    h_align: HorizontalAlignment,
+    v_align: VerticalAlignment,
 ) -> None:
     """填充文本到单个单元格（内部辅助函数）
 
@@ -82,8 +83,8 @@ def _fill_single_cell_text(
 def _fill_single_cell_image(
     cell,
     image_path: str,
-    h_align: str,
-    v_align: str,
+    h_align: HorizontalAlignment,
+    v_align: VerticalAlignment,
     width: float,
     height: float,
     maintain_ratio: bool,
@@ -114,6 +115,7 @@ def _fill_single_cell_image(
 
     # 设置图片为内联样式
     from spire.doc import TextWrappingStyle
+
     picture.TextWrappingStyle = TextWrappingStyle.Inline
 
     # 应用对齐方式
@@ -159,8 +161,8 @@ def _fill_single_cell_date(
     separators: list,
     font_name: str,
     font_size: float,
-    h_align: str,
-    v_align: str,
+    h_align: HorizontalAlignment,
+    v_align: VerticalAlignment,
 ) -> None:
     """填充日期到单个单元格（内部辅助函数）
 
@@ -207,9 +209,9 @@ def fill_text(
     bold: bool = False,
     italic: bool = False,
     underline: bool = False,
-    h_align: str = None,
-    v_align: str = None,
-    match_mode: str = MatchMode.ALL,
+    h_align: HorizontalAlignment = None,
+    v_align: VerticalAlignment = None,
+    match_mode: MatchMode = MatchMode.ALL,
 ) -> None:
     """填充文本到文档
 
@@ -260,7 +262,7 @@ def fill_text(
         >>> # 通配符：所有表格的第2行第3列
         >>> fill_text(doc, (1, 0, 2, 3), "统一内容")
 
-        >>> # 通配符：所有节的所有表格的第1行
+        >>> # 通配符：所有节的所有表格的第1行第1列
         >>> fill_text(doc, (0, 0, 1, 1), "标题", h_align="center")
 
         >>> # 匹配模式：仅填充第一个
@@ -282,8 +284,16 @@ def fill_text(
                 # 批量填充
                 for _, _, _, _, cell in cells_list:
                     _fill_single_cell_text(
-                        cell, value, font_name, font_size, color,
-                        bold, italic, underline, h_align, v_align
+                        cell,
+                        value,
+                        font_name,
+                        font_size,
+                        color,
+                        bold,
+                        italic,
+                        underline,
+                        h_align,
+                        v_align,
                     )
                 return
             else:
@@ -298,15 +308,25 @@ def fill_text(
                 raise PositionError(f"未找到文本: {position}")
 
             # 根据 match_mode 决定填充所有还是仅第一个
-            target_positions = positions if match_mode == MatchMode.ALL else [positions[0]]
+            target_positions = (
+                positions if match_mode == MatchMode.ALL else [positions[0]]
+            )
 
             # 批量填充所有匹配位置
             for pos in target_positions:
                 target_pos = (pos[0], pos[1], pos[2], pos[3] + 1)
                 cell = get_cell(doc, *target_pos)
                 _fill_single_cell_text(
-                    cell, value, font_name, font_size, color,
-                    bold, italic, underline, h_align, v_align
+                    cell,
+                    value,
+                    font_name,
+                    font_size,
+                    color,
+                    bold,
+                    italic,
+                    underline,
+                    h_align,
+                    v_align,
                 )
             return
 
@@ -318,15 +338,25 @@ def fill_text(
                 raise PositionError(f"未找到文本: {position}")
 
             # 根据 match_mode 决定填充所有还是仅第一个
-            target_positions = positions if match_mode == MatchMode.ALL else [positions[0]]
+            target_positions = (
+                positions if match_mode == MatchMode.ALL else [positions[0]]
+            )
 
             # 批量填充所有匹配位置
             for pos in target_positions:
                 target_pos = (pos[0], pos[1], pos[2] + 1, pos[3])
                 cell = get_cell(doc, *target_pos)
                 _fill_single_cell_text(
-                    cell, value, font_name, font_size, color,
-                    bold, italic, underline, h_align, v_align
+                    cell,
+                    value,
+                    font_name,
+                    font_size,
+                    color,
+                    bold,
+                    italic,
+                    underline,
+                    h_align,
+                    v_align,
                 )
             return
         else:
@@ -335,8 +365,16 @@ def fill_text(
         # 单个单元格填充（position 模式且无通配符）
         cell = get_cell(doc, *target_pos)
         _fill_single_cell_text(
-            cell, value, font_name, font_size, color,
-            bold, italic, underline, h_align, v_align
+            cell,
+            value,
+            font_name,
+            font_size,
+            color,
+            bold,
+            italic,
+            underline,
+            h_align,
+            v_align,
         )
 
     except (PositionError, FillError):
@@ -350,12 +388,12 @@ def fill_image(
     position: Union[Position, str],
     source: Union[str, bytes, Path],
     mode: str = FillMode.POSITION,
-    h_align: str = None,
-    v_align: str = None,
+    h_align: HorizontalAlignment = None,
+    v_align: VerticalAlignment = None,
     width: float = None,
     height: float = None,
     maintain_ratio: bool = True,
-    match_mode: str = MatchMode.ALL,
+    match_mode: MatchMode = MatchMode.ALL,
 ) -> None:
     """填充图片到文档
 
@@ -476,8 +514,15 @@ def fill_image(
                 # 批量填充
                 for _, _, _, _, cell in cells_list:
                     _fill_single_cell_image(
-                        cell, image_path, h_align, v_align, width, height,
-                        maintain_ratio, original_width_px, original_height_px
+                        cell,
+                        image_path,
+                        h_align,
+                        v_align,
+                        width,
+                        height,
+                        maintain_ratio,
+                        original_width_px,
+                        original_height_px,
                     )
                 return
             else:
@@ -492,15 +537,24 @@ def fill_image(
                 raise PositionError(f"未找到文本: {position}")
 
             # 根据 match_mode 决定填充所有还是仅第一个
-            target_positions = positions if match_mode == MatchMode.ALL else [positions[0]]
+            target_positions = (
+                positions if match_mode == MatchMode.ALL else [positions[0]]
+            )
 
             # 批量填充所有匹配位置
             for pos in target_positions:
                 target_pos = (pos[0], pos[1], pos[2], pos[3] + 1)
                 cell = get_cell(doc, *target_pos)
                 _fill_single_cell_image(
-                    cell, image_path, h_align, v_align, width, height,
-                    maintain_ratio, original_width_px, original_height_px
+                    cell,
+                    image_path,
+                    h_align,
+                    v_align,
+                    width,
+                    height,
+                    maintain_ratio,
+                    original_width_px,
+                    original_height_px,
                 )
             return
 
@@ -512,15 +566,24 @@ def fill_image(
                 raise PositionError(f"未找到文本: {position}")
 
             # 根据 match_mode 决定填充所有还是仅第一个
-            target_positions = positions if match_mode == MatchMode.ALL else [positions[0]]
+            target_positions = (
+                positions if match_mode == MatchMode.ALL else [positions[0]]
+            )
 
             # 批量填充所有匹配位置
             for pos in target_positions:
                 target_pos = (pos[0], pos[1], pos[2] + 1, pos[3])
                 cell = get_cell(doc, *target_pos)
                 _fill_single_cell_image(
-                    cell, image_path, h_align, v_align, width, height,
-                    maintain_ratio, original_width_px, original_height_px
+                    cell,
+                    image_path,
+                    h_align,
+                    v_align,
+                    width,
+                    height,
+                    maintain_ratio,
+                    original_width_px,
+                    original_height_px,
                 )
             return
         else:
@@ -529,8 +592,15 @@ def fill_image(
         # 单个单元格填充（position 模式且无通配符）
         cell = get_cell(doc, *target_pos)
         _fill_single_cell_image(
-            cell, image_path, h_align, v_align, width, height,
-            maintain_ratio, original_width_px, original_height_px
+            cell,
+            image_path,
+            h_align,
+            v_align,
+            width,
+            height,
+            maintain_ratio,
+            original_width_px,
+            original_height_px,
         )
 
     except (PositionError, FillError, ValueError):
@@ -553,9 +623,9 @@ def fill_date(
     date_str: str,
     font_name: str = DEFAULT_FONT,
     font_size: float = DEFAULT_FONT_SIZE,
-    h_align: str = None,
-    v_align: str = None,
-    match_mode: str = MatchMode.ALL,
+    h_align: HorizontalAlignment = None,
+    v_align: VerticalAlignment = None,
+    match_mode: MatchMode = MatchMode.ALL,
 ) -> None:
     """填充日期
 
@@ -623,7 +693,9 @@ def fill_date(
                 raise PositionError(f"未找到文本: {position}")
 
             # 根据 match_mode 决定填充所有还是仅第一个
-            target_positions = positions if match_mode == MatchMode.ALL else [positions[0]]
+            target_positions = (
+                positions if match_mode == MatchMode.ALL else [positions[0]]
+            )
 
             # 批量填充所有匹配位置
             for pos in target_positions:
@@ -645,7 +717,13 @@ def fill_date(
                 # 批量填充
                 for _, _, _, _, cell in cells_list:
                     _fill_single_cell_date(
-                        cell, numbers, separators, font_name, font_size, h_align, v_align
+                        cell,
+                        numbers,
+                        separators,
+                        font_name,
+                        font_size,
+                        h_align,
+                        v_align,
                     )
                 return
             else:
