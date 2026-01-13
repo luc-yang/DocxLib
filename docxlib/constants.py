@@ -90,8 +90,8 @@ class VerticalAlignment:
 # ==================== 类型定义 ====================
 
 # 位置元组类型：(section, table, row, col)
-# 所有索引从 1 开始
-Position = tuple
+# 所有索引从 1 开始计数
+Position = tuple[int, int, int, int]
 
 
 # ==================== Spire.Doc 相关 ====================
