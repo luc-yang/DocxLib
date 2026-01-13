@@ -16,7 +16,7 @@ DEFAULT_COLOR: str = "black"
 
 # ==================== 支持的图片格式 ====================
 
-SUPPORTED_IMAGE_FORMATS: tuple = (".png", ".jpg", ".jpeg", ".gif", ".bmp")
+SUPPORTED_IMAGE_FORMATS: tuple = (".png", ".jpg", ".jpeg", ".bmp")
 
 
 # ==================== 颜色映射表 ====================
