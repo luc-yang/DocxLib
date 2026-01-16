@@ -30,6 +30,11 @@ make build                # Build package for distribution
 # CLI Tools
 python -m docxlib.cli validate fixtures/templates/sample.docx
 python -m docxlib.cli inspect fixtures/templates/sample.docx
+python -m docxlib.cli extract-vars template.docx -o vars.json
+python -m docxlib.cli fill template.docx data.json -o output.docx
+python -m docxlib.cli convert input.docx -f pdf -o output.pdf
+python -m docxlib.cli info          # Show library info
+python -m docxlib.cli version       # Show version
 ```
 
 ## Architecture
@@ -39,9 +44,10 @@ python -m docxlib.cli inspect fixtures/templates/sample.docx
 ```
 docxlib/
 ├── __init__.py      # Public API exports (functional interface)
+├── cli.py           # Command-line interface (validate, inspect, fill, convert)
 ├── document.py      # Document I/O, merge, format conversion
 ├── table.py         # Cell navigation, lookup, iteration
-├── fill.py          # Field filling (text, image, date, grid)
+├── fill.py          # Field filling (text, image, date, grid, template vars)
 ├── style.py         # Font, color, alignment, borders
 ├── utils.py         # Validation, parsing, utilities
 ├── constants.py     # Default values, enums, type aliases
@@ -82,6 +88,55 @@ The `fill_text()` and `fill_image()` functions support three modes via the `mode
    ```python
    fill_text(doc, "项目1", "智慧城市", mode="match_down")
    ```
+
+### Match Mode Parameter
+
+When using `match_right` or `match_down` modes, the `match_mode` parameter controls behavior when multiple matches are found:
+
+- **`"all"`** (default): Fill all matching positions
+- **`"first"`**: Only fill the first match
+
+```python
+# Fill all occurrences
+fill_text(doc, "姓名：", "张三", mode="match_right", match_mode="all")
+
+# Fill only the first occurrence
+fill_text(doc, "姓名：", "张三", mode="match_right", match_mode="first")
+```
+
+### Template Variable System
+
+DocxLib supports a template variable system for declarative document filling:
+
+**Variable syntax**: `${variable_name}` or `${variable_name|default_value}`
+
+```python
+from docxlib import load_docx, fill_template, extract_template_vars
+
+# Extract variables from a template
+doc = load_docx("template.docx")
+variables = extract_template_vars(doc, unique=True)
+# Returns: ["name", "age", "department"]
+
+# Fill template with data
+data = {
+    "name": "张三",
+    "age": "25",
+    "department": "研发部"
+}
+result = fill_template(doc, data, missing_var_action="ignore")
+# Returns: {"total": 3, "replaced": 3, "missing": []}
+
+# Validate template data before filling
+from docxlib import validate_template_data
+validation = validate_template_data(doc, data)
+# Returns: {"is_valid": true, "required_vars": [...], "missing_vars": []}
+```
+
+**Missing variable actions**:
+- `"error"` (default): Raise `VariableNotFoundError`
+- `"ignore"`: Skip missing variables
+- `"empty"`: Replace with empty string
 
 ### Styling System
 
@@ -146,3 +201,5 @@ Internal modules (e.g., `docxlib.document`) are not part of the public API.
 - Test images in `fixtures/images/`
 - Output files go to `output/` directory (auto-created by `save_docx()`)
 - Use `copy_doc()` in tests to avoid modifying shared template objects
+- Run specific test with: `pytest tests/test_fill.py -v -k test_fill_text`
+- Test files: test_basic.py, test_fill.py, test_template.py, test_document.py, etc.
