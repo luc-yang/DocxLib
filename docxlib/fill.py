@@ -617,7 +617,8 @@ def fill_image(
         if temp_file_path and os.path.exists(temp_file_path):
             try:
                 os.unlink(temp_file_path)
-            except Exception:
+            except OSError:
+                # 忽略临时文件删除错误
                 pass
 
 

@@ -137,20 +137,16 @@ def merge_docs(doc_list: List[Document]) -> Document:
         # 创建新文档
         merged_doc = Document()
 
-        # 复制第一个文档的内容
-        for i, doc in enumerate(doc_list):
+        # 复制所有文档的内容
+        for doc in doc_list:
             for section_idx in range(doc.Sections.Count):
                 section = doc.Sections.get_Item(section_idx)
 
-                # 为每个文档的节创建新节
-                for sec_idx in range(section.Sections.Count):
-                    src_section = section.Sections.get_Item(sec_idx)
+                # 克隆节
+                new_section = section.Clone()
 
-                    # 克隆节
-                    new_section = src_section.Clone()
-
-                    # 添加到合并文档
-                    merged_doc.Sections.Add(new_section)
+                # 添加到合并文档
+                merged_doc.Sections.Add(new_section)
 
         return merged_doc
 
@@ -309,7 +305,12 @@ def get_document_properties(doc: Document) -> dict:
         try:
             if props.Keywords:
                 keywords = props.Keywords
+        except (AttributeError, TypeError):
+            # 某些 COM 对象可能不支持 Keywords 属性
+            pass
         except Exception:
+            # 捕获 Spire.Doc 库的 SpireException 等异常
+            # 某些文档的 Keywords 属性访问可能抛出 ArgumentNull 异常
             pass
 
         comments = props.Comments if props.Comments else ""
@@ -320,13 +321,21 @@ def get_document_properties(doc: Document) -> dict:
         try:
             if props.CreatedTime:
                 created_time = str(props.CreatedTime)
+        except (AttributeError, TypeError):
+            # 某些 COM 对象可能不支持 CreatedTime 属性
+            pass
         except Exception:
+            # 捕获 Spire.Doc 库的异常
             pass
 
         try:
             if props.LastSavedTime:
                 modified_time = str(props.LastSavedTime)
+        except (AttributeError, TypeError):
+            # 某些 COM 对象可能不支持 LastSavedTime 属性
+            pass
         except Exception:
+            # 捕获 Spire.Doc 库的异常
             pass
 
         return {

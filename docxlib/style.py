@@ -274,7 +274,7 @@ def get_cell_style(cell) -> dict:
                 # 如果还是没有，使用默认值
                 if not char_format:
                     char_format = None
-        except Exception:
+        except (AttributeError, TypeError):
             char_format = None
 
         # 简化：只返回对齐和背景色信息
@@ -290,7 +290,7 @@ def get_cell_style(cell) -> dict:
                     "justify": "justify",
                 }
                 h_align = align_map.get(str(format_obj.HorizontalAlignment), "")
-        except Exception:
+        except (AttributeError, TypeError):
             pass
 
         # 读取垂直对齐
@@ -304,7 +304,7 @@ def get_cell_style(cell) -> dict:
                     "bottom": "bottom",
                 }
                 v_align = v_align_map.get(str(cell_format.VerticalAlignment), "")
-        except Exception:
+        except (AttributeError, TypeError):
             pass
 
         # 读取背景色
@@ -313,7 +313,7 @@ def get_cell_style(cell) -> dict:
             cell_format = cell.CellFormat
             if cell_format.BackColor:
                 background_color = f"#{cell_format.BackColor.Name.replace('#', '')}"
-        except Exception:
+        except (AttributeError, TypeError):
             pass
 
         return {
@@ -367,7 +367,7 @@ def get_paragraph_style(paragraph) -> dict:
                     "justify": "justify",
                 }
                 alignment = align_map.get(str(format_obj.HorizontalAlignment), "")
-        except Exception:
+        except (AttributeError, TypeError):
             pass
 
         # 首行缩进
@@ -375,7 +375,7 @@ def get_paragraph_style(paragraph) -> dict:
         try:
             if format_obj.FirstLineIndent:
                 first_line_indent = float(format_obj.FirstLineIndent)
-        except Exception:
+        except (AttributeError, TypeError, ValueError):
             pass
 
         # 行距
@@ -383,7 +383,7 @@ def get_paragraph_style(paragraph) -> dict:
         try:
             if format_obj.LineSpacing:
                 line_spacing = float(format_obj.LineSpacing)
-        except Exception:
+        except (AttributeError, TypeError, ValueError):
             pass
 
         # 段前间距
@@ -391,7 +391,7 @@ def get_paragraph_style(paragraph) -> dict:
         try:
             if format_obj.SpaceBefore:
                 space_before = float(format_obj.SpaceBefore)
-        except Exception:
+        except (AttributeError, TypeError, ValueError):
             pass
 
         # 段后间距
@@ -399,7 +399,7 @@ def get_paragraph_style(paragraph) -> dict:
         try:
             if format_obj.SpaceAfter:
                 space_after = float(format_obj.SpaceAfter)
-        except Exception:
+        except (AttributeError, TypeError, ValueError):
             pass
 
         return {

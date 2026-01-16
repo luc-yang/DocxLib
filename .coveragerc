@@ -1,0 +1,56 @@
+[coverage:run]
+# Coverage configuration for DocxLib
+
+# Source code to measure
+source = docxlib
+
+# Omit files from coverage
+omit =
+    */__init__.py
+    */cli.py
+    */errors.py
+    */constants.py
+    tests/*
+    setup.py
+
+# Branch coverage
+branch = True
+
+[coverage:report]
+# Reporting options
+
+# Precision
+precision = 2
+
+# Show missing line numbers
+show_missing = True
+
+# Skip empty files
+skip_empty = True
+
+# Exclude lines from coverage
+exclude_lines =
+    # Standard pragma
+    pragma: no cover
+
+    # Debugging code
+    def __repr__
+    def __str__
+
+    # Abstract methods
+    @abstractmethod
+
+    # Type checking
+    if TYPE_CHECKING:
+    if typing.TYPE_CHECKING:
+
+    # Defensive code
+    raise NotImplementedError
+    raise AssertionError
+
+    # Non-runnable code
+    if __name__ == .__main__.:
+
+[coverage:html]
+# HTML report options
+directory = htmlcov

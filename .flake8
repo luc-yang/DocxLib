@@ -1,0 +1,36 @@
+[flake8]
+# Flake8 configuration for DocxLib
+
+# Max line length (matching Black)
+max-line-length = 100
+
+# Exclude directories
+exclude =
+    .git,
+    __pycache__,
+    .venv,
+    venv,
+    build,
+    dist,
+    *.egg-info
+
+# Error codes to ignore
+# E203: Whitespace before ':' (conflicts with Black)
+# E501: Line too long (handled by Black)
+# W503: Line break before binary operator (conflicts with Black)
+ignore = E203, E501, W503
+
+# Max complexity per function
+max-complexity = 15
+
+# Show source code for each error
+show-source = True
+
+# Show the text of the error code
+show-pep8 = True
+
+# Count the number of occurrences of each error/warning code
+count = True
+
+# Print total number of errors to standard error
+statistics = True
