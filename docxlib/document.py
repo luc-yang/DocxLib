@@ -271,3 +271,73 @@ def copy_doc(doc: Document) -> Document:
         return copy.deepcopy(doc)
     except Exception as e:
         raise DocumentError(f"复制文档失败: {e}")
+
+
+def get_document_properties(doc: Document) -> dict:
+    """获取文档属性（标题、作者等）
+
+    Args:
+        doc: Document 对象
+
+    Returns:
+        dict: 文档属性字典
+        {
+            "title": "文档标题",
+            "author": "作者",
+            "subject": "主题",
+            "keywords": "关键词",
+            "comments": "备注",
+            "created_time": "创建时间",
+            "modified_time": "修改时间",
+        }
+
+    Examples:
+        >>> props = get_document_properties(doc)
+        >>> print(f"标题: {props['title']}")
+        >>> print(f"作者: {props['author']}")
+    """
+    try:
+        props = doc.BuiltinDocumentProperties
+
+        # 获取属性值
+        title = props.Title if props.Title else ""
+        author = props.Author if props.Author else ""
+        subject = props.Subject if props.Subject else ""
+
+        # Keywords 可能抛出异常
+        keywords = ""
+        try:
+            if props.Keywords:
+                keywords = props.Keywords
+        except Exception:
+            pass
+
+        comments = props.Comments if props.Comments else ""
+
+        # 获取时间属性
+        created_time = ""
+        modified_time = ""
+        try:
+            if props.CreatedTime:
+                created_time = str(props.CreatedTime)
+        except Exception:
+            pass
+
+        try:
+            if props.LastSavedTime:
+                modified_time = str(props.LastSavedTime)
+        except Exception:
+            pass
+
+        return {
+            "title": title,
+            "author": author,
+            "subject": subject,
+            "keywords": keywords,
+            "comments": comments,
+            "created_time": created_time,
+            "modified_time": modified_time,
+        }
+
+    except Exception as e:
+        raise DocumentError(f"获取文档属性失败: {e}")

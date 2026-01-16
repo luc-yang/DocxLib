@@ -11,6 +11,7 @@ from spire.doc import Color
 from spire.doc.common import *
 
 from .constants import COLOR_MAP
+from .errors import FillError
 
 
 def parse_color(color_str: str) -> Color:
@@ -216,3 +217,198 @@ def apply_cell_alignment(cell, alignment: str) -> None:
 
     if alignment in alignment_map:
         cell.CellFormat.VerticalAlignment = alignment_map[alignment]
+
+
+def get_cell_style(cell) -> dict:
+    """获取单元格样式信息
+
+    Args:
+        cell: Spire.Doc Cell 对象
+
+    Returns:
+        dict: 样式信息字典
+        {
+            "font_name": "字体名称",
+            "font_size": 12.0,
+            "bold": True,
+            "italic": False,
+            "underline": False,
+            "color": "#000000",
+            "h_align": "left",
+            "v_align": "middle",
+            "background_color": "#FFFFFF",
+        }
+
+    Examples:
+        >>> cell = get_cell(doc, 1, 1, 2, 2)
+        >>> style = get_cell_style(cell)
+        >>> print(f"字体: {style['font_name']}")
+    """
+    try:
+        if cell.Paragraphs.Count == 0:
+            return {}
+
+        # 获取第一个段落
+        paragraph = cell.Paragraphs.get_Item(0)
+
+        # 读取段落格式（包含字符格式）
+        font_name = ""
+        font_size = 0
+        bold = False
+        italic = False
+        underline = False
+        color = ""
+
+        try:
+            # 尝试从段落格式中获取字符格式
+            if hasattr(paragraph, "Format") and paragraph.Format:
+                format_obj = paragraph.Format
+
+                # 尝试获取字符格式属性
+                if hasattr(format_obj, "CharacterFormat"):
+                    char_format = format_obj.CharacterFormat
+                else:
+                    # 如果没有 CharacterFormat，尝试直接访问
+                    char_format = None
+
+                # 如果还是没有，使用默认值
+                if not char_format:
+                    char_format = None
+        except Exception:
+            char_format = None
+
+        # 简化：只返回对齐和背景色信息
+        # 读取对齐方式
+        h_align = ""
+        try:
+            format_obj = paragraph.Format
+            if format_obj.HorizontalAlignment:
+                align_map = {
+                    "left": "left",
+                    "center": "center",
+                    "right": "right",
+                    "justify": "justify",
+                }
+                h_align = align_map.get(str(format_obj.HorizontalAlignment), "")
+        except Exception:
+            pass
+
+        # 读取垂直对齐
+        v_align = ""
+        try:
+            cell_format = cell.CellFormat
+            if cell_format.VerticalAlignment:
+                v_align_map = {
+                    "top": "top",
+                    "middle": "middle",
+                    "bottom": "bottom",
+                }
+                v_align = v_align_map.get(str(cell_format.VerticalAlignment), "")
+        except Exception:
+            pass
+
+        # 读取背景色
+        background_color = ""
+        try:
+            cell_format = cell.CellFormat
+            if cell_format.BackColor:
+                background_color = f"#{cell_format.BackColor.Name.replace('#', '')}"
+        except Exception:
+            pass
+
+        return {
+            "font_name": font_name,
+            "font_size": font_size,
+            "bold": bold,
+            "italic": italic,
+            "underline": underline,
+            "color": color,
+            "h_align": h_align,
+            "v_align": v_align,
+            "background_color": background_color,
+        }
+
+    except Exception as e:
+        raise FillError(f"获取单元格样式失败: {e}")
+
+
+def get_paragraph_style(paragraph) -> dict:
+    """获取段落样式信息
+
+    Args:
+        paragraph: Spire.Doc Paragraph 对象
+
+    Returns:
+        dict: 样式信息字典
+        {
+            "alignment": "center",
+            "first_line_indent": 24.0,
+            "line_spacing": 1.5,
+            "space_before": 12.0,
+            "space_after": 12.0,
+        }
+
+    Examples:
+        >>> para = doc.Sections.get_Item(0).Paragraphs.get_Item(0)
+        >>> style = get_paragraph_style(para)
+        >>> print(f"对齐方式: {style['alignment']}")
+    """
+    try:
+        format_obj = paragraph.Format
+
+        # 对齐方式
+        alignment = ""
+        try:
+            if format_obj.HorizontalAlignment:
+                align_map = {
+                    "left": "left",
+                    "center": "center",
+                    "right": "right",
+                    "justify": "justify",
+                }
+                alignment = align_map.get(str(format_obj.HorizontalAlignment), "")
+        except Exception:
+            pass
+
+        # 首行缩进
+        first_line_indent = 0.0
+        try:
+            if format_obj.FirstLineIndent:
+                first_line_indent = float(format_obj.FirstLineIndent)
+        except Exception:
+            pass
+
+        # 行距
+        line_spacing = 0.0
+        try:
+            if format_obj.LineSpacing:
+                line_spacing = float(format_obj.LineSpacing)
+        except Exception:
+            pass
+
+        # 段前间距
+        space_before = 0.0
+        try:
+            if format_obj.SpaceBefore:
+                space_before = float(format_obj.SpaceBefore)
+        except Exception:
+            pass
+
+        # 段后间距
+        space_after = 0.0
+        try:
+            if format_obj.SpaceAfter:
+                space_after = float(format_obj.SpaceAfter)
+        except Exception:
+            pass
+
+        return {
+            "alignment": alignment,
+            "first_line_indent": first_line_indent,
+            "line_spacing": line_spacing,
+            "space_before": space_before,
+            "space_after": space_after,
+        }
+
+    except Exception as e:
+        raise FillError(f"获取段落样式失败: {e}")

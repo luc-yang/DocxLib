@@ -219,7 +219,12 @@ def get_cell_text(doc: Document, section: int, table: int, row: int, col: int) -
         '单元格内容'
     """
     cell = get_cell(doc, section, table, row, col)
-    return cell.Range.Text.strip()
+    # 从段落中获取文本
+    cell_text = ""
+    for m in range(cell.Paragraphs.Count):
+        paragraph = cell.Paragraphs.get_Item(m)
+        cell_text += paragraph.Text.strip()
+    return cell_text
 
 
 def get_table_dimensions(doc: Document, section: int, table: int) -> Tuple[int, int]:
@@ -292,3 +297,127 @@ def get_section_count(doc: Document) -> int:
         文档有 1 个节
     """
     return doc.Sections.Count
+
+
+def get_table_text(doc: Document, section: int, table: int) -> List[List[str]]:
+    """获取整个表格的文本（二维数组）
+
+    Args:
+        doc: Document 对象
+        section: 节索引（从1开始）
+        table: 表格索引（从1开始）
+
+    Returns:
+        List[List[str]]: 二维数组，每个元素是对应单元格的文本
+
+    Raises:
+        PositionError: 表格不存在
+
+    Examples:
+        >>> table_data = get_table_text(doc, 1, 1)
+        >>> for row in table_data:
+        ...     print("\t".join(row))
+    """
+    try:
+        # 获取表格尺寸
+        rows, cols = get_table_dimensions(doc, section, table)
+
+        # 获取表格对象
+        section_obj = doc.Sections.get_Item(section - 1)
+        table_obj = section_obj.Tables.get_Item(table - 1)
+
+        # 构建二维数组
+        result = []
+        for row_idx in range(rows):
+            row_data = []
+            row = table_obj.Rows.get_Item(row_idx)
+            for col_idx in range(cols):
+                cell = row.Cells.get_Item(col_idx)
+                # 从段落中获取文本
+                cell_text = ""
+                for m in range(cell.Paragraphs.Count):
+                    paragraph = cell.Paragraphs.get_Item(m)
+                    cell_text += paragraph.Text.strip()
+                row_data.append(cell_text)
+            result.append(row_data)
+
+        return result
+
+    except Exception as e:
+        raise PositionError(f"读取表格失败: {e}")
+
+
+def get_table_row_text(doc: Document, section: int, table: int, row: int) -> List[str]:
+    """获取表格某行的所有文本
+
+    Args:
+        doc: Document 对象
+        section: 节索引（从1开始）
+        table: 表格索引（从1开始）
+        row: 行索引（从1开始）
+
+    Returns:
+        List[str]: 该行所有单元格的文本
+
+    Examples:
+        >>> row_text = get_table_row_text(doc, 1, 1, 2)
+        >>> print(row_text)
+        ['张三', '30', '工程师']
+    """
+    try:
+        section_obj = doc.Sections.get_Item(section - 1)
+        table_obj = section_obj.Tables.get_Item(table - 1)
+        row_obj = table_obj.Rows.get_Item(row - 1)
+
+        result = []
+        for cell_idx in range(row_obj.Cells.Count):
+            cell = row_obj.Cells.get_Item(cell_idx)
+            # 从段落中获取文本
+            cell_text = ""
+            for m in range(cell.Paragraphs.Count):
+                paragraph = cell.Paragraphs.get_Item(m)
+                cell_text += paragraph.Text.strip()
+            result.append(cell_text)
+
+        return result
+
+    except Exception as e:
+        raise PositionError(f"读取表格行失败: {e}")
+
+
+def get_table_column_text(doc: Document, section: int, table: int, col: int) -> List[str]:
+    """获取表格某列的所有文本
+
+    Args:
+        doc: Document 对象
+        section: 节索引（从1开始）
+        table: 表格索引（从1开始）
+        col: 列索引（从1开始）
+
+    Returns:
+        List[str]: 该列所有单元格的文本
+
+    Examples:
+        >>> col_text = get_table_column_text(doc, 1, 1, 1)
+        >>> print(col_text)
+        ['姓名', '张三', '李四', '王五']
+    """
+    try:
+        section_obj = doc.Sections.get_Item(section - 1)
+        table_obj = section_obj.Tables.get_Item(table - 1)
+
+        result = []
+        for row_idx in range(table_obj.Rows.Count):
+            row = table_obj.Rows.get_Item(row_idx)
+            cell = row.Cells.get_Item(col - 1)
+            # 从段落中获取文本
+            cell_text = ""
+            for m in range(cell.Paragraphs.Count):
+                paragraph = cell.Paragraphs.get_Item(m)
+                cell_text += paragraph.Text.strip()
+            result.append(cell_text)
+
+        return result
+
+    except Exception as e:
+        raise PositionError(f"读取表格列失败: {e}")

@@ -41,6 +41,7 @@ from .constants import (
 )
 from .document import (
     copy_doc,
+    get_document_properties,
     load_docx,
     merge_docs,
     save_docx,
@@ -73,6 +74,8 @@ from .style import (
     apply_cell_alignment,
     apply_font_style,
     apply_paragraph_alignment,
+    get_cell_style,
+    get_paragraph_style,
     parse_color,
     set_cell_border,
 )
@@ -83,7 +86,10 @@ from .table import (
     get_cells,
     get_section_count,
     get_section_table_count,
+    get_table_column_text,
     get_table_dimensions,
+    get_table_row_text,
+    get_table_text,
     iterate_cells,
 )
 from .utils import (
@@ -109,12 +115,16 @@ __all__ = [
     "to_images",
     "to_pdf_file",
     "copy_doc",
+    "get_document_properties",
     # 表格操作
     "get_cell",
     "get_cells",
     "find_text",
     "iterate_cells",
     "get_cell_text",
+    "get_table_text",
+    "get_table_row_text",
+    "get_table_column_text",
     "get_table_dimensions",
     "get_section_table_count",
     "get_section_count",
@@ -134,6 +144,8 @@ __all__ = [
     "apply_paragraph_alignment",
     "apply_cell_alignment",
     "set_cell_border",
+    "get_cell_style",
+    "get_paragraph_style",
     # 异常类
     "DocxLibError",
     "DocumentError",
