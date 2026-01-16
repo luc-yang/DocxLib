@@ -68,3 +68,54 @@ class ValidationError(DocxLibError):
     """
 
     pass
+
+
+class TemplateError(DocxLibError):
+    """模板处理错误
+
+    当模板变量操作失败时抛出。
+
+    使用场景：
+        - 模板变量解析错误
+        - 模板填充失败
+        - 模板验证失败
+    """
+
+    pass
+
+
+class VariableNotFoundError(TemplateError):
+    """变量未找到错误
+
+    当模板中需要的数据变量未提供时抛出。
+
+    Attributes:
+        var_name: 未找到的变量名
+        available_vars: 可用的变量名列表
+
+    使用场景：
+        - 模板中有 ${name} 但数据字典中没有 "name" 键
+        - 必需的变量未提供
+    """
+
+    def __init__(self, var_name: str, available_vars: list = None):
+        self.var_name = var_name
+        self.available_vars = available_vars or []
+        message = f"变量未找到: '{var_name}'"
+        if available_vars:
+            message += f" (可用变量: {', '.join(available_vars)})"
+        super().__init__(message)
+
+
+class VariableSyntaxError(TemplateError):
+    """变量语法错误
+
+    当模板变量语法不正确时抛出。
+
+    使用场景：
+        - 变量名不符合命名规范
+        - 变量占位符不匹配
+        - 变量语法解析失败
+    """
+
+    pass

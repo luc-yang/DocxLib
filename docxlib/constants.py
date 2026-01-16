@@ -68,6 +68,14 @@ class MatchMode:
     FIRST = "first"  # 仅填充第一个匹配位置
 
 
+# ==================== 模板变量 ====================
+
+# 模板变量默认值
+DEFAULT_VAR_PREFIX: str = "${"  # 变量前缀
+DEFAULT_VAR_SUFFIX: str = "}"  # 变量后缀
+DEFAULT_MISSING_VAR_ACTION: str = "error"  # 缺失变量处理方式: "error", "ignore", "empty"
+
+
 # ==================== 对齐方式 ====================
 
 

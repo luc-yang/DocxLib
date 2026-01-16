@@ -5,7 +5,8 @@ DocxLib 字段填充模块
 """
 
 from pathlib import Path
-from typing import List, Union
+from typing import Any, Dict, List, Tuple, Union
+import re
 
 from spire.doc import *
 from spire.doc.common import *
@@ -14,13 +15,16 @@ from .constants import (
     DEFAULT_COLOR,
     DEFAULT_FONT,
     DEFAULT_FONT_SIZE,
+    DEFAULT_MISSING_VAR_ACTION,
+    DEFAULT_VAR_PREFIX,
+    DEFAULT_VAR_SUFFIX,
     FillMode,
     HorizontalAlignment,
     MatchMode,
     Position,
     VerticalAlignment,
 )
-from .errors import FillError, PositionError, ValidationError
+from .errors import FillError, PositionError, ValidationError, VariableNotFoundError
 from .style import apply_cell_alignment, apply_font_style, apply_paragraph_alignment
 from .table import find_text, get_cell, get_cells
 
@@ -830,3 +834,233 @@ def clear_cell(doc: Document, section: int, table: int, row: int, col: int) -> N
         cell.Paragraphs.Clear()
     except Exception as e:
         raise FillError(f"清空单元格失败: {e}")
+
+
+def _find_variables(text: str, prefix: str, suffix: str) -> List[Tuple[str, str, str]]:
+    """查找文本中的所有变量
+
+    Args:
+        text: 要查找的文本
+        prefix: 变量前缀
+        suffix: 变量后缀
+
+    Returns:
+        List[Tuple[完整变量, 变量名, 默认值]]
+    """
+    pattern = (
+        re.escape(prefix)
+        + r"([a-zA-Z_][a-zA-Z0-9_]*)(?:\|([^}]*))?"
+        + re.escape(suffix)
+    )
+    matches = []
+    for match in re.finditer(pattern, text):
+        full_var = match.group(0)
+        var_name = match.group(1)
+        default_val = match.group(2) if match.group(2) is not None else ""
+        matches.append((full_var, var_name, default_val))
+    return matches
+
+
+def fill_template(
+    doc: Document,
+    data: Dict[str, Any],
+    *,
+    missing_var_action: str = DEFAULT_MISSING_VAR_ACTION,
+    placeholder_prefix: str = DEFAULT_VAR_PREFIX,
+    placeholder_suffix: str = DEFAULT_VAR_SUFFIX,
+) -> Dict[str, Any]:
+    """批量替换模板变量
+
+    Args:
+        doc: Document 对象
+        data: 变量数据字典
+        missing_var_action: 缺失变量处理方式 ("error" | "ignore" | "empty")
+        placeholder_prefix: 变量前缀
+        placeholder_suffix: 变量后缀
+
+    Returns:
+        Dict: {"total": int, "replaced": int, "missing": list}
+
+    Raises:
+        VariableNotFoundError: 变量未找到时
+        FillError: 填充失败时
+
+    Examples:
+        >>> fill_template(doc, {"name": "张三", "age": "25"})
+        >>> fill_template(doc, data, missing_var_action="ignore")
+    """
+    try:
+        stats = {"total": 0, "replaced": 0, "missing": []}
+        replacements = {}
+
+        # 遍历文档收集变量
+        for section_idx in range(doc.Sections.Count):
+            section = doc.Sections.get_Item(section_idx)
+
+            # 段落
+            for para_idx in range(section.Paragraphs.Count):
+                paragraph = section.Paragraphs.get_Item(para_idx)
+                matches = _find_variables(
+                    paragraph.Text, placeholder_prefix, placeholder_suffix
+                )
+                stats["total"] += len(matches)
+                for full_var, var_name, default_val in matches:
+                    if full_var in replacements:
+                        continue
+                    if var_name in data:
+                        replacements[full_var] = str(data[var_name])
+                    elif default_val:
+                        replacements[full_var] = default_val
+                    elif missing_var_action == "error":
+                        stats["missing"].append(var_name)
+                        raise VariableNotFoundError(var_name, list(data.keys()))
+                    elif missing_var_action == "empty":
+                        replacements[full_var] = ""
+
+            # 表格
+            for table_idx in range(section.Tables.Count):
+                table = section.Tables.get_Item(table_idx)
+                for row_idx in range(table.Rows.Count):
+                    row = table.Rows.get_Item(row_idx)
+                    for cell_idx in range(row.Cells.Count):
+                        cell = row.Cells.get_Item(cell_idx)
+                        for para_idx in range(cell.Paragraphs.Count):
+                            paragraph = cell.Paragraphs.get_Item(para_idx)
+                            matches = _find_variables(
+                                paragraph.Text, placeholder_prefix, placeholder_suffix
+                            )
+                            stats["total"] += len(matches)
+                            for full_var, var_name, default_val in matches:
+                                if full_var in replacements:
+                                    continue
+                                if var_name in data:
+                                    replacements[full_var] = str(data[var_name])
+                                elif default_val:
+                                    replacements[full_var] = default_val
+                                elif missing_var_action == "error":
+                                    stats["missing"].append(var_name)
+                                    raise VariableNotFoundError(
+                                        var_name, list(data.keys())
+                                    )
+                                elif missing_var_action == "empty":
+                                    replacements[full_var] = ""
+
+        # 执行替换
+        for full_var, value in replacements.items():
+            replace_all(doc, full_var, value)
+            stats["replaced"] += 1
+
+        return stats
+
+    except VariableNotFoundError:
+        raise
+    except Exception as e:
+        raise FillError(f"填充模板失败: {e}")
+
+
+def extract_template_vars(
+    doc: Document,
+    *,
+    placeholder_prefix: str = DEFAULT_VAR_PREFIX,
+    placeholder_suffix: str = DEFAULT_VAR_SUFFIX,
+    unique: bool = True,
+) -> List[str]:
+    """提取模板中的所有变量
+
+    Args:
+        doc: Document 对象
+        placeholder_prefix: 变量前缀
+        placeholder_suffix: 变量后缀
+        unique: 是否去重
+
+    Returns:
+        List[str]: 变量名列表
+
+    Examples:
+        >>> vars = extract_template_vars(doc)
+        >>> vars = extract_template_vars(doc, unique=False)
+    """
+    try:
+        all_vars = []
+
+        for section_idx in range(doc.Sections.Count):
+            section = doc.Sections.get_Item(section_idx)
+
+            # 段落
+            for para_idx in range(section.Paragraphs.Count):
+                paragraph = section.Paragraphs.get_Item(para_idx)
+                for _, var_name, _ in _find_variables(
+                    paragraph.Text, placeholder_prefix, placeholder_suffix
+                ):
+                    all_vars.append(var_name)
+
+            # 表格
+            for table_idx in range(section.Tables.Count):
+                table = section.Tables.get_Item(table_idx)
+                for row_idx in range(table.Rows.Count):
+                    row = table.Rows.get_Item(row_idx)
+                    for cell_idx in range(row.Cells.Count):
+                        cell = row.Cells.get_Item(cell_idx)
+                        for para_idx in range(cell.Paragraphs.Count):
+                            paragraph = cell.Paragraphs.get_Item(para_idx)
+                            for _, var_name, _ in _find_variables(
+                                paragraph.Text, placeholder_prefix, placeholder_suffix
+                            ):
+                                all_vars.append(var_name)
+
+        if unique:
+            seen = set()
+            unique_vars = []
+            for var in all_vars:
+                if var not in seen:
+                    seen.add(var)
+                    unique_vars.append(var)
+            return unique_vars
+
+        return all_vars
+
+    except Exception as e:
+        raise FillError(f"提取模板变量失败: {e}")
+
+
+def validate_template_data(
+    doc: Document,
+    data: Dict[str, Any],
+    *,
+    placeholder_prefix: str = DEFAULT_VAR_PREFIX,
+    placeholder_suffix: str = DEFAULT_VAR_SUFFIX,
+) -> Dict[str, Any]:
+    """验证模板数据是否完整
+
+    Args:
+        doc: Document 对象
+        data: 变量数据字典
+        placeholder_prefix: 变量前缀
+        placeholder_suffix: 变量后缀
+
+    Returns:
+        Dict: {"is_valid": bool, "missing_vars": list, "required_vars": list, "extra_vars": list}
+
+    Examples:
+        >>> result = validate_template_data(doc, {"name": "张三"})
+        >>> result["is_valid"]
+    """
+    try:
+        required_vars = set(
+            extract_template_vars(
+                doc,
+                placeholder_prefix=placeholder_prefix,
+                placeholder_suffix=placeholder_suffix,
+            )
+        )
+        provided_vars = set(data.keys()) - {"__styles__"}
+
+        return {
+            "is_valid": required_vars.issubset(provided_vars),
+            "required_vars": list(required_vars),
+            "missing_vars": list(required_vars - provided_vars),
+            "extra_vars": list(provided_vars - required_vars),
+        }
+
+    except Exception as e:
+        raise FillError(f"验证模板数据失败: {e}")

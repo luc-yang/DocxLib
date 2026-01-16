@@ -53,9 +53,22 @@ from .errors import (
     DocxLibError,
     FillError,
     PositionError,
+    TemplateError,
     ValidationError,
+    VariableNotFoundError,
+    VariableSyntaxError,
 )
-from .fill import clear_cell, fill_date, fill_grid, fill_image, fill_text, replace_all
+from .fill import (
+    clear_cell,
+    fill_date,
+    fill_grid,
+    fill_image,
+    fill_template,
+    fill_text,
+    replace_all,
+    validate_template_data,
+    extract_template_vars,
+)
 from .style import (
     apply_cell_alignment,
     apply_font_style,
@@ -112,6 +125,9 @@ __all__ = [
     "fill_grid",
     "replace_all",
     "clear_cell",
+    "fill_template",
+    "extract_template_vars",
+    "validate_template_data",
     # 样式管理
     "parse_color",
     "apply_font_style",
@@ -124,6 +140,9 @@ __all__ = [
     "PositionError",
     "FillError",
     "ValidationError",
+    "TemplateError",
+    "VariableNotFoundError",
+    "VariableSyntaxError",
     # 常量
     "DEFAULT_FONT",
     "DEFAULT_FONT_SIZE",
