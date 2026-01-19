@@ -10,7 +10,7 @@ from typing import Union, List
 
 from spire.doc import *
 from spire.doc.common import *
-from spire.doc import FileFormat as SpireFileFormat
+from spire.doc import FileFormat
 
 from .errors import DocumentError, ValidationError
 from .utils import is_valid_docx, ensure_directory
@@ -105,7 +105,7 @@ def save_docx(doc: Document, target: Union[str, Path]) -> None:
 
     # 保存文档
     try:
-        doc.SaveToFile(str(target_path), SpireFileFormat.Docx)
+        doc.SaveToFile(str(target_path), FileFormat.Docx)
     except Exception as e:
         raise DocumentError(f"保存文档失败: {e}")
 
@@ -177,7 +177,7 @@ def to_pdf(doc: Document) -> bytes:
     """
     try:
         stream = Stream()
-        doc.SaveToStream(stream, SpireFileFormat.PDF)
+        doc.SaveToStream(stream, FileFormat.PDF)
         return stream.ToArray()
     except Exception as e:
         raise DocumentError(f"转换为 PDF 失败: {e}")
@@ -238,7 +238,7 @@ def to_pdf_file(doc: Document, file_path: Union[str, Path]) -> None:
 
     # 转换并保存
     try:
-        doc.SaveToFile(str(target_path), SpireFileFormat.PDF)
+        doc.SaveToFile(str(target_path), FileFormat.PDF)
     except Exception as e:
         raise DocumentError(f"转换为 PDF 失败: {e}")
 

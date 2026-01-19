@@ -13,8 +13,6 @@ from spire.doc.common import *
 
 from .constants import (
     DEFAULT_COLOR,
-    DEFAULT_FONT_FAMILY,
-    DEFAULT_FONT_SIZE,
     DEFAULT_MISSING_VAR_ACTION,
     DEFAULT_VAR_PREFIX,
     DEFAULT_VAR_SUFFIX,
