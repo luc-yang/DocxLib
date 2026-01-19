@@ -247,13 +247,17 @@ def get_cell_text(doc: Document, section: int, table: int, row: int, col: int) -
 def get_table_dimensions(doc: Document, section: int, table: int) -> Tuple[int, int]:
     """获取表格的行数和列数
 
+    注意：返回的列数是第一行的列数。如果表格包含合并单元格，
+    不同行的列数可能不同。对于需要准确处理每行列数的场景，
+    请使用 get_table_text() 或遍历行时检查 row.Cells.Count。
+
     Args:
         doc: Document 对象
         section: 节索引（从1开始）
         table: 表格索引（从1开始）
 
     Returns:
-        Tuple[int, int]: (行数, 列数)
+        Tuple[int, int]: (行数, 第一行的列数)
 
     Raises:
         PositionError: 表格不存在
@@ -268,7 +272,7 @@ def get_table_dimensions(doc: Document, section: int, table: int) -> Tuple[int, 
         table_obj = section_obj.Tables.get_Item(table - 1)
 
         rows = table_obj.Rows.Count
-        # 获取第一行的列数（假设所有行列数相同）
+        # 获取第一行的列数（注意：有合并单元格时其他行可能不同）
         if rows > 0:
             cols = table_obj.Rows.get_Item(0).Cells.Count
         else:
@@ -406,6 +410,8 @@ def get_table_row_text(doc: Document, section: int, table: int, row: int) -> Lis
 def get_table_column_text(doc: Document, section: int, table: int, col: int) -> List[str]:
     """获取表格某列的所有文本
 
+    注意：如果某行因为合并单元格而没有该列，该行将返回空字符串。
+
     Args:
         doc: Document 对象
         section: 节索引（从1开始）
@@ -413,7 +419,7 @@ def get_table_column_text(doc: Document, section: int, table: int, col: int) -> 
         col: 列索引（从1开始）
 
     Returns:
-        List[str]: 该列所有单元格的文本
+        List[str]: 该列所有单元格的文本（无该列的行返回空字符串）
 
     Examples:
         >>> col_text = get_table_column_text(doc, 1, 1, 1)
@@ -427,13 +433,18 @@ def get_table_column_text(doc: Document, section: int, table: int, col: int) -> 
         result = []
         for row_idx in range(table_obj.Rows.Count):
             row = table_obj.Rows.get_Item(row_idx)
-            cell = row.Cells.get_Item(col - 1)
-            # 从段落中获取文本
-            cell_text = ""
-            for m in range(cell.Paragraphs.Count):
-                paragraph = cell.Paragraphs.get_Item(m)
-                cell_text += paragraph.Text.strip()
-            result.append(cell_text)
+            # 检查该行是否有足够的列（处理合并单元格）
+            if col <= row.Cells.Count:
+                cell = row.Cells.get_Item(col - 1)
+                # 从段落中获取文本
+                cell_text = ""
+                for m in range(cell.Paragraphs.Count):
+                    paragraph = cell.Paragraphs.get_Item(m)
+                    cell_text += paragraph.Text.strip()
+                result.append(cell_text)
+            else:
+                # 该行由于合并单元格没有这一列
+                result.append("")
 
         return result
 
