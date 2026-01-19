@@ -19,6 +19,7 @@ make install-dev          # Install with dev dependencies
 make test                 # Run basic tests (tests/test_basic.py)
 pytest tests/ -v          # Run all tests with verbose output
 pytest tests/test_fill.py # Run specific test file
+pytest tests/ --cov=docxlib --cov-report=html  # Run with coverage
 
 # Code Quality
 make format               # Format code with black
@@ -45,9 +46,11 @@ python -m docxlib.cli version       # Show version
 docxlib/
 ├── __init__.py      # Public API exports (functional interface)
 ├── cli.py           # Command-line interface (validate, inspect, fill, convert)
+├── config.py        # Configuration classes (Style, Alignment, Options, ImageConfig)
 ├── document.py      # Document I/O, merge, format conversion
 ├── table.py         # Cell navigation, lookup, iteration
 ├── fill.py          # Field filling (text, image, date, grid, template vars)
+├── read.py          # Read operations (text, grid, table, structure) - mirrors fill.py
 ├── style.py         # Font, color, alignment, borders
 ├── utils.py         # Validation, parsing, utilities
 ├── constants.py     # Default values, enums, type aliases
@@ -70,6 +73,11 @@ Use `0` as a wildcard in `get_cells()` to select all:
 - `get_cells(doc, 0, 0, 0, 0)` - all cells in all sections/tables/rows/cols
 - `get_cells(doc, 1, 0, 2, 0)` - all cells in section 1, all tables, row 2, all columns
 
+**Merged Cells**: The library handles merged cells correctly:
+- `get_cell_text()` returns the combined text from merged cells
+- `get_table_dimensions()` returns actual table dimensions (may differ from visual appearance due to merging)
+- Position-based operations work with merged cells using the top-left cell position
+
 ### Fill Modes
 
 The `fill_text()` and `fill_image()` functions support three modes via `Options`:
@@ -88,6 +96,29 @@ The `fill_text()` and `fill_image()` functions support three modes via `Options`
    ```python
    fill_text(doc, "项目1", "智慧城市", options=Options.match_down())
    ```
+
+**Image Filling** uses similar modes with `ImageConfig`:
+
+```python
+from docxlib import ImageConfig
+
+# Direct position
+fill_image(doc, (1, 1, 2, 2), "photo.jpg")
+
+# Match right with image config
+fill_image(doc, "照片：", "photo.jpg",
+           options=Options.match_right(),
+           config=ImageConfig(width=80, height=80))
+
+# Centered image with preset
+fill_image(doc, "印章", "seal.png",
+           options=Options.match_right(),
+           config=ImageConfig.centered(width=100, height=100))
+
+# Fixed size (no aspect ratio)
+fill_image(doc, (1, 1, 1, 1), "logo.png",
+           config=ImageConfig.fixed_size(200, 100))
+```
 
 ### Match Mode Parameter
 
@@ -141,6 +172,30 @@ positions = find_text(doc, "姓名", normalize=False)  # Exact match
 
 **Recommendation**: Keep normalization enabled (`normalize=True`) for most use cases. Only disable it if you need exact text matching. Template designers often add spaces or newlines for visual formatting, and normalization ensures `fill_text()` works reliably.
 
+### Date Filling
+
+`fill_date()` handles dates with special formatting - the numeric part and "年月日" text use different fonts (common in Chinese documents):
+
+```python
+from docxlib import fill_date
+
+# Direct position - numbers use style.font_name, "年月日" uses 宋体
+fill_date(doc, (1, 1, 4, 2), "2024年1月15日")
+
+# Match mode (uses text normalization by default)
+fill_date(doc, "日期：", "2024年3月20日")
+
+# With custom style and alignment
+fill_date(doc, "签订日期", "2024年6月30日",
+          style=Style(font_family="Arial", font_size=11),
+          alignment=Alignment.center())
+
+# Exact match (disable normalization)
+fill_date(doc, "日期", "2024年1月15日", normalize=False)
+```
+
+**Note**: Unlike `fill_text()`, `fill_date()` accepts `normalize` directly, not via `options`.
+
 ### Template Variable System
 
 DocxLib supports a template variable system for declarative document filling:
@@ -177,13 +232,23 @@ validation = validate_template_data(doc, data)
 
 ### Styling System
 
-Styles can be applied directly in fill functions or separately:
+Styles use configuration classes (`Style`, `Alignment`, `ImageConfig`) for a cleaner API:
 
 ```python
-# Via fill parameters
-fill_text(doc, (1,1,2,2), "text", font_name="黑体", font_size=16, bold=True, color="red")
+from docxlib import Style, Alignment, ImageConfig
 
-# Via style functions
+# Via Style and Alignment objects
+fill_text(doc, (1,1,2,2), "text",
+          style=Style(font_family="黑体", font_size=16, bold=True, color="red"),
+          alignment=Alignment.center())
+
+# Using preset styles
+fill_text(doc, "标题", "内容", style=Style.title())
+fill_text(doc, "章节", "第一章", style=Style.heading(level=2))
+fill_text(doc, "正文", "内容", style=Style.body())
+fill_text(doc, "注意", "重要", style=Style.emphasis())
+
+# Via style functions (for direct cell manipulation)
 from docxlib import apply_font_style, apply_cell_alignment
 cell = get_cell(doc, 1, 1, 2, 2)
 apply_font_style(cell, font_name="黑体", font_size=16, bold=True, color="red")
@@ -191,7 +256,7 @@ apply_cell_alignment(cell, "center")
 ```
 
 Supported color formats in `parse_color()`:
-- Named colors: black, red, blue, green, yellow, white, gray, cyan, magenta, orange, purple, brown
+- Named colors: black, red, blue, green, yellow, white, gray, silver, maroon, purple, orange, pink
 - Hex: `#RRGGBB`
 
 ### Document Copying for Batch Processing
@@ -202,8 +267,38 @@ When generating multiple documents from a template, always copy the loaded templ
 template = load_docx("template.docx")
 for item in data:
     doc = copy_doc(template)  # Creates independent copy
-    fill_text(doc, "name:", item["name"], mode="match_right")
+    fill_text(doc, "name:", item["name"], options=Options.match_right())
     save_docx(doc, f"output_{item['id']}.docx")
+```
+
+### Read Functions (Symmetric to Fill)
+
+The `read` module provides read functionality that mirrors the `fill` API:
+
+```python
+from docxlib import read_text, read_grid, read_table, read_cells
+
+# Read text from position or by match
+name = read_text(doc, (1, 1, 2, 2))
+name = read_text(doc, "姓名：", default="未知")  # Read right of matched text
+value = read_text(doc, "项目", default="N/A", options=Options.match_down())
+
+# Read grid data as 2D array
+data = read_grid(doc, position=(1, 1, 7, 1), rows=4, cols=3)
+
+# Read entire table
+table_data = read_table(doc, section=1, table=1)
+
+# Read multiple cells
+texts = read_cells(doc, (1, 0, 2, 0))  # All cells in row 2, section 1
+
+# Read document structure
+structure = read_document_structure(doc)
+# Returns sections, tables, dimensions info
+
+# Extract all template variables
+vars_dict = extract_template_data(doc)
+# Returns {"var_name": "default_value"} dict
 ```
 
 ## Platform Considerations
@@ -239,4 +334,5 @@ Internal modules (e.g., `docxlib.document`) are not part of the public API.
 - Output files go to `output/` directory (auto-created by `save_docx()`)
 - Use `copy_doc()` in tests to avoid modifying shared template objects
 - Run specific test with: `pytest tests/test_fill.py -v -k test_fill_text`
-- Test files: test_basic.py, test_fill.py, test_template.py, test_document.py, etc.
+- Run tests with coverage: `pytest tests/ --cov=docxlib --cov-report=html`
+- Test files: test_basic.py, test_fill.py, test_template.py, test_document.py, test_table.py, test_read.py, test_read_edge_cases.py, test_read_module.py, test_utils.py, test_cli.py
