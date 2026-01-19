@@ -50,12 +50,25 @@ def _fill_single_cell_text(
         style: 字体样式配置
         alignment: 对齐方式配置
     """
-    # 清空单元格内容
-    cell.Paragraphs.Clear()
+    # 策略：保留第一个段落以保留格式，清空其他段落
+    # 这样可以保留原始段落的缩进、行间距等格式
+    if cell.Paragraphs.Count > 0:
+        # 保留第一个段落，清空其他段落
+        while cell.Paragraphs.Count > 1:
+            cell.Paragraphs.RemoveAt(cell.Paragraphs.Count - 1)
 
-    # 添加段落并设置文本
-    paragraph = cell.AddParagraph()
-    run = paragraph.AppendText(value)
+        # 获取第一个段落
+        paragraph = cell.Paragraphs.get_Item(0)
+
+        # 清除段落中的所有文本对象
+        paragraph.ChildObjects.Clear()
+
+        # 添加新文本
+        run = paragraph.AppendText(value)
+    else:
+        # 如果没有段落，创建新段落
+        paragraph = cell.AddParagraph()
+        run = paragraph.AppendText(value)
 
     # 应用样式（直接传递 FontStyle 对象）
     apply_font_style(run, style)
@@ -154,11 +167,20 @@ def _fill_single_cell_date(
         style: 字体样式配置
         alignment: 对齐方式配置
     """
-    # 清空单元格
-    cell.Paragraphs.Clear()
+    # 策略：保留第一个段落以保留格式
+    if cell.Paragraphs.Count > 0:
+        # 保留第一个段落，清空其他段落
+        while cell.Paragraphs.Count > 1:
+            cell.Paragraphs.RemoveAt(cell.Paragraphs.Count - 1)
 
-    # 添加段落
-    paragraph = cell.AddParagraph()
+        # 获取第一个段落
+        paragraph = cell.Paragraphs.get_Item(0)
+
+        # 清除段落中的所有文本对象
+        paragraph.ChildObjects.Clear()
+    else:
+        # 如果没有段落，创建新段落
+        paragraph = cell.AddParagraph()
 
     # 依次添加数字和年月日
     for num, sep in zip(numbers, separators):
