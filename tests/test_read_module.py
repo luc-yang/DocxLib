@@ -13,7 +13,7 @@ from docxlib import (
     read_table,
     read_text,
 )
-from docxlib.config import FillOptions
+from docxlib.config import Options
 from docxlib.errors import FillError, PositionError
 
 
@@ -37,14 +37,14 @@ class TestReadText:
         """测试 match_right 模式"""
         doc = load_docx("fixtures/templates/sample.docx")
         # 查找文本并读取右侧
-        text = read_text(doc, "测试", default="未找到", options=FillOptions.match_right())
+        text = read_text(doc, "测试", default="未找到", options=Options.match_right())
         assert isinstance(text, str)
 
     def test_read_text_match_down(self):
         """测试 match_down 模式"""
         doc = load_docx("fixtures/templates/sample.docx")
         # 查找文本并读取下方
-        text = read_text(doc, "测试", default="未找到", options=FillOptions.match_down())
+        text = read_text(doc, "测试", default="未找到", options=Options.match_down())
         assert isinstance(text, str)
 
     def test_read_text_invalid_mode(self):
@@ -52,7 +52,7 @@ class TestReadText:
         doc = load_docx("fixtures/templates/sample.docx")
         with pytest.raises(FillError):
             # 创建一个无效的 options
-            options = FillOptions()
+            options = Options()
             options.mode = "invalid_mode"
             read_text(doc, (1, 1, 1, 1), options=options)
 

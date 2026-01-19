@@ -43,12 +43,12 @@ education = read_cells(doc, positions, default="")
 使用 `fill_text()` 和 `fill_grid()` 函数填充简历数据：
 
 ```python
-from docxlib import fill_text, fill_grid, FontStyle
+from docxlib import fill_text, fill_grid, Style
 
 # 填充基本信息（带样式）
 fill_text(
     doc, (1, 1, 1, 2), "张三",
-    style=FontStyle(font_name="宋体", font_size=14, bold=True)
+    style=Style(font_name="宋体", font_size=14, bold=True)
 )
 
 # 填充学习经历（网格填充）

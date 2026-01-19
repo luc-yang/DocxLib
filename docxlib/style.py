@@ -10,7 +10,7 @@ from typing import Union
 from spire.doc import Color
 from spire.doc.common import *
 
-from .config import FontStyle
+from .config import Style
 from .constants import COLOR_MAP
 from .errors import FillError
 
@@ -68,26 +68,26 @@ def parse_color(color_str: str) -> Color:
 
 def apply_font_style(
     run,
-    style: FontStyle,
+    style: Style,
 ) -> None:
     """应用字体样式到文本范围
 
     Args:
         run: Spire.Doc TextRange 对象
-        style: 字体样式配置对象（FontStyle）
+        style: 字体样式配置对象（Style）
 
     Examples:
         >>> # 使用自定义样式
         >>> apply_font_style(
         ...     run,
-        ...     FontStyle(font_name="黑体", font_size=16, color="red", bold=True)
+        ...     Style(font_name="黑体", font_size=16, color="red", bold=True)
         ... )
 
         >>> # 使用预设样式
-        >>> apply_font_style(run, FontStyle.title())
+        >>> apply_font_style(run, Style.title())
 
         >>> # 使用默认样式
-        >>> apply_font_style(run, FontStyle())
+        >>> apply_font_style(run, Style())
     """
     # 设置字体名称
     if style.font_family:

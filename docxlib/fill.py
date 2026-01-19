@@ -18,7 +18,7 @@ from .constants import (
     DEFAULT_VAR_SUFFIX,
     Position,
 )
-from .config import Alignment, FillOptions, FontStyle, ImageConfig
+from .config import Alignment, Options, Style, ImageConfig
 from .errors import FillError, PositionError, ValidationError, VariableNotFoundError
 from .style import apply_cell_alignment, apply_font_style, apply_paragraph_alignment
 from .table import find_text, get_cell, get_cells
@@ -39,7 +39,7 @@ def _has_wildcard(position: Position) -> bool:
 def _fill_single_cell_text(
     cell,
     value: str,
-    style: FontStyle,
+    style: Style,
     alignment: Alignment,
 ) -> None:
     """填充文本到单个单元格（内部辅助函数）
@@ -70,7 +70,7 @@ def _fill_single_cell_text(
         paragraph = cell.AddParagraph()
         run = paragraph.AppendText(value)
 
-    # 应用样式（直接传递 FontStyle 对象）
+    # 应用样式（直接传递 Style 对象）
     apply_font_style(run, style)
 
     # 应用对齐方式（从 Alignment 对象中提取参数）
@@ -164,7 +164,7 @@ def _fill_single_cell_date(
     cell,
     numbers: list,
     separators: list,
-    style: FontStyle,
+    style: Style,
     alignment: Alignment,
 ) -> None:
     """填充日期到单个单元格（内部辅助函数）
@@ -197,12 +197,12 @@ def _fill_single_cell_date(
         run_num = paragraph.AppendText(num)
         apply_font_style(
             run_num,
-            FontStyle(style.font_family, style.font_size, DEFAULT_COLOR)
+            Style(style.font_family, style.font_size, DEFAULT_COLOR)
         )
 
         # 添加年月日（使用宋体）
         run_sep = paragraph.AppendText(sep)
-        apply_font_style(run_sep, FontStyle("宋体", style.font_size, DEFAULT_COLOR))
+        apply_font_style(run_sep, Style("宋体", style.font_size, DEFAULT_COLOR))
 
     # 应用对齐方式（从 Alignment 对象中提取）
     if alignment.h_align:
@@ -216,8 +216,8 @@ def fill_text(
     position: Union[Position, str],
     value: str,
     *,
-    options: FillOptions = None,
-    style: FontStyle = None,
+    options: Options = None,
+    style: Style = None,
     alignment: Alignment = None,
 ) -> None:
     """填充文本到文档
@@ -227,7 +227,7 @@ def fill_text(
         position: 位置元组 (section, table, row, col) 或查找文本
         value: 要填充的文本
         options: 填充模式配置（FillOptions）
-        style: 字体样式配置（FontStyle）
+        style: 字体样式配置（Style）
         alignment: 对齐方式配置（Alignment）
 
     Raises:
@@ -248,11 +248,11 @@ def fill_text(
         >>> fill_text(
         ...     doc, "标题", "内容",
         ...     options=FillOptions.match_right(),
-        ...     style=FontStyle(font_name="黑体", font_size=16, bold=True)
+        ...     style=Style(font_name="黑体", font_size=16, bold=True)
         ... )
 
         >>> # 使用预设样式
-        >>> fill_text(doc, (1, 1, 1, 1), "文档标题", style=FontStyle.title())
+        >>> fill_text(doc, (1, 1, 1, 1), "文档标题", style=Style.title())
 
         >>> # 通配符：所有表格的第2行第3列
         >>> fill_text(doc, (1, 0, 2, 3), "统一内容")
@@ -271,9 +271,9 @@ def fill_text(
     """
     # 初始化配置对象（如果未提供）
     if options is None:
-        options = FillOptions()
+        options = Options()
     if style is None:
-        style = FontStyle()
+        style = Style()
     if alignment is None:
         alignment = Alignment()
     try:
@@ -356,7 +356,7 @@ def fill_image(
     position: Union[Position, str],
     source: Union[str, bytes, Path],
     *,
-    options: FillOptions = None,
+    options: Options = None,
     config: ImageConfig = None,
 ) -> None:
     """填充图片到文档
@@ -410,7 +410,7 @@ def fill_image(
     """
     # 初始化配置对象（如果未提供）
     if options is None:
-        options = FillOptions()
+        options = Options()
     if config is None:
         config = ImageConfig()
 
@@ -578,7 +578,7 @@ def fill_date(
     position: Union[Position, str],
     date_str: str,
     *,
-    style: FontStyle = None,
+    style: Style = None,
     alignment: Alignment = None,
     normalize: bool = True,
 ) -> None:
@@ -591,7 +591,7 @@ def fill_date(
         doc: Document 对象
         position: 位置元组或查找文本
         date_str: 日期字符串，如 "2024年1月15日"
-        style: 字体样式配置（FontStyle）
+        style: 字体样式配置（Style）
         alignment: 对齐方式配置（Alignment）
         normalize: 是否规范化文本（用于字符串匹配模式），默认 True
 
@@ -613,7 +613,7 @@ def fill_date(
         >>> # 带样式和对齐
         >>> fill_date(
         ...     doc, (1, 1, 4, 2), "2024年1月15日",
-        ...     style=FontStyle(font_name="宋体", font_size=12),
+        ...     style=Style(font_name="宋体", font_size=12),
         ...     alignment=Alignment.center()
         ... )
 
@@ -625,7 +625,7 @@ def fill_date(
     """
     # 初始化配置对象（如果未提供）
     if style is None:
-        style = FontStyle()
+        style = Style()
     if alignment is None:
         alignment = Alignment()
     try:

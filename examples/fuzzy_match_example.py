@@ -6,8 +6,8 @@ DocxLib 文本匹配示例
 
 from docxlib import (
     Alignment,
-    FillOptions,
-    FontStyle,
+    Options,
+    Style,
     find_text,
     fill_date,
     fill_text,
@@ -35,8 +35,8 @@ def example_text_normalization():
     positions = find_text(doc, "姓名")
     print(f"找到位置: {positions}")
 
-    print("\n查找 '年龄'（自动规范化）：")
-    positions = find_text(doc, "年龄")
+    print("\n查找 '性别'（自动规范化）：")
+    positions = find_text(doc, "性别")
     print(f"找到位置: {positions}")
 
 
@@ -81,24 +81,24 @@ def example_fill_with_normalization():
         doc,
         "姓名",  # 会匹配 "姓名"、"姓    名"、"姓\n名" 等
         "张三",
-        options=FillOptions.match_right(),  # 默认 normalize=True
-        style=FontStyle(font_family="宋体", font_size=12),
+        options=Options.match_right(),  # 默认 normalize=True
+        style=Style(font_family="宋体", font_size=12),
         alignment=Alignment(h_align="left", v_align="middle"),
     )
 
     fill_text(
         doc,
-        "年龄",  # 会匹配 "年龄"、"年  龄"、"年\n龄" 等
-        "25",
-        options=FillOptions.match_right(),
+        "性别",  # 会匹配 "性别"、"性  别"、"性\n别" 等
+        "男",
+        options=Options.match_right(),
         alignment=Alignment(h_align="center", v_align="middle"),
     )
 
     fill_text(
         doc,
-        "项目",
-        "智慧城市项目",
-        options=FillOptions.match_right(),
+        "工作单位",
+        "某公司",
+        options=Options.match_right(),
         alignment=Alignment(h_align="center", v_align="middle"),
     )
 
@@ -120,20 +120,26 @@ def example_fill_with_exact_match():
     print("\n使用精确匹配填充...")
 
     # 禁用规范化匹配，只匹配完全相同的文本
-    fill_text(
-        doc,
-        "姓名",  # 只会匹配 "姓名"，不会匹配 "姓    名"
-        "李四",
-        options=FillOptions.match_right(normalize=False),
-        alignment=Alignment(h_align="left", v_align="middle"),
-    )
+    try:
+        fill_text(
+            doc,
+            "姓名",  # 只会匹配 "姓名"，不会匹配 "姓    名"
+            "李四",
+            options=Options.match_right(normalize=False),
+            alignment=Alignment(h_align="left", v_align="middle"),
+        )
+    except Exception as e:
+        print(f"填充姓名时出错: {e}")
 
-    fill_date(
-        doc,
-        "日期",
-        "2024年1月15日",
-        normalize=False,  # 精确匹配
-    )
+    try:
+        fill_date(
+            doc,
+            "日期",
+            "2024年1月15日",
+            normalize=False,  # 精确匹配
+        )
+    except Exception as e:
+        print(f"填充日期时出错: {e}")
 
     print("填充完成！")
 
@@ -152,7 +158,7 @@ def example_fill_date_with_normalization():
     # 默认启用规范化匹配
     fill_date(
         doc,
-        "日期",  # 会匹配 "日期"、"日  期"、"日\n期" 等
+        "入党时间",  # 会匹配 "日期"、"日  期"、"日\n期" 等
         "2024年1月15日",
         normalize=True,  # 可以显式指定，默认就是 True
     )

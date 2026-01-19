@@ -22,7 +22,7 @@ MatchModeLiteral = Literal["all", "first"]
 
 
 @dataclass
-class FontStyle:
+class Style:
     """字体样式配置
 
     封装所有字体相关的样式属性，提供灵活的字体样式配置。
@@ -37,12 +37,12 @@ class FontStyle:
 
     Examples:
         >>> # 使用默认样式
-        >>> style = FontStyle()
+        >>> style = Style()
         >>> # 自定义样式
-        >>> style = FontStyle(font_name="黑体", font_size=16, bold=True)
+        >>> style = Style(font_name="黑体", font_size=16, bold=True)
         >>> # 使用预设样式
-        >>> title_style = FontStyle.title()
-        >>> heading_style = FontStyle.heading(level=2)
+        >>> title_style = Style.title()
+        >>> heading_style = Style.heading(level=2)
     """
 
     font_family: str = DEFAULT_FONT_FAMILY
@@ -53,19 +53,19 @@ class FontStyle:
     underline: bool = False
 
     @classmethod
-    def title(cls) -> "FontStyle":
+    def title(cls) -> "Style":
         """预设：标题样式（黑体 16磅 粗体）
 
         Returns:
             标题样式配置对象
 
         Examples:
-            >>> fill_text(doc, (1, 1, 1, 1), "文档标题", style=FontStyle.title())
+            >>> fill_text(doc, (1, 1, 1, 1), "文档标题", style=Style.title())
         """
         return cls(font_name="黑体", font_size=16, bold=True)
 
     @classmethod
-    def heading(cls, level: int = 1) -> "FontStyle":
+    def heading(cls, level: int = 1) -> "Style":
         """预设：分级标题样式
 
         Args:
@@ -76,34 +76,34 @@ class FontStyle:
 
         Examples:
             >>> # 一级标题
-            >>> fill_text(doc, (1, 1, 1, 1), "第一章", style=FontStyle.heading(1))
+            >>> fill_text(doc, (1, 1, 1, 1), "第一章", style=Style.heading(1))
             >>> # 二级标题
-            >>> fill_text(doc, (1, 1, 2, 1), "1.1 概述", style=FontStyle.heading(2))
+            >>> fill_text(doc, (1, 1, 2, 1), "1.1 概述", style=Style.heading(2))
         """
         sizes = {1: 18, 2: 16, 3: 14}
         return cls(font_name="黑体", font_size=sizes.get(level, 16), bold=True)
 
     @classmethod
-    def body(cls) -> "FontStyle":
+    def body(cls) -> "Style":
         """预设：正文样式（仿宋_GB2312 12磅）
 
         Returns:
             正文样式配置对象
 
         Examples:
-            >>> fill_text(doc, (1, 1, 3, 1), "正文内容...", style=FontStyle.body())
+            >>> fill_text(doc, (1, 1, 3, 1), "正文内容...", style=Style.body())
         """
         return cls(font_name="仿宋_GB2312", font_size=12)
 
     @classmethod
-    def emphasis(cls) -> "FontStyle":
+    def emphasis(cls) -> "Style":
         """预设：强调样式（红色粗体）
 
         Returns:
             强调样式配置对象
 
         Examples:
-            >>> fill_text(doc, (1, 1, 4, 1), "重要提示", style=FontStyle.emphasis())
+            >>> fill_text(doc, (1, 1, 4, 1), "重要提示", style=Style.emphasis())
         """
         return cls(bold=True, color="red")
 
@@ -240,7 +240,7 @@ class Alignment:
 
 
 @dataclass
-class FillOptions:
+class Options:
     """填充模式配置
 
     封装填充模式和匹配模式的配置，用于控制文本和图片填充的行为。
@@ -275,7 +275,7 @@ class FillOptions:
         cls,
         match_mode: MatchModeLiteral = "all",
         normalize: bool = True,
-    ) -> "FillOptions":
+    ) -> "Options":
         """预设：向右匹配模式
 
         查找指定文本，将内容填充到其右侧单元格。
@@ -306,7 +306,7 @@ class FillOptions:
         cls,
         match_mode: MatchModeLiteral = "all",
         normalize: bool = True,
-    ) -> "FillOptions":
+    ) -> "Options":
         """预设：向下匹配模式
 
         查找指定文本，将内容填充到其下方单元格。

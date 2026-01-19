@@ -29,8 +29,8 @@ from docxlib import (
     fill_grid,
     fill_image,
     # 配置类
-    FillOptions,
-    FontStyle,
+    Options,
+    Style,
     Alignment,
     ImageConfig,
 )
@@ -148,7 +148,7 @@ def fill_resume(template_path, output_path, resume_data):
     fill_text(
         doc, (1, 1, 1, 2),
         resume_data.get("姓名", ""),
-        style=FontStyle(font_family="宋体", font_size=14, bold=True)
+        style=Style(font_family="宋体", font_size=14, bold=True)
     )
     fill_text(doc, (1, 1, 1, 4), resume_data.get("性别", ""))
     fill_text(doc, (1, 1, 1, 6), resume_data.get("出生年月", ""))
@@ -189,8 +189,8 @@ def fill_resume(template_path, output_path, resume_data):
 
     # 工作经历（第10行，第2列开始）
     work_exp = resume_data.get("工作经历", "")
-    options = FillOptions(mode="match_right")
-    style = FontStyle(font_family="黑体", font_size=10.5)
+    options = Options(mode="match_right")
+    style = Style(font_family="黑体", font_size=10.5)
     align = Alignment.left_top()
     fill_text(doc, "工作经历", work_exp, options=options, style=style, alignment=align)
 

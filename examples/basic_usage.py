@@ -6,8 +6,8 @@ DocxLib 基础用法示例
 
 from docxlib import (
     Alignment,
-    FillOptions,
-    FontStyle,
+    Options,
+    Style,
     fill_date,
     fill_text,
     load_docx,
@@ -36,7 +36,7 @@ def main():
         doc,
         "姓名",
         "张三",
-        options=FillOptions(mode="match_right"),
+        options=Options(mode="match_right"),
         alignment=Alignment(h_align="center", v_align="middle"),
     )
 
@@ -45,7 +45,7 @@ def main():
         doc,
         "证明人",
         "李四",
-        options=FillOptions(mode="match_down"),
+        options=Options(mode="match_down"),
         alignment=Alignment(h_align="center", v_align="middle"),
     )
 
@@ -62,8 +62,8 @@ def main():
         doc,
         "工作单位",
         "某公司",
-        options=FillOptions(mode="match_right"),
-        style=FontStyle(font_family="黑体", font_size=16, bold=True, color="red"),
+        options=Options(mode="match_right"),
+        style=Style(font_family="黑体", font_size=16, bold=True, color="red"),
         alignment=Alignment(h_align="center", v_align="middle"),
     )
 

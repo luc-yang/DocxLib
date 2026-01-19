@@ -9,7 +9,7 @@ from typing import Any, Dict, List, Tuple, Union
 from spire.doc import *
 from spire.doc.common import *
 
-from .config import FillOptions
+from .config import Options
 from .constants import DEFAULT_VAR_PREFIX, DEFAULT_VAR_SUFFIX, Position
 from .errors import DocumentError, FillError, PositionError
 from .fill import _find_variables
@@ -32,7 +32,7 @@ def read_text(
     position: Union[Position, str],
     *,
     default: str = "",
-    options: FillOptions = None,
+    options: Options = None,
 ) -> str:
     """读取单元格文本
 
@@ -62,7 +62,7 @@ def read_text(
         ... )
     """
     if options is None:
-        options = FillOptions()
+        options = Options()
 
     try:
         mode = options.mode

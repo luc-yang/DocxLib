@@ -6,7 +6,7 @@ DocxLib 高级功能示例
 
 from docxlib import (
     Alignment,
-    FillOptions,
+    Options,
     ImageConfig,
     fill_date,
     fill_grid,
@@ -58,7 +58,7 @@ def main():
             doc,
             "图片",
             "fixtures/images/logo.png",
-            options=FillOptions(mode="match_right"),
+            options=Options(mode="match_right"),
             config=ImageConfig(width=80, height=80, h_align="center", v_align="middle"),
         )
         print("图片填充成功")
@@ -73,7 +73,7 @@ def main():
             doc,
             "图片",
             image_data,
-            options=FillOptions(mode="match_right"),
+            options=Options(mode="match_right"),
             config=ImageConfig(width=80, height=80),
         )
         print("图片填充成功")

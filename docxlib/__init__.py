@@ -27,7 +27,7 @@ __version__ = "0.1.0"
 __author__ = "DocxLib Contributors"
 
 # ==================== 文档操作 ====================
-from .config import Alignment, FillOptions, FontStyle, ImageConfig
+from .config import Alignment, Options, Style, ImageConfig
 from .constants import (
     DEFAULT_COLOR,
     DEFAULT_FONT_FAMILY,
@@ -115,9 +115,9 @@ __all__ = [
     "__version__",
     "__author__",
     # 配置类
-    "FontStyle",
+    "Style",
     "Alignment",
-    "FillOptions",
+    "Options",
     "ImageConfig",
     # 文档操作
     "load_docx",

@@ -5,7 +5,7 @@ DocxLib 批量处理示例
 """
 
 from docxlib import (
-    FillOptions,
+    Options,
     fill_date,
     fill_text,
     load_docx,
@@ -52,13 +52,13 @@ def main():
 
         # 填充数据
         fill_text(
-            doc, "姓名", item["name"], options=FillOptions(mode="match_right")
+            doc, "姓名", item["name"], options=Options(mode="match_right")
         )
         fill_text(
-            doc, "年龄", item["age"], options=FillOptions(mode="match_right")
+            doc, "年龄", item["age"], options=Options(mode="match_right")
         )
         fill_text(
-            doc, "项目", item["project"], options=FillOptions(mode="match_right")
+            doc, "项目", item["project"], options=Options(mode="match_right")
         )
 
         # 填充日期

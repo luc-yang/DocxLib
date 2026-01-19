@@ -54,7 +54,7 @@ save_docx(doc, "output.docx")
 ### 多种填充模式
 
 ```python
-from docxlib import load_docx, fill_text, FillOptions, FontStyle, Alignment, save_docx
+from docxlib import load_docx, fill_text, FillOptions, Style, Alignment, save_docx
 
 doc = load_docx("sample.docx")
 
@@ -69,7 +69,7 @@ fill_text(doc, "项目1", "智慧城市", options=FillOptions.match_down())
 
 # 带样式填充
 fill_text(doc, "标题", "内容",
-          style=FontStyle(font_family="黑体", font_size=16, bold=True, color="red"))
+          style=Style(font_family="黑体", font_size=16, bold=True, color="red"))
 
 save_docx(doc, "output.docx")
 ```

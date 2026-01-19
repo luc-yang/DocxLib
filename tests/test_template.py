@@ -9,7 +9,7 @@ from docxlib import (
     extract_template_vars,
     validate_template_data,
     save_docx,
-    FontStyle,
+    Style,
     Alignment,
 )
 from docxlib.errors import VariableNotFoundError
@@ -140,7 +140,7 @@ class TestBackwardCompatibility:
         """测试现有填充函数仍然可用"""
         doc = load_docx("fixtures/templates/sample.docx")
         from docxlib import fill_text
-        fill_text(doc, (1, 1, 1, 1), "测试", style=FontStyle(), alignment=Alignment())
+        fill_text(doc, (1, 1, 1, 1), "测试", style=Style(), alignment=Alignment())
         # 不抛出异常即通过
 
 
