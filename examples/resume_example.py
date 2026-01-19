@@ -181,7 +181,7 @@ def fill_resume(template_path, output_path, resume_data):
 
     # 填充学习经历网格
     if education_grid:
-        fill_grid(doc, education_grid, position=(1, 1, 6, 1))
+        fill_grid(doc, education_grid, position=(1, 1, 7, 2))
 
     # 填充其他信息（使用查找文本模式）
     print("填充其他信息...")

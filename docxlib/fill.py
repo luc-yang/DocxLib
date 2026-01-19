@@ -96,11 +96,20 @@ def _fill_single_cell_image(
         original_width_px: 原始宽度（像素）
         original_height_px: 原始高度（像素）
     """
-    # 清空单元格
-    cell.Paragraphs.Clear()
+    # 策略：保留第一个段落以保留格式
+    if cell.Paragraphs.Count > 0:
+        # 保留第一个段落，清空其他段落
+        while cell.Paragraphs.Count > 1:
+            cell.Paragraphs.RemoveAt(cell.Paragraphs.Count - 1)
 
-    # 添加段落
-    paragraph = cell.AddParagraph()
+        # 获取第一个段落
+        paragraph = cell.Paragraphs.get_Item(0)
+
+        # 清除段落中的所有对象
+        paragraph.ChildObjects.Clear()
+    else:
+        # 如果没有段落，创建新段落
+        paragraph = cell.AddParagraph()
 
     # 加载图片
     picture = paragraph.AppendPicture(image_path)
@@ -707,9 +716,22 @@ def fill_grid(doc: Document, data: List[List[str]], position: Position) -> None:
                 try:
                     cell = get_cell(doc, section_idx, table_idx, target_row, target_col)
 
-                    # 清空并设置文本
-                    cell.Paragraphs.Clear()
-                    paragraph = cell.AddParagraph()
+                    # 策略：保留第一个段落以保留格式
+                    if cell.Paragraphs.Count > 0:
+                        # 保留第一个段落，清空其他段落
+                        while cell.Paragraphs.Count > 1:
+                            cell.Paragraphs.RemoveAt(cell.Paragraphs.Count - 1)
+
+                        # 获取第一个段落
+                        paragraph = cell.Paragraphs.get_Item(0)
+
+                        # 清除段落中的所有文本对象
+                        paragraph.ChildObjects.Clear()
+                    else:
+                        # 如果没有段落，创建新段落
+                        paragraph = cell.AddParagraph()
+
+                    # 添加新文本
                     paragraph.AppendText(str(cell_value))
 
                 except PositionError:
