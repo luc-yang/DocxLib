@@ -4,9 +4,11 @@ DocxLib 工具函数
 提供通用的辅助函数，如文件格式验证、数据解析等。
 """
 
-import zipfile
+from datetime import datetime
 from pathlib import Path
-from typing import Union, List, Dict, Any
+import re
+from typing import Any, Dict, List, Union
+import zipfile
 
 from .errors import ValidationError
 
@@ -207,9 +209,6 @@ def validate_date_string(date_str: str) -> None:
         >>> validate_date_string("2024年13月1日")  # 抛出 ValidationError
         >>> validate_date_string("2024年2月30日")  # 抛出 ValidationError
     """
-    import re
-    from datetime import datetime
-
     # 匹配完整的日期格式：数字年数字月数字日
     pattern = r"^(\d+)年(\d+)月(\d+)日$"
     match = re.match(pattern, date_str)
