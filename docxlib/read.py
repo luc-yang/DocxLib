@@ -344,7 +344,11 @@ def read_document_structure(
                     try:
                         dimensions = get_table_dimensions(doc, sec_idx, tbl_idx)
                         tables.append(
-                            {"index": tbl_idx, "rows": dimensions[0], "columns": dimensions[1]}
+                            {
+                                "index": tbl_idx,
+                                "rows": dimensions["row_count"],
+                                "columns_per_row": dimensions["columns_per_row"]
+                            }
                         )
                     except PositionError:
                         # 跳过无法访问的表格
@@ -472,7 +476,13 @@ def read_table(
             return data
 
         # 完整模式：返回详细信息
-        result = {"data": data, "dimensions": {"rows": dimensions[0], "columns": dimensions[1]}}
+        result = {
+            "data": data,
+            "dimensions": {
+                "rows": dimensions["row_count"],
+                "columns_per_row": dimensions["columns_per_row"]
+            }
+        }
 
         # 包含样式信息
         if include_style:

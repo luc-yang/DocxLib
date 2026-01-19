@@ -244,12 +244,11 @@ def get_cell_text(doc: Document, section: int, table: int, row: int, col: int) -
     return cell_text
 
 
-def get_table_dimensions(doc: Document, section: int, table: int) -> Tuple[int, int]:
-    """获取表格的行数和列数
+def get_table_dimensions(doc: Document, section: int, table: int) -> dict:
+    """获取表格的行数和每行的列数
 
-    注意：返回的列数是第一行的列数。如果表格包含合并单元格，
-    不同行的列数可能不同。对于需要准确处理每行列数的场景，
-    请使用 get_table_text() 或遍历行时检查 row.Cells.Count。
+    返回表格的行数以及每一行的列数。这对于包含合并单元格的表格特别有用，
+    因为不同行的列数可能不同。
 
     Args:
         doc: Document 对象
@@ -257,28 +256,31 @@ def get_table_dimensions(doc: Document, section: int, table: int) -> Tuple[int, 
         table: 表格索引（从1开始）
 
     Returns:
-        Tuple[int, int]: (行数, 第一行的列数)
+        dict: 包含以下键的字典：
+            - row_count: 总行数
+            - columns_per_row: 每行的列数列表（索引从0开始，对应第1行、第2行...）
 
     Raises:
         PositionError: 表格不存在
 
     Examples:
-        >>> rows, cols = get_table_dimensions(doc, 1, 1)
-        >>> print(f"表格大小: {rows}行 x {cols}列")
-        表格大小: 10行 x 5列
+        >>> dims = get_table_dimensions(doc, 1, 1)
+        >>> print(f"表格: {dims['row_count']}行")
+        >>> for i, cols in enumerate(dims['columns_per_row'], 1):
+        ...     print(f"  第{i}行: {cols}列")
     """
     try:
         section_obj = doc.Sections.get_Item(section - 1)
         table_obj = section_obj.Tables.get_Item(table - 1)
 
         rows = table_obj.Rows.Count
-        # 获取第一行的列数（注意：有合并单元格时其他行可能不同）
-        if rows > 0:
-            cols = table_obj.Rows.get_Item(0).Cells.Count
-        else:
-            cols = 0
+        # 获取每一行的列数
+        columns_per_row = []
+        for row_idx in range(rows):
+            row = table_obj.Rows.get_Item(row_idx)
+            columns_per_row.append(row.Cells.Count)
 
-        return rows, cols
+        return {"row_count": rows, "columns_per_row": columns_per_row}
 
     except Exception as e:
         raise PositionError(f"无法获取表格 ({section}, {table}) 的尺寸: {e}")

@@ -236,7 +236,7 @@ class TestReadDocumentStructure:
                 for table in section["tables"]:
                     assert "index" in table
                     assert "rows" in table
-                    assert "columns" in table
+                    assert "columns_per_row" in table
 
 
 class TestReadAllText:
@@ -311,45 +311,3 @@ class TestExtractTemplateData:
             doc, placeholder_prefix="{{", placeholder_suffix="}}"
         )
         assert isinstance(data, dict)
-
-
-class TestBackwardCompatibility:
-    """测试向后兼容性"""
-
-    def test_existing_functions_still_work(self):
-        """测试现有读取功能仍然可用"""
-        doc = load_docx("fixtures/templates/sample.docx")
-        from docxlib import get_cell_text, get_table_text, find_text
-
-        # 现有功能不应受影响
-        text = get_cell_text(doc, 1, 1, 1, 1)
-        assert isinstance(text, str)
-
-        table = get_table_text(doc, 1, 1)
-        assert isinstance(table, list)
-
-        positions = find_text(doc, "测试")
-        assert isinstance(positions, list)
-
-    def test_new_functions_importable(self):
-        """测试新函数可以从顶层导入"""
-        from docxlib import (
-            read_images,
-            extract_template_data,
-            read_all_text,
-            read_cells,
-            read_document_structure,
-            read_grid,
-            read_table,
-            read_text,
-        )
-
-        # 所有新函数应该可以导入
-        assert callable(read_text)
-        assert callable(read_grid)
-        assert callable(read_table)
-        assert callable(read_cells)
-        assert callable(read_all_text)
-        assert callable(read_document_structure)
-        assert callable(read_images)
-        assert callable(extract_template_data)

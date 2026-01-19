@@ -101,8 +101,10 @@ def cmd_inspect(args: argparse.Namespace) -> int:
 
                 for tbl_idx in range(1, table_count + 1):
                     try:
-                        rows, cols = get_table_dimensions(doc, sec_idx, tbl_idx)
-                        print(f"    Table {tbl_idx}: {rows} rows x {cols} cols")
+                        dims = get_table_dimensions(doc, sec_idx, tbl_idx)
+                        rows = dims["row_count"]
+                        cols_list = dims["columns_per_row"]
+                        print(f"    Table {tbl_idx}: {rows} rows (cols per row: {cols_list})")
                     except Exception as e:
                         print(f"    Table {tbl_idx}: Error - {e}")
             except Exception as e:
