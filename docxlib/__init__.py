@@ -68,7 +68,7 @@ from .fill import (
     extract_template_vars,
 )
 from .read import (
-    extract_images,
+    read_images,
     extract_template_data,
     read_all_text,
     read_cells,
@@ -157,7 +157,7 @@ __all__ = [
     "read_cells",
     "read_all_text",
     "read_document_structure",
-    "extract_images",
+    "read_images",
     "extract_template_data",
     # 样式管理
     "parse_color",

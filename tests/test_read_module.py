@@ -3,7 +3,7 @@
 import pytest
 
 from docxlib import (
-    extract_images,
+    read_images,
     extract_template_data,
     load_docx,
     read_all_text,
@@ -158,12 +158,12 @@ class TestReadCells:
 
 
 class TestExtractImages:
-    """测试 extract_images() 函数"""
+    """测试 read_images() 函数"""
 
-    def test_extract_images_all(self):
+    def test_read_images_all(self):
         """测试提取所有图片"""
         doc = load_docx("fixtures/templates/sample.docx")
-        images = extract_images(doc)
+        images = read_images(doc)
         assert isinstance(images, list)
         # 如果有图片，验证结构
         for img in images:
@@ -175,10 +175,10 @@ class TestExtractImages:
             # 默认不包含 data
             assert "data" not in img
 
-    def test_extract_images_with_data(self):
+    def test_read_images_with_data(self):
         """测试提取图片并包含字节数据"""
         doc = load_docx("fixtures/templates/sample.docx")
-        images = extract_images(doc, include_data=True)
+        images = read_images(doc, include_data=True)
         assert isinstance(images, list)
         # 如果有图片，验证包含 data 字段
         for img in images:
@@ -189,16 +189,16 @@ class TestExtractImages:
                 # 图片数据应该有实际内容
                 assert len(img["data"]) > 0
 
-    def test_extract_images_section_filter(self):
+    def test_read_images_section_filter(self):
         """测试按节过滤图片"""
         doc = load_docx("fixtures/templates/sample.docx")
-        images = extract_images(doc, section=1)
+        images = read_images(doc, section=1)
         assert isinstance(images, list)
 
-    def test_extract_images_table_filter(self):
+    def test_read_images_table_filter(self):
         """测试按表格过滤图片"""
         doc = load_docx("fixtures/templates/sample.docx")
-        images = extract_images(doc, section=1, table=1)
+        images = read_images(doc, section=1, table=1)
         assert isinstance(images, list)
 
 
@@ -333,7 +333,7 @@ class TestBackwardCompatibility:
     def test_new_functions_importable(self):
         """测试新函数可以从顶层导入"""
         from docxlib import (
-            extract_images,
+            read_images,
             extract_template_data,
             read_all_text,
             read_cells,
@@ -350,5 +350,5 @@ class TestBackwardCompatibility:
         assert callable(read_cells)
         assert callable(read_all_text)
         assert callable(read_document_structure)
-        assert callable(extract_images)
+        assert callable(read_images)
         assert callable(extract_template_data)

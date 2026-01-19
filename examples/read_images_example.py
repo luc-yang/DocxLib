@@ -1,20 +1,20 @@
 """示例：从 Word 文档中提取图片
 
-演示如何使用 extract_images() 函数提取文档中的图片元数据和字节数据。
+演示如何使用 read_images() 函数提取文档中的图片元数据和字节数据。
 """
 
-from docxlib import load_docx, extract_images
+from docxlib import load_docx, read_images
 import os
 
 
-def extract_images_metadata_only():
+def read_images_metadata_only():
     """仅提取图片元数据（不包含图片数据）"""
     print("=" * 60)
     print("示例 1: 提取图片元数据")
     print("=" * 60)
 
     doc = load_docx("fixtures/templates/sample.docx")
-    images = extract_images(doc)
+    images = read_images(doc)
 
     print(f"找到 {len(images)} 张图片\n")
 
@@ -28,14 +28,14 @@ def extract_images_metadata_only():
         print()
 
 
-def extract_images_with_data():
+def read_images_with_data():
     """提取图片并包含字节数据"""
     print("=" * 60)
     print("示例 2: 提取图片并保存到文件")
     print("=" * 60)
 
     doc = load_docx("fixtures/templates/sample.docx")
-    images = extract_images(doc, include_data=True)
+    images = read_images(doc, include_data=True)
 
     print(f"找到 {len(images)} 张图片\n")
 
@@ -62,7 +62,7 @@ def extract_images_with_data():
     print(f"\n所有图片已保存到: {output_dir}")
 
 
-def extract_images_from_specific_table():
+def read_images_from_specific_table():
     """仅提取特定表格中的图片"""
     print("=" * 60)
     print("示例 3: 提取特定表格的图片")
@@ -71,7 +71,7 @@ def extract_images_from_specific_table():
     doc = load_docx("fixtures/templates/sample.docx")
 
     # 仅提取第1节第1个表格的图片
-    images = extract_images(doc, section=1, table=1)
+    images = read_images(doc, section=1, table=1)
 
     print(f"第1节第1个表格中找到 {len(images)} 张图片\n")
 
@@ -84,10 +84,10 @@ def extract_images_from_specific_table():
 
 if __name__ == "__main__":
     # 运行示例
-    extract_images_metadata_only()
+    read_images_metadata_only()
     print("\n")
 
-    extract_images_with_data()
+    read_images_with_data()
     print("\n")
 
-    extract_images_from_specific_table()
+    read_images_from_specific_table()

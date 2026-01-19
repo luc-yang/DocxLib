@@ -164,7 +164,7 @@ def read_grid(
         raise FillError(f"读取网格数据失败: {e}")
 
 
-def extract_images(
+def read_images(
     doc: Document,
     *,
     section: int = 0,
@@ -198,19 +198,19 @@ def extract_images(
 
     Examples:
         >>> # 提取所有图片（仅元数据）
-        >>> images = extract_images(doc)
+        >>> images = read_images(doc)
 
         >>> # 提取图片并包含字节数据
-        >>> images = extract_images(doc, include_data=True)
+        >>> images = read_images(doc, include_data=True)
         >>> for img in images:
         ...     with open(f"image_{img['index']}.{img['format']}", "wb") as f:
         ...         f.write(img["data"])
 
         >>> # 提取第1节的图片
-        >>> images = extract_images(doc, section=1)
+        >>> images = read_images(doc, section=1)
 
         >>> # 提取特定表格的图片
-        >>> images = extract_images(doc, section=1, table=1)
+        >>> images = read_images(doc, section=1, table=1)
     """
     try:
         from io import BytesIO
