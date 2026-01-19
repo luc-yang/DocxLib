@@ -72,7 +72,7 @@ Use `0` as a wildcard in `get_cells()` to select all:
 
 ### Fill Modes
 
-The `fill_text()` and `fill_image()` functions support three modes via `FillOptions`:
+The `fill_text()` and `fill_image()` functions support three modes via `Options`:
 
 1. **`"position"`** (default): Direct position tuple
    ```python
@@ -81,12 +81,12 @@ The `fill_text()` and `fill_image()` functions support three modes via `FillOpti
 
 2. **`"match_right"`**: Find text pattern, fill in the cell to the right
    ```python
-   fill_text(doc, "姓名：", "张三", options=FillOptions.match_right())
+   fill_text(doc, "姓名：", "张三", options=Options.match_right())
    ```
 
 3. **`"match_down"`**: Find text pattern, fill in the cell below
    ```python
-   fill_text(doc, "项目1", "智慧城市", options=FillOptions.match_down())
+   fill_text(doc, "项目1", "智慧城市", options=Options.match_down())
    ```
 
 ### Match Mode Parameter
@@ -98,17 +98,17 @@ When using `match_right` or `match_down` modes, the `match_mode` parameter contr
 
 ```python
 # Fill all occurrences
-fill_text(doc, "姓名：", "张三", options=FillOptions.match_right(match_mode="all"))
+fill_text(doc, "姓名：", "张三", options=Options.match_right(match_mode="all"))
 
 # Fill only the first occurrence
-fill_text(doc, "姓名：", "张三", options=FillOptions.match_right(match_mode="first"))
+fill_text(doc, "姓名：", "张三", options=Options.match_right(match_mode="first"))
 ```
 
 ### Text Normalization for Matching
 
 **Important**: By default, `fill_text()`, `fill_image()`, and `fill_date()` use **text normalization** when matching text to handle template formatting issues. This means:
 
-- `fill_text(doc, "姓名", "张三", options=FillOptions.match_right())` will match:
+- `fill_text(doc, "姓名", "张三", options=Options.match_right())` will match:
   - `姓名` (exact)
   - `姓    名` (spaces between characters)
   - `姓\n名` (newline between characters)
@@ -118,17 +118,17 @@ fill_text(doc, "姓名：", "张三", options=FillOptions.match_right(match_mode
 **User Control**: You can control this behavior via the `normalize` parameter:
 
 ```python
-# Using fill_text with FillOptions
+# Using fill_text with Options
 fill_text(doc, "姓名", "张三",
-          options=FillOptions.match_right())  # Default: normalize=True
+          options=Options.match_right())  # Default: normalize=True
 fill_text(doc, "姓名", "张三",
-          options=FillOptions.match_right(normalize=False))  # Exact match
+          options=Options.match_right(normalize=False))  # Exact match
 
 # Using fill_image
 fill_image(doc, "照片", "photo.jpg",
-           options=FillOptions.match_right())  # Default: normalize=True
+           options=Options.match_right())  # Default: normalize=True
 fill_image(doc, "照片", "photo.jpg",
-           options=FillOptions.match_right(normalize=False))  # Exact match
+           options=Options.match_right(normalize=False))  # Exact match
 
 # Using fill_date
 fill_date(doc, "日期", "2024年1月15日")  # Default: normalize=True

@@ -226,7 +226,7 @@ def fill_text(
         doc: Document 对象
         position: 位置元组 (section, table, row, col) 或查找文本
         value: 要填充的文本
-        options: 填充模式配置（FillOptions）
+        options: 填充模式配置（Options）
         style: 字体样式配置（Style）
         alignment: 对齐方式配置（Alignment）
 
@@ -239,15 +239,15 @@ def fill_text(
         >>> fill_text(doc, (1, 1, 2, 2), "测试文本")
 
         >>> # 右侧填充
-        >>> fill_text(doc, "姓名：", "张三", options=FillOptions.match_right())
+        >>> fill_text(doc, "姓名：", "张三", options=Options.match_right())
 
         >>> # 下方填充
-        >>> fill_text(doc, "项目1", "智慧城市", options=FillOptions.match_down())
+        >>> fill_text(doc, "项目1", "智慧城市", options=Options.match_down())
 
         >>> # 带自定义样式
         >>> fill_text(
         ...     doc, "标题", "内容",
-        ...     options=FillOptions.match_right(),
+        ...     options=Options.match_right(),
         ...     style=Style(font_name="黑体", font_size=16, bold=True)
         ... )
 
@@ -266,7 +266,7 @@ def fill_text(
         >>> # 匹配模式：仅填充第一个
         >>> fill_text(
         ...     doc, "标签：", "值",
-        ...     options=FillOptions.match_right(match_mode="first")
+        ...     options=Options.match_right(match_mode="first")
         ... )
     """
     # 初始化配置对象（如果未提供）
@@ -365,7 +365,7 @@ def fill_image(
         doc: Document 对象
         position: 位置元组或查找文本
         source: 图片文件路径（str/Path）或字节数据（bytes）
-        options: 填充模式配置（FillOptions）
+        options: 填充模式配置（Options）
         config: 图片配置（ImageConfig）
 
     Raises:
@@ -385,14 +385,14 @@ def fill_image(
         >>> # 查找文本并填充，指定尺寸
         >>> fill_image(
         ...     doc, "印章：", "seal.png",
-        ...     options=FillOptions.match_right(),
+        ...     options=Options.match_right(),
         ...     config=ImageConfig(width=100, height=100)
         ... )
 
         >>> # 使用预设配置
         >>> fill_image(
         ...     doc, "照片", "photo.jpg",
-        ...     options=FillOptions.match_right(),
+        ...     options=Options.match_right(),
         ...     config=ImageConfig.centered(width=80, height=80)
         ... )
 
@@ -405,7 +405,7 @@ def fill_image(
         >>> # 匹配模式：仅填充第一个
         >>> fill_image(
         ...     doc, "照片：", "photo.jpg",
-        ...     options=FillOptions.match_right(match_mode="first")
+        ...     options=Options.match_right(match_mode="first")
         ... )
     """
     # 初始化配置对象（如果未提供）

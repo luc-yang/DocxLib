@@ -54,7 +54,7 @@ save_docx(doc, "output.docx")
 ### 多种填充模式
 
 ```python
-from docxlib import load_docx, fill_text, FillOptions, Style, Alignment, save_docx
+from docxlib import load_docx, fill_text, Options, Style, Alignment, save_docx
 
 doc = load_docx("sample.docx")
 
@@ -62,10 +62,10 @@ doc = load_docx("sample.docx")
 fill_text(doc, (1, 1, 2, 2), "测试文本")
 
 # 右侧填充（查找"姓名："并在右侧填充）
-fill_text(doc, "姓名：", "张三", options=FillOptions.match_right())
+fill_text(doc, "姓名：", "张三", options=Options.match_right())
 
 # 下方填充（查找"项目1"并在下方填充）
-fill_text(doc, "项目1", "智慧城市", options=FillOptions.match_down())
+fill_text(doc, "项目1", "智慧城市", options=Options.match_down())
 
 # 带样式填充
 fill_text(doc, "标题", "内容",
@@ -77,7 +77,7 @@ save_docx(doc, "output.docx")
 ### 图片填充
 
 ```python
-from docxlib import load_docx, fill_image, FillOptions, ImageConfig, save_docx
+from docxlib import load_docx, fill_image, Options, ImageConfig, save_docx
 
 doc = load_docx("sample.docx")
 
@@ -87,7 +87,7 @@ fill_image(doc, (1, 1, 2, 2), "logo.png",
 
 # 右侧填充图片
 fill_image(doc, "印章：", "seal.png",
-           options=FillOptions.match_right(),
+           options=Options.match_right(),
            config=ImageConfig(width=80, height=80))
 
 save_docx(doc, "output.docx")
@@ -128,7 +128,7 @@ save_docx(doc, "output.docx")
 ### 批量文档生成
 
 ```python
-from docxlib import load_docx, fill_text, FillOptions, save_docx
+from docxlib import load_docx, fill_text, Options, save_docx
 
 # 批量生成文档
 data = [
@@ -142,8 +142,8 @@ for i, item in enumerate(data):
     doc = load_docx("sample.docx")
 
     # 填充数据
-    fill_text(doc, "姓名：", item["name"], options=FillOptions.match_right())
-    fill_text(doc, "金额：", item["amount"], options=FillOptions.match_right())
+    fill_text(doc, "姓名：", item["name"], options=Options.match_right())
+    fill_text(doc, "金额：", item["amount"], options=Options.match_right())
 
     # 保存文档
     save_docx(doc, f"output_{i+1}.docx")
@@ -200,20 +200,20 @@ for pos in positions:
 
 **重要**：默认情况下，`fill_text`、`fill_image`、`fill_date` 使用文本规范化来处理模板中的空格、换行等格式问题。
 
-这意味着 `fill_text(doc, "姓名", "张三", options=FillOptions.match_right())` 可以匹配：
+这意味着 `fill_text(doc, "姓名", "张三", options=Options.match_right())` 可以匹配：
 - `姓名`（精确匹配）
 - `姓    名`（中间有空格）
 - `姓\n名`（中间有换行）
 - `姓\t名`（中间有制表符）
 
 ```python
-from docxlib import fill_text, FillOptions
+from docxlib import fill_text, Options
 
 # 默认启用规范化（推荐）
-fill_text(doc, "姓名", "张三", options=FillOptions.match_right())
+fill_text(doc, "姓名", "张三", options=Options.match_right())
 
 # 禁用规范化（精确匹配）
-fill_text(doc, "姓名", "张三", options=FillOptions.match_right(normalize=False))
+fill_text(doc, "姓名", "张三", options=Options.match_right(normalize=False))
 ```
 
 ## 位置说明

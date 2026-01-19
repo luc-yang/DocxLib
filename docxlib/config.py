@@ -259,11 +259,11 @@ class Options:
 
     Examples:
         >>> # 使用默认模式（直接定位）
-        >>> options = FillOptions()
+        >>> options = Options()
         >>> # 向右匹配模式（自动规范化）
-        >>> options = FillOptions.match_right()
+        >>> options = Options.match_right()
         >>> # 向右匹配，仅第一个，精确匹配
-        >>> options = FillOptions.match_right(match_mode="first", normalize=False)
+        >>> options = Options.match_right(match_mode="first", normalize=False)
     """
 
     mode: FillModeLiteral = "position"
@@ -291,12 +291,12 @@ class Options:
             >>> # 规范化匹配（推荐，可处理空格/换行）
             >>> fill_text(
             ...     doc, "姓名", "张三",
-            ...     options=FillOptions.match_right()
+            ...     options=Options.match_right()
             ... )
             >>> # 精确匹配（仅匹配完全相同的文本）
             >>> fill_text(
             ...     doc, "姓名", "张三",
-            ...     options=FillOptions.match_right(normalize=False)
+            ...     options=Options.match_right(normalize=False)
             ... )
         """
         return cls(mode="match_right", match_mode=match_mode, normalize=normalize)
@@ -322,12 +322,12 @@ class Options:
             >>> # 规范化匹配（推荐，可处理空格/换行）
             >>> fill_text(
             ...     doc, "项目", "智慧城市",
-            ...     options=FillOptions.match_down()
+            ...     options=Options.match_down()
             ... )
             >>> # 精确匹配（仅匹配完全相同的文本）
             >>> fill_text(
             ...     doc, "项目", "智慧城市",
-            ...     options=FillOptions.match_down(normalize=False)
+            ...     options=Options.match_down(normalize=False)
             ... )
         """
         return cls(mode="match_down", match_mode=match_mode, normalize=normalize)

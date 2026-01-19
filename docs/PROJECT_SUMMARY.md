@@ -166,7 +166,7 @@ from docxlib import load_docx, fill_text, save_docx
 doc = load_docx("sample.docx")
 
 # 填充内容
-fill_text(doc, "姓名：", "张三", options=FillOptions.match_right())
+fill_text(doc, "姓名：", "张三", options=Options.match_right())
 
 # 保存文档
 save_docx(doc, "output.docx")

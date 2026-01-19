@@ -40,7 +40,7 @@ def read_text(
         doc: Document 对象
         position: 位置元组 (section, table, row, col) 或查找文本
         default: 未找到时的默认值
-        options: 填充模式配置（FillOptions）
+        options: 填充模式配置（Options）
 
     Returns:
         单元格文本内容，未找到时返回默认值
@@ -58,7 +58,7 @@ def read_text(
         >>> # 使用匹配模式
         >>> text = read_text(
         ...     doc, "标签：",
-        ...     options=FillOptions.match_right()
+        ...     options=Options.match_right()
         ... )
     """
     if options is None:
