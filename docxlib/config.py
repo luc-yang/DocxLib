@@ -143,6 +143,30 @@ class Alignment:
         return cls(h_align="center", v_align="middle")
 
     @classmethod
+    def center_top(cls) -> "Alignment":
+        """预设：居中上对齐（水平居中，垂直顶部）
+
+        Returns:
+            居中上对齐配置对象
+
+        Examples:
+            >>> fill_text(doc, (1, 1, 1, 1), "居中上对齐", alignment=Alignment.center_top())
+        """
+        return cls(h_align="center", v_align="top")
+    
+    @classmethod
+    def center_bottom(cls) -> "Alignment":
+        """预设：居中下对齐（水平居中，垂直底部）
+
+        Returns:
+            居中下对齐配置对象
+
+        Examples:
+            >>> fill_text(doc, (1, 1, 1, 1), "居中下对齐", alignment=Alignment.center_bottom())
+        """
+        return cls(h_align="center", v_align="bottom")
+
+    @classmethod
     def left_top(cls) -> "Alignment":
         """预设：左上对齐
 
@@ -153,6 +177,54 @@ class Alignment:
             >>> fill_text(doc, (1, 1, 1, 1), "左上对齐", alignment=Alignment.left_top())
         """
         return cls(h_align="left", v_align="top")
+
+    @classmethod
+    def left_middle(cls) -> "Alignment":
+        """预设：左中对齐
+
+        Returns:
+            左中对齐配置对象
+
+        Examples:
+            >>> fill_text(doc, (1, 1, 1, 1), "左中对齐", alignment=Alignment.left_middle())
+        """
+        return cls(h_align="left", v_align="middle")
+
+    @classmethod
+    def left_bottom(cls) -> "Alignment":
+        """预设：左下对齐
+
+        Returns:
+            左下对齐配置对象
+
+        Examples:
+            >>> fill_text(doc, (1, 1, 1, 1), "左下对齐", alignment=Alignment.left_bottom())
+        """
+        return cls(h_align="left", v_align="bottom")
+    
+    @classmethod
+    def right_top(cls) -> "Alignment":
+        """预设：右上对齐
+
+        Returns:
+            右上对齐配置对象
+
+        Examples:
+            >>> fill_text(doc, (1, 1, 1, 1), "右上对齐", alignment=Alignment.right_top())
+        """
+        return cls(h_align="right", v_align="top")
+
+    @classmethod
+    def right_middle(cls) -> "Alignment":
+        """预设：右中对齐
+
+        Returns:
+            右中对齐配置对象
+
+        Examples:
+            >>> fill_text(doc, (1, 1, 1, 1), "右中对齐", alignment=Alignment.right_middle())
+        """
+        return cls(h_align="right", v_align="middle")
 
     @classmethod
     def right_bottom(cls) -> "Alignment":
