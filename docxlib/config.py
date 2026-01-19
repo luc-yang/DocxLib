@@ -253,58 +253,84 @@ class FillOptions:
         match_mode: 匹配模式（all/first）
             - "all": 填充所有匹配位置（默认）
             - "first": 仅填充第一个匹配位置
+        normalize: 是否规范化文本（去除空格、换行、制表符），默认 True
+            - True: 自动处理模板中的空格、换行等格式问题（推荐）
+            - False: 精确匹配，仅匹配完全相同的文本
 
     Examples:
         >>> # 使用默认模式（直接定位）
         >>> options = FillOptions()
-        >>> # 向右匹配模式
+        >>> # 向右匹配模式（自动规范化）
         >>> options = FillOptions.match_right()
-        >>> # 向下匹配，仅第一个
-        >>> options = FillOptions.match_down(match_mode="first")
+        >>> # 向右匹配，仅第一个，精确匹配
+        >>> options = FillOptions.match_right(match_mode="first", normalize=False)
     """
 
     mode: FillModeLiteral = "position"
     match_mode: MatchModeLiteral = "all"
+    normalize: bool = True
 
     @classmethod
-    def match_right(cls, match_mode: MatchModeLiteral = "all") -> "FillOptions":
+    def match_right(
+        cls,
+        match_mode: MatchModeLiteral = "all",
+        normalize: bool = True,
+    ) -> "FillOptions":
         """预设：向右匹配模式
 
         查找指定文本，将内容填充到其右侧单元格。
 
         Args:
             match_mode: 匹配模式，默认为"all"（填充所有匹配）
+            normalize: 是否规范化文本，默认为 True
 
         Returns:
             向右匹配模式配置对象
 
         Examples:
+            >>> # 规范化匹配（推荐，可处理空格/换行）
             >>> fill_text(
-            ...     doc, "姓名：", "张三",
+            ...     doc, "姓名", "张三",
             ...     options=FillOptions.match_right()
             ... )
+            >>> # 精确匹配（仅匹配完全相同的文本）
+            >>> fill_text(
+            ...     doc, "姓名", "张三",
+            ...     options=FillOptions.match_right(normalize=False)
+            ... )
         """
-        return cls(mode="match_right", match_mode=match_mode)
+        return cls(mode="match_right", match_mode=match_mode, normalize=normalize)
 
     @classmethod
-    def match_down(cls, match_mode: MatchModeLiteral = "all") -> "FillOptions":
+    def match_down(
+        cls,
+        match_mode: MatchModeLiteral = "all",
+        normalize: bool = True,
+    ) -> "FillOptions":
         """预设：向下匹配模式
 
         查找指定文本，将内容填充到其下方单元格。
 
         Args:
             match_mode: 匹配模式，默认为"all"（填充所有匹配）
+            normalize: 是否规范化文本，默认为 True
 
         Returns:
             向下匹配模式配置对象
 
         Examples:
+            >>> # 规范化匹配（推荐，可处理空格/换行）
             >>> fill_text(
             ...     doc, "项目", "智慧城市",
-            ...     options=FillOptions.match_down(match_mode="first")
+            ...     options=FillOptions.match_down()
+            ... )
+            >>> # 精确匹配（仅匹配完全相同的文本）
+            >>> fill_text(
+            ...     doc, "项目", "智慧城市",
+            ...     options=FillOptions.match_down(normalize=False)
             ... )
         """
-        return cls(mode="match_down", match_mode=match_mode)
+        return cls(mode="match_down", match_mode=match_mode, normalize=normalize)
 
 
 @dataclass

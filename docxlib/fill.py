@@ -304,7 +304,7 @@ def fill_text(
         elif mode == "match_right":
             if not isinstance(position, str):
                 raise PositionError("match_right 模式需要查找文本字符串")
-            positions = find_text(doc, position)
+            positions = find_text(doc, position, normalize=options.normalize)
             if not positions:
                 raise PositionError(f"未找到文本: {position}")
 
@@ -323,7 +323,7 @@ def fill_text(
         elif mode == "match_down":
             if not isinstance(position, str):
                 raise PositionError("match_down 模式需要查找文本字符串")
-            positions = find_text(doc, position)
+            positions = find_text(doc, position, normalize=options.normalize)
             if not positions:
                 raise PositionError(f"未找到文本: {position}")
 
@@ -499,7 +499,7 @@ def fill_image(
         elif mode == "match_right":
             if not isinstance(position, str):
                 raise PositionError("match_right 模式需要查找文本字符串")
-            positions = find_text(doc, position)
+            positions = find_text(doc, position, normalize=options.normalize)
             if not positions:
                 raise PositionError(f"未找到文本: {position}")
 
@@ -524,7 +524,7 @@ def fill_image(
         elif mode == "match_down":
             if not isinstance(position, str):
                 raise PositionError("match_down 模式需要查找文本字符串")
-            positions = find_text(doc, position)
+            positions = find_text(doc, position, normalize=options.normalize)
             if not positions:
                 raise PositionError(f"未找到文本: {position}")
 
@@ -580,6 +580,7 @@ def fill_date(
     *,
     style: FontStyle = None,
     alignment: Alignment = None,
+    normalize: bool = True,
 ) -> None:
     """填充日期
 
@@ -592,6 +593,7 @@ def fill_date(
         date_str: 日期字符串，如 "2024年1月15日"
         style: 字体样式配置（FontStyle）
         alignment: 对齐方式配置（Alignment）
+        normalize: 是否规范化文本（用于字符串匹配模式），默认 True
 
     Raises:
         PositionError: 位置无效
@@ -602,8 +604,11 @@ def fill_date(
         >>> # 直接定位（使用默认样式）
         >>> fill_date(doc, (1, 1, 4, 2), "2024年1月15日")
 
-        >>> # 查找文本并填充
-        >>> fill_date(doc, "日期：", "2024年1月15日")
+        >>> # 查找文本并填充（自动规范化）
+        >>> fill_date(doc, "日期", "2024年1月15日")
+
+        >>> # 精确匹配（不规范化）
+        >>> fill_date(doc, "日期", "2024年1月15日", normalize=False)
 
         >>> # 带样式和对齐
         >>> fill_date(
@@ -641,7 +646,7 @@ def fill_date(
         # 确定目标单元格位置
         if isinstance(position, str):
             # 字符串模式：查找文本并填充到右侧
-            positions = find_text(doc, position)
+            positions = find_text(doc, position, normalize=normalize)
             if not positions:
                 raise PositionError(f"未找到文本: {position}")
 

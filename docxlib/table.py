@@ -134,21 +134,34 @@ def get_cells(
     return result
 
 
-def find_text(doc: Document, text: str) -> List[Position]:
+def find_text(doc: Document, text: str, *, normalize: bool = True) -> List[Position]:
     """查找文档中包含指定文本的所有单元格位置
 
     Args:
         doc: Document 对象
         text: 要查找的文本
+        normalize: 是否规范化文本（去除多余空格、换行、制表符），默认 True
 
     Returns:
         List[Position]: 位置列表 [(section, table, row, col), ...]
 
     Examples:
+        >>> # 精确匹配
+        >>> positions = find_text(doc, "姓名", normalize=False)
+        >>> # 规范化匹配（推荐，可匹配"姓    名"等情况）
         >>> positions = find_text(doc, "姓名")
         >>> print(positions)
         [(1, 1, 2, 1)]
     """
+    import re
+
+    def normalize_text(s: str) -> str:
+        """规范化文本：去除所有空格、换行、制表符"""
+        return re.sub(r'[\s\u3000]', '', s)
+
+    # 规范化查找文本
+    search_text = normalize_text(text) if normalize else text
+
     positions = []
 
     for section_idx, table_idx, row_idx, col_idx, cell in iterate_cells(doc):
@@ -158,7 +171,11 @@ def find_text(doc: Document, text: str) -> List[Position]:
             paragraph = cell.Paragraphs.get_Item(m)
             paragraph_text = paragraph.Text.strip()
             cell_text += paragraph_text
-        if text == cell_text:
+
+        # 规范化单元格文本
+        cell_text_normalized = normalize_text(cell_text) if normalize else cell_text
+
+        if search_text == cell_text_normalized:
             positions.append((section_idx, table_idx, row_idx, col_idx))
 
     return positions
