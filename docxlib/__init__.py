@@ -27,17 +27,16 @@ __version__ = "0.1.0"
 __author__ = "DocxLib Contributors"
 
 # ==================== 文档操作 ====================
+from .config import Alignment, FillOptions, FontStyle, ImageConfig
 from .constants import (
     DEFAULT_COLOR,
     DEFAULT_FONT,
     DEFAULT_FONT_SIZE,
     FileFormat,
     FillMode,
-    HorizontalAlignment,
     MatchMode,
     Position,
     SUPPORTED_IMAGE_FORMATS,
-    VerticalAlignment,
 )
 from .document import (
     copy_doc,
@@ -107,6 +106,11 @@ __all__ = [
     # 版本信息
     "__version__",
     "__author__",
+    # 配置类
+    "FontStyle",
+    "Alignment",
+    "FillOptions",
+    "ImageConfig",
     # 文档操作
     "load_docx",
     "save_docx",
@@ -160,8 +164,6 @@ __all__ = [
     "DEFAULT_FONT_SIZE",
     "DEFAULT_COLOR",
     "SUPPORTED_IMAGE_FORMATS",
-    "HorizontalAlignment",
-    "VerticalAlignment",
     "FileFormat",
     "FillMode",
     "MatchMode",

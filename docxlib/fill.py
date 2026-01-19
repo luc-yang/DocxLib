@@ -24,6 +24,7 @@ from .constants import (
     Position,
     VerticalAlignment,
 )
+from .config import Alignment, FillOptions, FontStyle, ImageConfig
 from .errors import FillError, PositionError, ValidationError, VariableNotFoundError
 from .style import apply_cell_alignment, apply_font_style, apply_paragraph_alignment
 from .table import find_text, get_cell, get_cells
@@ -44,28 +45,16 @@ def _has_wildcard(position: Position) -> bool:
 def _fill_single_cell_text(
     cell,
     value: str,
-    font_name: str,
-    font_size: float,
-    color: str,
-    bold: bool,
-    italic: bool,
-    underline: bool,
-    h_align: HorizontalAlignment,
-    v_align: VerticalAlignment,
+    style: FontStyle,
+    alignment: Alignment,
 ) -> None:
     """填充文本到单个单元格（内部辅助函数）
 
     Args:
         cell: 单元格对象
         value: 要填充的文本
-        font_name: 字体名称
-        font_size: 字体大小
-        color: 颜色
-        bold: 是否粗体
-        italic: 是否斜体
-        underline: 是否下划线
-        h_align: 水平对齐方式
-        v_align: 垂直对齐方式
+        style: 字体样式配置
+        alignment: 对齐方式配置
     """
     # 清空单元格内容
     cell.Paragraphs.Clear()
@@ -74,24 +63,20 @@ def _fill_single_cell_text(
     paragraph = cell.AddParagraph()
     run = paragraph.AppendText(value)
 
-    # 应用样式
-    apply_font_style(run, font_name, font_size, color, bold, italic, underline)
+    # 应用样式（直接传递 FontStyle 对象）
+    apply_font_style(run, style)
 
-    # 应用对齐方式
-    if h_align:
-        apply_paragraph_alignment(paragraph, h_align)
-    if v_align:
-        apply_cell_alignment(cell, v_align)
+    # 应用对齐方式（从 Alignment 对象中提取参数）
+    if alignment.h_align:
+        apply_paragraph_alignment(paragraph, alignment.h_align)
+    if alignment.v_align:
+        apply_cell_alignment(cell, alignment.v_align)
 
 
 def _fill_single_cell_image(
     cell,
     image_path: str,
-    h_align: HorizontalAlignment,
-    v_align: VerticalAlignment,
-    width: float,
-    height: float,
-    maintain_ratio: bool,
+    config: ImageConfig,
     original_width_px: int = None,
     original_height_px: int = None,
 ) -> None:
@@ -100,11 +85,7 @@ def _fill_single_cell_image(
     Args:
         cell: 单元格对象
         image_path: 图片文件路径
-        h_align: 水平对齐方式
-        v_align: 垂直对齐方式
-        width: 宽度（磅）
-        height: 高度（磅）
-        maintain_ratio: 是否保持宽高比
+        config: 图片配置对象
         original_width_px: 原始宽度（像素）
         original_height_px: 原始高度（像素）
     """
@@ -122,13 +103,17 @@ def _fill_single_cell_image(
 
     picture.TextWrappingStyle = TextWrappingStyle.Inline
 
-    # 应用对齐方式
-    if h_align:
-        apply_paragraph_alignment(paragraph, h_align)
-    if v_align:
-        apply_cell_alignment(cell, v_align)
+    # 应用对齐方式（从 ImageConfig 对象中提取）
+    if config.h_align:
+        apply_paragraph_alignment(paragraph, config.h_align)
+    if config.v_align:
+        apply_cell_alignment(cell, config.v_align)
 
-    # 调整图片大小
+    # 调整图片大小（从 ImageConfig 对象中提取参数）
+    width = config.width
+    height = config.height
+    maintain_ratio = config.maintain_ratio
+
     if width is not None or height is not None:
         # 优先使用 PIL 获取的尺寸，否则使用 Spire.Doc 的尺寸
         if original_width_px and original_height_px:
@@ -163,10 +148,8 @@ def _fill_single_cell_date(
     cell,
     numbers: list,
     separators: list,
-    font_name: str,
-    font_size: float,
-    h_align: HorizontalAlignment,
-    v_align: VerticalAlignment,
+    style: FontStyle,
+    alignment: Alignment,
 ) -> None:
     """填充日期到单个单元格（内部辅助函数）
 
@@ -174,10 +157,8 @@ def _fill_single_cell_date(
         cell: 单元格对象
         numbers: 数字部分列表
         separators: 分隔符部分列表
-        font_name: 数字字体（年月日使用宋体）
-        font_size: 字体大小
-        h_align: 水平对齐方式
-        v_align: 垂直对齐方式
+        style: 字体样式配置
+        alignment: 对齐方式配置
     """
     # 清空单元格
     cell.Paragraphs.Clear()
@@ -189,33 +170,30 @@ def _fill_single_cell_date(
     for num, sep in zip(numbers, separators):
         # 添加数字（使用指定字体）
         run_num = paragraph.AppendText(num)
-        apply_font_style(run_num, font_name, font_size, DEFAULT_COLOR)
+        apply_font_style(
+            run_num,
+            FontStyle(style.font_name, style.font_size, DEFAULT_COLOR)
+        )
 
         # 添加年月日（使用宋体）
         run_sep = paragraph.AppendText(sep)
-        apply_font_style(run_sep, "宋体", font_size, DEFAULT_COLOR)
+        apply_font_style(run_sep, FontStyle("宋体", style.font_size, DEFAULT_COLOR))
 
-    # 应用对齐方式
-    if h_align:
-        apply_paragraph_alignment(paragraph, h_align)
-    if v_align:
-        apply_cell_alignment(cell, v_align)
+    # 应用对齐方式（从 Alignment 对象中提取）
+    if alignment.h_align:
+        apply_paragraph_alignment(paragraph, alignment.h_align)
+    if alignment.v_align:
+        apply_cell_alignment(cell, alignment.v_align)
 
 
 def fill_text(
     doc: Document,
     position: Union[Position, str],
     value: str,
-    mode: str = FillMode.POSITION,
-    font_name: str = DEFAULT_FONT,
-    font_size: float = DEFAULT_FONT_SIZE,
-    color: str = DEFAULT_COLOR,
-    bold: bool = False,
-    italic: bool = False,
-    underline: bool = False,
-    h_align: HorizontalAlignment = None,
-    v_align: VerticalAlignment = None,
-    match_mode: MatchMode = MatchMode.ALL,
+    *,
+    options: FillOptions = None,
+    style: FontStyle = None,
+    alignment: Alignment = None,
 ) -> None:
     """填充文本到文档
 
@@ -223,56 +201,61 @@ def fill_text(
         doc: Document 对象
         position: 位置元组 (section, table, row, col) 或查找文本
         value: 要填充的文本
-        mode: 填充模式
-            - "position": 直接定位
-            - "match_right": 查找文本，填充到右侧
-            - "match_down": 查找文本，填充到下方
-        font_name: 字体名称
-        font_size: 字体大小（磅）
-        color: 颜色（名称或十六进制）
-        bold: 是否粗体
-        italic: 是否斜体
-        underline: 是否下划线
-        h_align: 水平对齐方式
-            - "left": 左对齐
-            - "center": 居中对齐
-            - "right": 右对齐
-            - "justify": 两端对齐
-        v_align: 垂直对齐方式
-            - "top": 顶部对齐
-            - "center": 居中对齐
-            - "bottom": 底部对齐
-        match_mode: 匹配模式（仅在 match_right/match_down 模式下有效）
-            - "all": 填充所有匹配位置（默认）
-            - "first": 仅填充第一个匹配位置
+        options: 填充模式配置（FillOptions）
+        style: 字体样式配置（FontStyle）
+        alignment: 对齐方式配置（Alignment）
 
     Raises:
         PositionError: 位置无效
         FillError: 填充失败
 
     Examples:
-        >>> # 直接定位
+        >>> # 直接定位（使用默认样式）
         >>> fill_text(doc, (1, 1, 2, 2), "测试文本")
 
         >>> # 右侧填充
-        >>> fill_text(doc, "姓名：", "张三", mode="match_right")
+        >>> fill_text(doc, "姓名：", "张三", options=FillOptions.match_right())
 
         >>> # 下方填充
-        >>> fill_text(doc, "项目1", "智慧城市", mode="match_down")
+        >>> fill_text(doc, "项目1", "智慧城市", options=FillOptions.match_down())
 
-        >>> # 带样式
-        >>> fill_text(doc, "标题", "内容", mode="match_right", font_name="黑体", font_size=16, bold=True)
+        >>> # 带自定义样式
+        >>> fill_text(
+        ...     doc, "标题", "内容",
+        ...     options=FillOptions.match_right(),
+        ...     style=FontStyle(font_name="黑体", font_size=16, bold=True)
+        ... )
+
+        >>> # 使用预设样式
+        >>> fill_text(doc, (1, 1, 1, 1), "文档标题", style=FontStyle.title())
 
         >>> # 通配符：所有表格的第2行第3列
         >>> fill_text(doc, (1, 0, 2, 3), "统一内容")
 
         >>> # 通配符：所有节的所有表格的第1行第1列
-        >>> fill_text(doc, (0, 0, 1, 1), "标题", h_align="center")
+        >>> fill_text(
+        ...     doc, (0, 0, 1, 1), "标题",
+        ...     alignment=Alignment.center()
+        ... )
 
         >>> # 匹配模式：仅填充第一个
-        >>> fill_text(doc, "标签：", "值", mode="match_right", match_mode="first")
+        >>> fill_text(
+        ...     doc, "标签：", "值",
+        ...     options=FillOptions.match_right(match_mode="first")
+        ... )
     """
+    # 初始化配置对象（如果未提供）
+    if options is None:
+        options = FillOptions()
+    if style is None:
+        style = FontStyle()
+    if alignment is None:
+        alignment = Alignment()
     try:
+        # 从配置对象中提取参数
+        mode = options.mode
+        match_mode = options.match_mode
+
         # 确定目标单元格位置
         if mode == FillMode.POSITION:
             if isinstance(position, str):
@@ -287,18 +270,7 @@ def fill_text(
 
                 # 批量填充
                 for _, _, _, _, cell in cells_list:
-                    _fill_single_cell_text(
-                        cell,
-                        value,
-                        font_name,
-                        font_size,
-                        color,
-                        bold,
-                        italic,
-                        underline,
-                        h_align,
-                        v_align,
-                    )
+                    _fill_single_cell_text(cell, value, style, alignment)
                 return
             else:
                 # 单个单元格填充
@@ -320,18 +292,7 @@ def fill_text(
             for pos in target_positions:
                 target_pos = (pos[0], pos[1], pos[2], pos[3] + 1)
                 cell = get_cell(doc, *target_pos)
-                _fill_single_cell_text(
-                    cell,
-                    value,
-                    font_name,
-                    font_size,
-                    color,
-                    bold,
-                    italic,
-                    underline,
-                    h_align,
-                    v_align,
-                )
+                _fill_single_cell_text(cell, value, style, alignment)
             return
 
         elif mode == FillMode.MATCH_DOWN:
@@ -350,36 +311,14 @@ def fill_text(
             for pos in target_positions:
                 target_pos = (pos[0], pos[1], pos[2] + 1, pos[3])
                 cell = get_cell(doc, *target_pos)
-                _fill_single_cell_text(
-                    cell,
-                    value,
-                    font_name,
-                    font_size,
-                    color,
-                    bold,
-                    italic,
-                    underline,
-                    h_align,
-                    v_align,
-                )
+                _fill_single_cell_text(cell, value, style, alignment)
             return
         else:
             raise FillError(f"不支持的填充模式: {mode}")
 
         # 单个单元格填充（position 模式且无通配符）
         cell = get_cell(doc, *target_pos)
-        _fill_single_cell_text(
-            cell,
-            value,
-            font_name,
-            font_size,
-            color,
-            bold,
-            italic,
-            underline,
-            h_align,
-            v_align,
-        )
+        _fill_single_cell_text(cell, value, style, alignment)
 
     except (PositionError, FillError):
         raise
@@ -391,13 +330,9 @@ def fill_image(
     doc: Document,
     position: Union[Position, str],
     source: Union[str, bytes, Path],
-    mode: str = FillMode.POSITION,
-    h_align: HorizontalAlignment = None,
-    v_align: VerticalAlignment = None,
-    width: float = None,
-    height: float = None,
-    maintain_ratio: bool = True,
-    match_mode: MatchMode = MatchMode.ALL,
+    *,
+    options: FillOptions = None,
+    config: ImageConfig = None,
 ) -> None:
     """填充图片到文档
 
@@ -405,25 +340,8 @@ def fill_image(
         doc: Document 对象
         position: 位置元组或查找文本
         source: 图片文件路径（str/Path）或字节数据（bytes）
-        mode: 填充模式
-            - "position": 直接定位
-            - "match_right": 查找文本，填充到右侧
-            - "match_down": 查找文本，填充到下方
-        h_align: 水平对齐方式
-            - "left": 左对齐
-            - "center": 居中对齐
-            - "right": 右对齐
-            - "justify": 两端对齐
-        v_align: 垂直对齐方式
-            - "top": 顶部对齐
-            - "center": 居中对齐
-            - "bottom": 底部对齐
-        width: 宽度（磅）
-        height: 高度（磅）
-        maintain_ratio: 是否保持宽高比
-        match_mode: 匹配模式（仅在 match_right/match_down 模式下有效）
-            - "all": 填充所有匹配位置（默认）
-            - "first": 仅填充第一个匹配位置
+        options: 填充模式配置（FillOptions）
+        config: 图片配置（ImageConfig）
 
     Raises:
         FillError: 图片文件不存在或格式不支持
@@ -431,7 +349,7 @@ def fill_image(
         PositionError: 位置无效
 
     Examples:
-        >>> # 从文件路径填充
+        >>> # 从文件路径填充（使用默认配置）
         >>> fill_image(doc, (1, 1, 2, 2), "logo.png")
 
         >>> # 从字节数据填充
@@ -440,7 +358,18 @@ def fill_image(
         >>> fill_image(doc, (1, 1, 2, 2), data)
 
         >>> # 查找文本并填充，指定尺寸
-        >>> fill_image(doc, "印章：", "seal.png", mode="match_right", width=100, height=100)
+        >>> fill_image(
+        ...     doc, "印章：", "seal.png",
+        ...     options=FillOptions.match_right(),
+        ...     config=ImageConfig(width=100, height=100)
+        ... )
+
+        >>> # 使用预设配置
+        >>> fill_image(
+        ...     doc, "照片", "photo.jpg",
+        ...     options=FillOptions.match_right(),
+        ...     config=ImageConfig.centered(width=80, height=80)
+        ... )
 
         >>> # 通配符：所有表格的同一位置
         >>> fill_image(doc, (1, 0, 2, 2), "logo.png")
@@ -449,8 +378,17 @@ def fill_image(
         >>> fill_image(doc, (0, 0, 1, 1), "header.png")
 
         >>> # 匹配模式：仅填充第一个
-        >>> fill_image(doc, "照片：", "photo.jpg", mode="match_right", match_mode="first")
+        >>> fill_image(
+        ...     doc, "照片：", "photo.jpg",
+        ...     options=FillOptions.match_right(match_mode="first")
+        ... )
     """
+    # 初始化配置对象（如果未提供）
+    if options is None:
+        options = FillOptions()
+    if config is None:
+        config = ImageConfig()
+
     import tempfile
     import os
 
@@ -503,6 +441,10 @@ def fill_image(
         raise ValueError(f"不支持的源类型: {type(source)}")
 
     try:
+        # 从配置对象中提取参数
+        mode = options.mode
+        match_mode = options.match_mode
+
         # 确定目标单元格位置
         if mode == FillMode.POSITION:
             if isinstance(position, str):
@@ -520,11 +462,7 @@ def fill_image(
                     _fill_single_cell_image(
                         cell,
                         image_path,
-                        h_align,
-                        v_align,
-                        width,
-                        height,
-                        maintain_ratio,
+                        config,
                         original_width_px,
                         original_height_px,
                     )
@@ -552,11 +490,7 @@ def fill_image(
                 _fill_single_cell_image(
                     cell,
                     image_path,
-                    h_align,
-                    v_align,
-                    width,
-                    height,
-                    maintain_ratio,
+                    config,
                     original_width_px,
                     original_height_px,
                 )
@@ -581,11 +515,7 @@ def fill_image(
                 _fill_single_cell_image(
                     cell,
                     image_path,
-                    h_align,
-                    v_align,
-                    width,
-                    height,
-                    maintain_ratio,
+                    config,
                     original_width_px,
                     original_height_px,
                 )
@@ -598,11 +528,7 @@ def fill_image(
         _fill_single_cell_image(
             cell,
             image_path,
-            h_align,
-            v_align,
-            width,
-            height,
-            maintain_ratio,
+            config,
             original_width_px,
             original_height_px,
         )
@@ -626,35 +552,21 @@ def fill_date(
     doc: Document,
     position: Union[Position, str],
     date_str: str,
-    font_name: str = DEFAULT_FONT,
-    font_size: float = DEFAULT_FONT_SIZE,
-    h_align: HorizontalAlignment = None,
-    v_align: VerticalAlignment = None,
-    match_mode: MatchMode = MatchMode.ALL,
+    *,
+    style: FontStyle = None,
+    alignment: Alignment = None,
 ) -> None:
     """填充日期
 
-    数字和年月日使用不同字体：数字部分使用 font_name，
+    数字和年月日使用不同字体：数字部分使用 style.font_name，
     年月日部分使用宋体。
 
     Args:
         doc: Document 对象
         position: 位置元组或查找文本
         date_str: 日期字符串，如 "2024年1月15日"
-        font_name: 数字字体（年月日使用宋体）
-        font_size: 字体大小
-        h_align: 水平对齐方式
-            - "left": 左对齐
-            - "center": 居中对齐
-            - "right": 右对齐
-            - "justify": 两端对齐
-        v_align: 垂直对齐方式
-            - "top": 顶部对齐
-            - "center": 居中对齐
-            - "bottom": 底部对齐
-        match_mode: 匹配模式（仅在 position 为查找文本时有效）
-            - "all": 填充所有匹配位置（默认）
-            - "first": 仅填充第一个匹配位置
+        style: 字体样式配置（FontStyle）
+        alignment: 对齐方式配置（Alignment）
 
     Raises:
         PositionError: 位置无效
@@ -662,19 +574,30 @@ def fill_date(
         FillError: 填充失败
 
     Examples:
+        >>> # 直接定位（使用默认样式）
         >>> fill_date(doc, (1, 1, 4, 2), "2024年1月15日")
+
+        >>> # 查找文本并填充
         >>> fill_date(doc, "日期：", "2024年1月15日")
-        >>> fill_date(doc, (1, 1, 4, 2), "2024年1月15日", h_align="center")
+
+        >>> # 带样式和对齐
+        >>> fill_date(
+        ...     doc, (1, 1, 4, 2), "2024年1月15日",
+        ...     style=FontStyle(font_name="宋体", font_size=12),
+        ...     alignment=Alignment.center()
+        ... )
 
         >>> # 通配符：所有表格的同一位置
         >>> fill_date(doc, (1, 0, 4, 2), "2024年1月15日")
 
         >>> # 通配符：所有节的所有表格
         >>> fill_date(doc, (0, 0, 4, 2), "2024年1月15日")
-
-        >>> # 匹配模式：仅填充第一个
-        >>> fill_date(doc, "日期：", "2024年1月15日", match_mode="first")
     """
+    # 初始化配置对象（如果未提供）
+    if style is None:
+        style = FontStyle()
+    if alignment is None:
+        alignment = Alignment()
     try:
 
         from .utils import parse_date_string, validate_date_string
@@ -697,18 +620,14 @@ def fill_date(
             if not positions:
                 raise PositionError(f"未找到文本: {position}")
 
-            # 根据 match_mode 决定填充所有还是仅第一个
-            target_positions = (
-                positions if match_mode == MatchMode.ALL else [positions[0]]
-            )
+            # 批量填充所有匹配位置（fill_date 默认为 all）
+            target_positions = positions
 
             # 批量填充所有匹配位置
             for pos in target_positions:
                 target_pos = (pos[0], pos[1], pos[2], pos[3] + 1)
                 cell = get_cell(doc, *target_pos)
-                _fill_single_cell_date(
-                    cell, numbers, separators, font_name, font_size, h_align, v_align
-                )
+                _fill_single_cell_date(cell, numbers, separators, style, alignment)
             return
         else:
             # 位置元组模式
@@ -721,15 +640,7 @@ def fill_date(
 
                 # 批量填充
                 for _, _, _, _, cell in cells_list:
-                    _fill_single_cell_date(
-                        cell,
-                        numbers,
-                        separators,
-                        font_name,
-                        font_size,
-                        h_align,
-                        v_align,
-                    )
+                    _fill_single_cell_date(cell, numbers, separators, style, alignment)
                 return
             else:
                 # 单个单元格填充
@@ -737,9 +648,7 @@ def fill_date(
 
         # 单个单元格填充（无通配符）
         cell = get_cell(doc, *target_pos)
-        _fill_single_cell_date(
-            cell, numbers, separators, font_name, font_size, h_align, v_align
-        )
+        _fill_single_cell_date(cell, numbers, separators, style, alignment)
 
     except (PositionError, FillError, ValidationError):
         raise

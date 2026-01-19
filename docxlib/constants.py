@@ -77,22 +77,13 @@ DEFAULT_MISSING_VAR_ACTION: str = "error"  # 缺失变量处理方式: "error", 
 
 
 # ==================== 对齐方式 ====================
+# 注意：对齐方式使用字符串字面量，定义在 docxlib.config 的 Literal 类型中
+# 由于 from spire.doc import * 会导入 Spire.Doc 的 HorizontalAlignment/VerticalAlignment 类
+# 因此不在本模块定义同名常量，避免命名冲突和混淆
 
-
-class HorizontalAlignment:
-    """对齐方式常量"""
-
-    LEFT = "left"
-    CENTER = "center"
-    RIGHT = "right"
-    JUSTIFY = "justify"
-    
-class VerticalAlignment:
-    """垂直对齐方式常量"""
-
-    TOP = "top"
-    MIDDLE = "middle"
-    BOTTOM = "bottom"
+# 对齐方式的有效值（仅供文档参考，实际使用时直接使用字符串字面量）：
+# 水平对齐: "left", "center", "right", "justify"
+# 垂直对齐: "top", "middle", "bottom"
 
 
 # ==================== 类型定义 ====================

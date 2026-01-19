@@ -10,6 +10,7 @@ from typing import Union
 from spire.doc import Color
 from spire.doc.common import *
 
+from .config import FontStyle
 from .constants import COLOR_MAP
 from .errors import FillError
 
@@ -67,53 +68,47 @@ def parse_color(color_str: str) -> Color:
 
 def apply_font_style(
     run,
-    font_name: str,
-    font_size: float,
-    color: str,
-    bold: bool = False,
-    italic: bool = False,
-    underline: bool = False,
+    style: FontStyle,
 ) -> None:
     """应用字体样式到文本范围
 
     Args:
         run: Spire.Doc TextRange 对象
-        font_name: 字体名称
-        font_size: 字体大小（磅）
-        color: 颜色（名称或十六进制）
-        bold: 是否粗体
-        italic: 是否斜体
-        underline: 是否下划线
+        style: 字体样式配置对象（FontStyle）
 
     Examples:
+        >>> # 使用自定义样式
         >>> apply_font_style(
         ...     run,
-        ...     font_name="黑体",
-        ...     font_size=16,
-        ...     color="red",
-        ...     bold=True
+        ...     FontStyle(font_name="黑体", font_size=16, color="red", bold=True)
         ... )
+
+        >>> # 使用预设样式
+        >>> apply_font_style(run, FontStyle.title())
+
+        >>> # 使用默认样式
+        >>> apply_font_style(run, FontStyle())
     """
     # 设置字体名称
-    if font_name:
-        run.CharacterFormat.FontName = font_name
+    if style.font_name:
+        run.CharacterFormat.FontName = style.font_name
 
     # 设置字体大小
-    if font_size > 0:
-        run.CharacterFormat.FontSize = font_size
+    if style.font_size > 0:
+        run.CharacterFormat.FontSize = style.font_size
 
     # 设置颜色
-    if color:
-        run.CharacterFormat.TextColor = parse_color(color)
+    if style.color:
+        run.CharacterFormat.TextColor = parse_color(style.color)
 
     # 设置粗体
-    run.CharacterFormat.Bold = bold
+    run.CharacterFormat.Bold = style.bold
 
     # 设置斜体
-    run.CharacterFormat.Italic = italic
+    run.CharacterFormat.Italic = style.italic
 
     # 设置下划线
-    if underline:
+    if style.underline:
         from spire.doc import UnderlineStyle
 
         run.CharacterFormat.UnderlineStyle = UnderlineStyle.Single

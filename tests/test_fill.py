@@ -3,7 +3,17 @@ DocxLib 字段填充模块测试
 """
 
 import pytest
-from docxlib import load_docx, fill_text, fill_date, fill_grid, MatchMode, get_cell_text
+from docxlib import (
+    load_docx,
+    fill_text,
+    fill_date,
+    fill_grid,
+    MatchMode,
+    get_cell_text,
+    FontStyle,
+    Alignment,
+    FillOptions,
+)
 from docxlib.errors import PositionError, FillError, ValidationError
 
 
@@ -25,7 +35,7 @@ class TestFillText:
         # 如果找到"姓名"文本，则测试填充到其右侧
         # 如果没有找到，会抛出 PositionError，这也是预期行为之一
         try:
-            fill_text(doc, "姓名", "填充内容", mode="match_right")
+            fill_text(doc, "姓名", "填充内容", options=FillOptions.match_right())
         except PositionError:
             # 如果文档中没有"姓名"文本，这是正常的
             pass
@@ -36,7 +46,7 @@ class TestFillText:
         doc = load_docx("fixtures/templates/sample.docx")
         # 尝试查找并填充到下方
         try:
-            fill_text(doc, "项目", "向下填充", mode="match_down")
+            fill_text(doc, "项目", "向下填充", options=FillOptions.match_down())
         except PositionError:
             # 如果文档中没有"项目"文本，这是正常的
             pass
@@ -50,7 +60,12 @@ class TestFillText:
     def test_fill_text_with_style(self):
         """测试带样式的文本填充"""
         doc = load_docx("fixtures/templates/sample.docx")
-        fill_text(doc, (1, 1, 1, 1), "红色粗体", color="red", bold=True)
+        fill_text(
+            doc,
+            (1, 1, 1, 1),
+            "红色粗体",
+            style=FontStyle(color="red", bold=True),
+        )
         # 应该成功执行而不抛出异常
 
 
@@ -190,7 +205,9 @@ class TestMatchModeControl:
 
         doc = load_docx("fixtures/templates/sample.docx")
         # 默认填充所有匹配（match_mode="all"是默认值）
-        fill_text(doc, "姓名", "张三", mode="match_right", match_mode=MatchMode.ALL)
+        fill_text(
+            doc, "姓名", "张三", options=FillOptions.match_right(match_mode=MatchMode.ALL)
+        )
 
         # 验证所有匹配位置都已填充（在"姓名"右侧的单元格）
         name_positions = find_text(doc, "姓名")
@@ -205,7 +222,9 @@ class TestMatchModeControl:
 
         doc = load_docx("fixtures/templates/sample.docx")
         # 仅填充第一个匹配
-        fill_text(doc, "姓名", "李四", mode="match_right", match_mode=MatchMode.FIRST)
+        fill_text(
+            doc, "姓名", "李四", options=FillOptions.match_right(match_mode=MatchMode.FIRST)
+        )
 
         # 验证只有第一个匹配位置被填充
         name_positions = find_text(doc, "姓名")
@@ -226,7 +245,9 @@ class TestMatchModeControl:
         from docxlib import find_text
 
         doc = load_docx("fixtures/templates/sample.docx")
-        fill_text(doc, "项目", "测试项目", mode="match_down", match_mode=MatchMode.ALL)
+        fill_text(
+            doc, "项目", "测试项目", options=FillOptions.match_down(match_mode=MatchMode.ALL)
+        )
 
         # 验证所有匹配位置都已填充（在"项目"下方的单元格）
         project_positions = find_text(doc, "项目")
@@ -240,7 +261,12 @@ class TestMatchModeControl:
         from docxlib import find_text
 
         doc = load_docx("fixtures/templates/sample.docx")
-        fill_text(doc, "项目", "第一个项目", mode="match_down", match_mode=MatchMode.FIRST)
+        fill_text(
+            doc,
+            "项目",
+            "第一个项目",
+            options=FillOptions.match_down(match_mode=MatchMode.FIRST),
+        )
 
         # 验证只有第一个匹配位置被填充
         project_positions = find_text(doc, "项目")
@@ -278,7 +304,7 @@ class TestBackwardCompatibility:
 
         doc = load_docx("fixtures/templates/sample.docx")
         # 不指定match_mode，应该默认为"all"
-        fill_text(doc, "姓名", "王五", mode="match_right")
+        fill_text(doc, "姓名", "王五", options=FillOptions.match_right())
 
         # 验证使用默认值（填充所有匹配）
         name_positions = find_text(doc, "姓名")
