@@ -67,6 +67,16 @@ from .fill import (
     validate_template_data,
     extract_template_vars,
 )
+from .read import (
+    extract_images,
+    extract_template_data,
+    read_all_text,
+    read_cells,
+    read_document_structure,
+    read_grid,
+    read_table,
+    read_text,
+)
 from .style import (
     apply_cell_alignment,
     apply_font_style,
@@ -140,6 +150,15 @@ __all__ = [
     "fill_template",
     "extract_template_vars",
     "validate_template_data",
+    # 读取功能
+    "read_text",
+    "read_grid",
+    "read_table",
+    "read_cells",
+    "read_all_text",
+    "read_document_structure",
+    "extract_images",
+    "extract_template_data",
     # 样式管理
     "parse_color",
     "apply_font_style",
