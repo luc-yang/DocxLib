@@ -105,16 +105,21 @@ def cmd_inspect(args: argparse.Namespace) -> int:
                         rows = dims["row_count"]
                         cols_list = dims["columns_per_row"]
                         print(f"    Table {tbl_idx}: {rows} rows (cols per row: {cols_list})")
-                    except Exception as e:
+                    except (PositionError, DocumentError) as e:
                         print(f"    Table {tbl_idx}: Error - {e}")
-            except Exception as e:
+            except (PositionError, DocumentError, AttributeError) as e:
                 print(f"  Error: {e}")
 
         print("=" * 50)
         return 0
 
-    except Exception as e:
+    except (DocumentError, ValidationError, FileNotFoundError) as e:
         print(f"Error loading document: {e}")
+        return 1
+    except Exception as e:
+        import traceback
+        print(f"Unexpected error: {e}")
+        traceback.print_exc()
         return 1
 
 
@@ -152,8 +157,13 @@ def cmd_extract_vars(args: argparse.Namespace) -> int:
 
         return 0
 
+    except (DocumentError, ValidationError, VariableNotFoundError) as e:
+        print(f"Error: {e}")
+        return 1
     except Exception as e:
-        print(f"Error extracting variables: {e}")
+        import traceback
+        print(f"Unexpected error: {e}")
+        traceback.print_exc()
         return 1
 
 
@@ -205,8 +215,13 @@ def cmd_fill(args: argparse.Namespace) -> int:
 
         return 0
 
+    except (DocumentError, ValidationError, FillError, PositionError, VariableNotFoundError) as e:
+        print(f"Error: {e}")
+        return 1
     except Exception as e:
-        print(f"Error filling template: {e}")
+        import traceback
+        print(f"Unexpected error: {e}")
+        traceback.print_exc()
         return 1
 
 
@@ -250,8 +265,13 @@ def cmd_convert(args: argparse.Namespace) -> int:
 
         return 0
 
+    except (DocumentError, ValidationError, ValueError) as e:
+        print(f"Error: {e}")
+        return 1
     except Exception as e:
-        print(f"Error converting document: {e}")
+        import traceback
+        print(f"Unexpected error: {e}")
+        traceback.print_exc()
         return 1
 
 

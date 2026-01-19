@@ -6,7 +6,7 @@ DocxLib 表格操作模块
 
 from typing import Generator, List, Tuple, Union
 
-from spire.doc import *
+from spire.doc import Document
 from spire.doc.common import *
 
 from .errors import PositionError
@@ -56,6 +56,26 @@ def get_cell(doc: Document, section: int, table: int, row: int, col: int):
         raise PositionError(
             f"无法获取位置 ({section}, {table}, {row}, {col}) 的单元格: {e}"
         )
+
+
+def _extract_cell_text(cell) -> str:
+    """从单元格提取文本（内部辅助函数）
+
+    遍历单元格的所有段落，提取并拼接文本内容。
+
+    Args:
+        cell: Spire.Doc Cell 对象
+
+    Returns:
+        str: 单元格的完整文本内容（去除首尾空白）
+
+    Note:
+        使用 join() 而不是 += 以提高性能
+    """
+    return "".join(
+        cell.Paragraphs.get_Item(m).Text.strip()
+        for m in range(cell.Paragraphs.Count)
+    )
 
 
 def get_cells(
@@ -166,11 +186,7 @@ def find_text(doc: Document, text: str, *, normalize: bool = True) -> List[Posit
 
     for section_idx, table_idx, row_idx, col_idx, cell in iterate_cells(doc):
         # 获取单元格文本
-        cell_text = ""
-        for m in range(cell.Paragraphs.Count):
-            paragraph = cell.Paragraphs.get_Item(m)
-            paragraph_text = paragraph.Text.strip()
-            cell_text += paragraph_text
+        cell_text = _extract_cell_text(cell)
 
         # 规范化单元格文本
         cell_text_normalized = normalize_text(cell_text) if normalize else cell_text
@@ -236,12 +252,7 @@ def get_cell_text(doc: Document, section: int, table: int, row: int, col: int) -
         '单元格内容'
     """
     cell = get_cell(doc, section, table, row, col)
-    # 从段落中获取文本
-    cell_text = ""
-    for m in range(cell.Paragraphs.Count):
-        paragraph = cell.Paragraphs.get_Item(m)
-        cell_text += paragraph.Text.strip()
-    return cell_text
+    return _extract_cell_text(cell)
 
 
 def get_table_dimensions(doc: Document, section: int, table: int) -> dict:
@@ -357,12 +368,7 @@ def get_table_text(doc: Document, section: int, table: int) -> List[List[str]]:
             # 使用该行实际的单元格数量
             for col_idx in range(row.Cells.Count):
                 cell = row.Cells.get_Item(col_idx)
-                # 从段落中获取文本
-                cell_text = ""
-                for m in range(cell.Paragraphs.Count):
-                    paragraph = cell.Paragraphs.get_Item(m)
-                    cell_text += paragraph.Text.strip()
-                row_data.append(cell_text)
+                row_data.append(_extract_cell_text(cell))
             result.append(row_data)
 
         return result
@@ -396,12 +402,7 @@ def get_table_row_text(doc: Document, section: int, table: int, row: int) -> Lis
         result = []
         for cell_idx in range(row_obj.Cells.Count):
             cell = row_obj.Cells.get_Item(cell_idx)
-            # 从段落中获取文本
-            cell_text = ""
-            for m in range(cell.Paragraphs.Count):
-                paragraph = cell.Paragraphs.get_Item(m)
-                cell_text += paragraph.Text.strip()
-            result.append(cell_text)
+            result.append(_extract_cell_text(cell))
 
         return result
 
@@ -438,12 +439,7 @@ def get_table_column_text(doc: Document, section: int, table: int, col: int) -> 
             # 检查该行是否有足够的列（处理合并单元格）
             if col <= row.Cells.Count:
                 cell = row.Cells.get_Item(col - 1)
-                # 从段落中获取文本
-                cell_text = ""
-                for m in range(cell.Paragraphs.Count):
-                    paragraph = cell.Paragraphs.get_Item(m)
-                    cell_text += paragraph.Text.strip()
-                result.append(cell_text)
+                result.append(_extract_cell_text(cell))
             else:
                 # 该行由于合并单元格没有这一列
                 result.append("")

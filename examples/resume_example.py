@@ -5,7 +5,7 @@
 
 模板结构（12行 x 7列）：
 - 第1行: 姓名、性别、出生年月、民族、籍贯、政治面貌、身体状况
-- 第2行: 入党（团）时间、参加工作时间
+- 第2行: 入党时间、参加工作时间
 - 第3行: 专业特长
 - 第4行: 专业职称
 - 第5行: 获得职称时间
@@ -16,6 +16,7 @@
 """
 
 from docxlib import (
+    fill_date,
     load_docx,
     save_docx,
     copy_doc,
@@ -70,12 +71,12 @@ def read_resume(template_path):
 
     # 读取第2行的时间信息
     print("\n【时间信息】")
-    # 入党（团）时间
-    info["入党团时间"] = read_text(doc, (1, 1, 2, 2), default="")
+    # 入党时间
+    info["入党时间"] = read_text(doc, (1, 1, 2, 2), default="")
     # 参加工作时间
     info["工作时间"] = read_text(doc, (1, 1, 2, 4), default="")
 
-    print(f"入党（团）时间: {info['入党团时间']}")
+    print(f"入党时间: {info['入党时间']}")
     print(f"参加工作时间: {info['工作时间']}")
 
     # 读取专业信息
@@ -155,7 +156,8 @@ def fill_resume(template_path, output_path, resume_data):
 
     # 填充第2行：时间信息
     print("填充时间信息...")
-    fill_text(doc, (1, 1, 2, 2), resume_data.get("入党团时间", ""))
+    fill_text(doc, (1, 1, 2, 2), resume_data.get("入党时间", ""))
+    # fill_date(doc, (1, 1, 2, 2), resume_data.get("入党时间", ""))
     fill_text(doc, (1, 1, 2, 4), resume_data.get("工作时间", ""))
 
     # 填充专业信息
@@ -241,7 +243,7 @@ def main():
         "姓名": "张三",
         "性别": "男",
         "出生年月": "1990年5月",
-        "入党团时间": "2012年6月",
+        "入党时间": "2012年6月",
         "工作时间": "2015年7月",
         "专业特长": "Java开发、Python开发、系统架构设计",
         "专业职称": "软件工程师",

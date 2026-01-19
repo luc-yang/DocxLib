@@ -8,9 +8,8 @@ import io
 from pathlib import Path
 from typing import Union, List
 
-from spire.doc import *
+from spire.doc import Document, FileFormat, ImageType, Stream
 from spire.doc.common import *
-from spire.doc import FileFormat
 
 from .errors import DocumentError, ValidationError
 from .utils import is_valid_docx, ensure_directory

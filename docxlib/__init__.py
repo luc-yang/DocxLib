@@ -32,7 +32,6 @@ from .constants import (
     DEFAULT_COLOR,
     DEFAULT_FONT_FAMILY,
     DEFAULT_FONT_SIZE,
-    FileFormat,
     Position,
     SUPPORTED_IMAGE_FORMATS,
 )
@@ -181,7 +180,6 @@ __all__ = [
     "DEFAULT_FONT_SIZE",
     "DEFAULT_COLOR",
     "SUPPORTED_IMAGE_FORMATS",
-    "FileFormat",
     "Position",
     # 工具函数
     "is_valid_docx",

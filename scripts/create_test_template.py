@@ -4,7 +4,7 @@
 这个脚本创建一个包含模板变量的 Word 文档用于测试。
 """
 
-from spire.doc import *
+from spire.doc import Document, FileFormat
 from spire.doc.common import *
 
 

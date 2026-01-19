@@ -67,7 +67,7 @@ def parse_color(color_str: str) -> Color:
 
 
 def apply_font_style(
-    run,
+    run: "TextRange",
     style: Style,
 ) -> None:
     """应用字体样式到文本范围
@@ -114,7 +114,7 @@ def apply_font_style(
         run.CharacterFormat.UnderlineStyle = UnderlineStyle.Single
 
 
-def get_cell_format(cell):
+def get_cell_format(cell: "Cell") -> "CellFormat":
     """获取单元格格式对象
 
     Args:
@@ -160,7 +160,7 @@ def set_cell_border(
         borders.BorderType.Bottom.LineWidth = border_width
 
 
-def apply_paragraph_alignment(paragraph, alignment: str) -> None:
+def apply_paragraph_alignment(paragraph: "Paragraph", alignment: str) -> None:
     """应用段落对齐方式
 
     Args:
@@ -188,7 +188,7 @@ def apply_paragraph_alignment(paragraph, alignment: str) -> None:
         paragraph.Format.HorizontalAlignment = alignment_map[alignment]
 
 
-def apply_cell_alignment(cell, alignment: str) -> None:
+def apply_cell_alignment(cell: "Cell", alignment: str) -> None:
     """应用单元格对齐方式
 
     Args:
@@ -323,7 +323,7 @@ def get_cell_style(cell) -> dict:
             "background_color": background_color,
         }
 
-    except Exception as e:
+    except (AttributeError, TypeError, ValueError) as e:
         raise FillError(f"获取单元格样式失败: {e}")
 
 
@@ -405,5 +405,5 @@ def get_paragraph_style(paragraph) -> dict:
             "space_after": space_after,
         }
 
-    except Exception as e:
+    except (AttributeError, TypeError, ValueError) as e:
         raise FillError(f"获取段落样式失败: {e}")

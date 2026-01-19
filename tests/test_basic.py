@@ -21,7 +21,6 @@ from docxlib import (
     DEFAULT_FONT_SIZE,
     DEFAULT_COLOR,
     SUPPORTED_IMAGE_FORMATS,
-    FileFormat,
     # 工具函数
     is_valid_docx,
     parse_color,

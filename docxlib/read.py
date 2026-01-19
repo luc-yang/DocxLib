@@ -6,7 +6,7 @@ DocxLib 读取模块
 
 from typing import Any, Dict, List, Tuple, Union
 
-from spire.doc import *
+from spire.doc import Document, DocPicture
 from spire.doc.common import *
 
 from .config import Options

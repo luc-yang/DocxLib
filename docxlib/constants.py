@@ -55,7 +55,7 @@ Position = tuple[int, int, int, int]
 
 # 尝试导入 Spire.Doc，如果失败则设置为 None
 try:
-    from spire.doc import *
+    import spire.doc
 
     SPIRE_AVAILABLE = True
 except ImportError:
