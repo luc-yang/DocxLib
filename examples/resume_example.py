@@ -188,15 +188,18 @@ def fill_resume(template_path, output_path, resume_data):
 
     # 工作经历（第10行，第2列开始）
     work_exp = resume_data.get("工作经历", "")
-    fill_text(doc, (1, 1, 10, 2), work_exp)
+    options = FillOptions(mode="match_right")
+    style = FontStyle(font_family="黑体", font_size=10.5)
+    align = Alignment.left_top()
+    fill_text(doc, "工作经历", work_exp, options=options, style=style, alignment=align)
 
     # 学习工作成果（第11行，第2列开始）
     achievements = resume_data.get("学习工作成果", "")
-    fill_text(doc, (1, 1, 11, 2), achievements)
+    fill_text(doc, "学习与工作成果", achievements, options=options, style=style, alignment=align) 
 
     # 奖惩情况（第12行，第2列开始）
     awards = resume_data.get("奖惩情况", "")
-    fill_text(doc, (1, 1, 12, 2), awards)
+    fill_text(doc, "奖惩情况", awards, options=options, style=style, alignment=align)
 
     # 填充照片（如果有）
     photo_path = resume_data.get("照片路径")
@@ -254,16 +257,7 @@ def main():
                 "在何院校": "清华大学 软件工程 硕士",
                 "证明人": "王导师"
             },
-            {
-                "起止时间": "",
-                "在何院校": "",
-                "证明人": ""
-            },
-            {
-                "起止时间": "",
-                "在何院校": "",
-                "证明人": ""
-            }
+            
         ],
         "工作经历": "2015.07-2018.06  某某科技公司 软件工程师\n2018.07-至今  某某互联网公司 高级软件工程师",
         "学习工作成果": "主持开发了多个大型项目，发表了3篇技术论文，获得2项专利",
@@ -274,59 +268,6 @@ def main():
     # # 填充简历
     output_path = "output/个人简历_张三.docx"
     fill_resume(template_path, output_path, new_resume_data)
-
-    # # 示例3：批量生成简历
-    # print("\n" + "=" * 60)
-    # print("示例3：批量生成简历")
-    # print("=" * 60)
-
-    # # 模拟多人数据
-    # employees = [
-    #     {
-    #         "姓名": "李四",
-    #         "性别": "女",
-    #         "出生年月": "1992年8月",
-    #         "专业特长": "数据分析、机器学习",
-    #         "专业职称": "数据分析师",
-    #         "学习经历": [
-    #             {"起止时间": "2010.09-2014.06", "在何院校": "复旦大学 数学系", "证明人": "张老师"},
-    #             {}, {}, {}
-    #         ],
-    #         "工作经历": "2014.07-至今  某数据分析公司 数据分析师",
-    #         "学习工作成果": "",
-    #         "奖惩情况": ""
-    #     },
-    #     {
-    #         "姓名": "王五",
-    #         "性别": "男",
-    #         "出生年月": "1988年3月",
-    #         "专业特长": "产品经理、项目管理",
-    #         "专业职称": "高级产品经理",
-    #         "学习经历": [
-    #             {"起止时间": "2006.09-2010.06", "在何院校": "上海交通大学 工商管理", "证明人": "刘教授"},
-    #             {}, {}, {}
-    #         ],
-    #         "工作经历": "2010.07-至今  某互联网公司 产品经理",
-    #         "学习工作成果": "负责多个成功产品的设计和推广",
-    #         "奖惩情况": "2022年度优秀管理者"
-    #     }
-    # ]
-
-    # # 批量生成
-    # for idx, employee in enumerate(employees, 1):
-    #     # 补充默认值
-    #     for key in ["入党团时间", "工作时间", "职称时间"]:
-    #         if key not in employee:
-    #             employee[key] = ""
-
-    #     output_file = f"output/个人简历_{employee['姓名']}.docx"
-    #     fill_resume(template_path, output_file, employee)
-    #     print(f"  [{idx}/{len(employees)}] 已生成: {output_file}")
-
-    # print("\n" + "=" * 60)
-    # print("所有操作完成！")
-    # print("=" * 60)
-
 
 if __name__ == "__main__":
     # 确保输出目录存在
