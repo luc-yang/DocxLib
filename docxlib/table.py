@@ -336,19 +336,20 @@ def get_table_text(doc: Document, section: int, table: int) -> List[List[str]]:
         ...     print("\t".join(row))
     """
     try:
-        # 获取表格尺寸
-        rows, cols = get_table_dimensions(doc, section, table)
-
         # 获取表格对象
         section_obj = doc.Sections.get_Item(section - 1)
         table_obj = section_obj.Tables.get_Item(table - 1)
 
-        # 构建二维数组
+        # 获取行数
+        rows = table_obj.Rows.Count
+
+        # 构建二维数组，处理每行可能不同的列数（合并单元格）
         result = []
         for row_idx in range(rows):
             row_data = []
             row = table_obj.Rows.get_Item(row_idx)
-            for col_idx in range(cols):
+            # 使用该行实际的单元格数量
+            for col_idx in range(row.Cells.Count):
                 cell = row.Cells.get_Item(col_idx)
                 # 从段落中获取文本
                 cell_text = ""
