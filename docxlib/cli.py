@@ -20,24 +20,21 @@ def cmd_info(args: argparse.Namespace) -> int:
     """显示库信息"""
     from docxlib import (
         __version__,
-        DEFAULT_FONT,
+        DEFAULT_FONT_FAMILY,
         DEFAULT_FONT_SIZE,
         DEFAULT_COLOR,
         SUPPORTED_IMAGE_FORMATS,
-        FillMode,
     )
 
     print("=" * 50)
     print("DocxLib Information")
     print("=" * 50)
     print(f"Version: {__version__}")
-    print(f"Default Font: {DEFAULT_FONT}")
+    print(f"Default Font: {DEFAULT_FONT_FAMILY}")
     print(f"Default Font Size: {DEFAULT_FONT_SIZE}")
     print(f"Default Color: {DEFAULT_COLOR}")
     print(f"Supported Image Formats: {', '.join(SUPPORTED_IMAGE_FORMATS)}")
-    print(
-        f"Fill Modes: {FillMode.POSITION}, {FillMode.MATCH_RIGHT}, {FillMode.MATCH_DOWN}"
-    )
+    print("Fill Modes: position, match_right, match_down")
     print("=" * 50)
     return 0
 

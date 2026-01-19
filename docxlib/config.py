@@ -10,7 +10,7 @@ from typing import Literal, Optional
 
 from docxlib.constants import (
     DEFAULT_COLOR,
-    DEFAULT_FONT,
+    DEFAULT_FONT_FAMILY,
     DEFAULT_FONT_SIZE,
 )
 
@@ -45,7 +45,7 @@ class FontStyle:
         >>> heading_style = FontStyle.heading(level=2)
     """
 
-    font_name: str = DEFAULT_FONT
+    font_name: str = DEFAULT_FONT_FAMILY
     font_size: float = DEFAULT_FONT_SIZE
     color: str = DEFAULT_COLOR
     bold: bool = False

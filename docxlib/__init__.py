@@ -30,11 +30,9 @@ __author__ = "DocxLib Contributors"
 from .config import Alignment, FillOptions, FontStyle, ImageConfig
 from .constants import (
     DEFAULT_COLOR,
-    DEFAULT_FONT,
+    DEFAULT_FONT_FAMILY,
     DEFAULT_FONT_SIZE,
     FileFormat,
-    FillMode,
-    MatchMode,
     Position,
     SUPPORTED_IMAGE_FORMATS,
 )
@@ -160,13 +158,11 @@ __all__ = [
     "VariableNotFoundError",
     "VariableSyntaxError",
     # 常量
-    "DEFAULT_FONT",
+    "DEFAULT_FONT_FAMILY",
     "DEFAULT_FONT_SIZE",
     "DEFAULT_COLOR",
     "SUPPORTED_IMAGE_FORMATS",
     "FileFormat",
-    "FillMode",
-    "MatchMode",
     "Position",
     # 工具函数
     "is_valid_docx",

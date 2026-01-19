@@ -13,16 +13,12 @@ from spire.doc.common import *
 
 from .constants import (
     DEFAULT_COLOR,
-    DEFAULT_FONT,
+    DEFAULT_FONT_FAMILY,
     DEFAULT_FONT_SIZE,
     DEFAULT_MISSING_VAR_ACTION,
     DEFAULT_VAR_PREFIX,
     DEFAULT_VAR_SUFFIX,
-    FillMode,
-    HorizontalAlignment,
-    MatchMode,
     Position,
-    VerticalAlignment,
 )
 from .config import Alignment, FillOptions, FontStyle, ImageConfig
 from .errors import FillError, PositionError, ValidationError, VariableNotFoundError
@@ -257,7 +253,7 @@ def fill_text(
         match_mode = options.match_mode
 
         # 确定目标单元格位置
-        if mode == FillMode.POSITION:
+        if mode == "position":
             if isinstance(position, str):
                 raise PositionError("position 模式需要位置元组，不是字符串")
 
@@ -276,7 +272,7 @@ def fill_text(
                 # 单个单元格填充
                 target_pos = position
 
-        elif mode == FillMode.MATCH_RIGHT:
+        elif mode == "match_right":
             if not isinstance(position, str):
                 raise PositionError("match_right 模式需要查找文本字符串")
             positions = find_text(doc, position)
@@ -285,7 +281,7 @@ def fill_text(
 
             # 根据 match_mode 决定填充所有还是仅第一个
             target_positions = (
-                positions if match_mode == MatchMode.ALL else [positions[0]]
+                positions if match_mode == "all" else [positions[0]]
             )
 
             # 批量填充所有匹配位置
@@ -295,7 +291,7 @@ def fill_text(
                 _fill_single_cell_text(cell, value, style, alignment)
             return
 
-        elif mode == FillMode.MATCH_DOWN:
+        elif mode == "match_down":
             if not isinstance(position, str):
                 raise PositionError("match_down 模式需要查找文本字符串")
             positions = find_text(doc, position)
@@ -304,7 +300,7 @@ def fill_text(
 
             # 根据 match_mode 决定填充所有还是仅第一个
             target_positions = (
-                positions if match_mode == MatchMode.ALL else [positions[0]]
+                positions if match_mode == "all" else [positions[0]]
             )
 
             # 批量填充所有匹配位置
@@ -446,7 +442,7 @@ def fill_image(
         match_mode = options.match_mode
 
         # 确定目标单元格位置
-        if mode == FillMode.POSITION:
+        if mode == "position":
             if isinstance(position, str):
                 raise PositionError("position 模式需要位置元组")
 
@@ -471,7 +467,7 @@ def fill_image(
                 # 单个单元格填充
                 target_pos = position
 
-        elif mode == FillMode.MATCH_RIGHT:
+        elif mode == "match_right":
             if not isinstance(position, str):
                 raise PositionError("match_right 模式需要查找文本字符串")
             positions = find_text(doc, position)
@@ -480,7 +476,7 @@ def fill_image(
 
             # 根据 match_mode 决定填充所有还是仅第一个
             target_positions = (
-                positions if match_mode == MatchMode.ALL else [positions[0]]
+                positions if match_mode == "all" else [positions[0]]
             )
 
             # 批量填充所有匹配位置
@@ -496,7 +492,7 @@ def fill_image(
                 )
             return
 
-        elif mode == FillMode.MATCH_DOWN:
+        elif mode == "match_down":
             if not isinstance(position, str):
                 raise PositionError("match_down 模式需要查找文本字符串")
             positions = find_text(doc, position)
@@ -505,7 +501,7 @@ def fill_image(
 
             # 根据 match_mode 决定填充所有还是仅第一个
             target_positions = (
-                positions if match_mode == MatchMode.ALL else [positions[0]]
+                positions if match_mode == "all" else [positions[0]]
             )
 
             # 批量填充所有匹配位置

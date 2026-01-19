@@ -8,7 +8,6 @@ from docxlib import (
     fill_text,
     fill_date,
     fill_grid,
-    MatchMode,
     get_cell_text,
     FontStyle,
     Alignment,
@@ -206,7 +205,7 @@ class TestMatchModeControl:
         doc = load_docx("fixtures/templates/sample.docx")
         # 默认填充所有匹配（match_mode="all"是默认值）
         fill_text(
-            doc, "姓名", "张三", options=FillOptions.match_right(match_mode=MatchMode.ALL)
+            doc, "姓名", "张三", options=FillOptions.match_right(match_mode="all")
         )
 
         # 验证所有匹配位置都已填充（在"姓名"右侧的单元格）
@@ -223,7 +222,7 @@ class TestMatchModeControl:
         doc = load_docx("fixtures/templates/sample.docx")
         # 仅填充第一个匹配
         fill_text(
-            doc, "姓名", "李四", options=FillOptions.match_right(match_mode=MatchMode.FIRST)
+            doc, "姓名", "李四", options=FillOptions.match_right(match_mode="first")
         )
 
         # 验证只有第一个匹配位置被填充
@@ -246,7 +245,7 @@ class TestMatchModeControl:
 
         doc = load_docx("fixtures/templates/sample.docx")
         fill_text(
-            doc, "项目", "测试项目", options=FillOptions.match_down(match_mode=MatchMode.ALL)
+            doc, "项目", "测试项目", options=FillOptions.match_down(match_mode="all")
         )
 
         # 验证所有匹配位置都已填充（在"项目"下方的单元格）
@@ -265,7 +264,7 @@ class TestMatchModeControl:
             doc,
             "项目",
             "第一个项目",
-            options=FillOptions.match_down(match_mode=MatchMode.FIRST),
+            options=FillOptions.match_down(match_mode="first"),
         )
 
         # 验证只有第一个匹配位置被填充

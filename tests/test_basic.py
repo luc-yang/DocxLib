@@ -17,12 +17,11 @@ from docxlib import (
     FillError,
     ValidationError,
     # 常量
-    DEFAULT_FONT,
+    DEFAULT_FONT_FAMILY,
     DEFAULT_FONT_SIZE,
     DEFAULT_COLOR,
     SUPPORTED_IMAGE_FORMATS,
     FileFormat,
-    FillMode,
     # 工具函数
     is_valid_docx,
     parse_color,
@@ -48,27 +47,16 @@ def test_exceptions():
 
 def test_constants():
     """测试常量"""
-    print(f"[OK] 默认字体: {DEFAULT_FONT}")
+    print(f"[OK] 默认字体: {DEFAULT_FONT_FAMILY}")
     print(f"[OK] 默认字号: {DEFAULT_FONT_SIZE}")
     print(f"[OK] 默认颜色: {DEFAULT_COLOR}")
     print(f"[OK] 支持的图片格式: {SUPPORTED_IMAGE_FORMATS}")
 
-    assert DEFAULT_FONT == "仿宋_GB2312"
+    assert DEFAULT_FONT_FAMILY == "仿宋_GB2312"
     assert DEFAULT_FONT_SIZE == 10.5
     assert DEFAULT_COLOR == "black"
     assert ".png" in SUPPORTED_IMAGE_FORMATS
     assert ".jpg" in SUPPORTED_IMAGE_FORMATS
-
-
-def test_fill_modes():
-    """测试填充模式"""
-    print(f"[OK] POSITION 模式: {FillMode.POSITION}")
-    print(f"[OK] MATCH_RIGHT 模式: {FillMode.MATCH_RIGHT}")
-    print(f"[OK] MATCH_DOWN 模式: {FillMode.MATCH_DOWN}")
-
-    assert FillMode.POSITION == "position"
-    assert FillMode.MATCH_RIGHT == "match_right"
-    assert FillMode.MATCH_DOWN == "match_down"
 
 
 def test_color_parsing():
@@ -145,7 +133,6 @@ def main():
         ("版本号", test_version),
         ("异常类", test_exceptions),
         ("常量", test_constants),
-        ("填充模式", test_fill_modes),
         ("颜色解析", test_color_parsing),
         ("日期解析", test_date_parsing),
         ("日期验证", test_date_validation),

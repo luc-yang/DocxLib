@@ -9,7 +9,7 @@ from typing import Dict
 
 # ==================== 默认值 ====================
 
-DEFAULT_FONT: str = "仿宋_GB2312"
+DEFAULT_FONT_FAMILY: str = "仿宋_GB2312"
 DEFAULT_FONT_SIZE: float = 10.5
 DEFAULT_COLOR: str = "black"
 
@@ -51,21 +51,10 @@ class FileFormat:
 
 
 # ==================== 填充模式 ====================
-
-
-class FillMode:
-    """填充模式常量"""
-
-    POSITION = "position"
-    MATCH_RIGHT = "match_right"
-    MATCH_DOWN = "match_down"
-
-
-class MatchMode:
-    """匹配模式常量（控制批量填充行为）"""
-
-    ALL = "all"  # 填充所有匹配位置（默认）
-    FIRST = "first"  # 仅填充第一个匹配位置
+# 注意：填充模式使用字符串字面量，定义在 docxlib.config 的 Literal 类型中
+# 有效值（仅供文档参考，实际使用时直接使用字符串字面量）：
+# 填充模式: "position", "match_right", "match_down"
+# 匹配模式: "all", "first"
 
 
 # ==================== 模板变量 ====================
@@ -74,17 +63,6 @@ class MatchMode:
 DEFAULT_VAR_PREFIX: str = "${"  # 变量前缀
 DEFAULT_VAR_SUFFIX: str = "}"  # 变量后缀
 DEFAULT_MISSING_VAR_ACTION: str = "error"  # 缺失变量处理方式: "error", "ignore", "empty"
-
-
-# ==================== 对齐方式 ====================
-# 注意：对齐方式使用字符串字面量，定义在 docxlib.config 的 Literal 类型中
-# 由于 from spire.doc import * 会导入 Spire.Doc 的 HorizontalAlignment/VerticalAlignment 类
-# 因此不在本模块定义同名常量，避免命名冲突和混淆
-
-# 对齐方式的有效值（仅供文档参考，实际使用时直接使用字符串字面量）：
-# 水平对齐: "left", "center", "right", "justify"
-# 垂直对齐: "top", "middle", "bottom"
-
 
 # ==================== 类型定义 ====================
 
