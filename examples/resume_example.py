@@ -28,11 +28,12 @@ from docxlib import (
     fill_text,
     fill_grid,
     fill_image,
+    # 配置类
     FillOptions,
     FontStyle,
     Alignment,
+    ImageConfig,
 )
-from docxlib.config import FillOptions
 import os
 
 
@@ -205,7 +206,6 @@ def fill_resume(template_path, output_path, resume_data):
     photo_path = resume_data.get("照片路径")
     if photo_path and os.path.exists(photo_path):
         print("填充照片...")
-        from docxlib import ImageConfig
         fill_image(
             doc, (1, 1, 1, 7),
             photo_path,

@@ -5,15 +5,18 @@ DocxLib 高级功能示例
 """
 
 from docxlib import (
-    load_docx,
-    fill_image,
-    fill_grid,
+    Alignment,
+    FillOptions,
+    ImageConfig,
     fill_date,
-    to_pdf,
+    fill_grid,
+    fill_image,
     find_text,
-    iterate_cells,
     get_table_dimensions,
+    iterate_cells,
+    load_docx,
     save_docx,
+    to_pdf,
 )
 
 
@@ -55,11 +58,8 @@ def main():
             doc,
             "图片",
             "fixtures/images/logo.png",
-            mode="match_right",
-            width=80,
-            height=80,
-            h_align="center",
-            v_align="middle",
+            options=FillOptions(mode="match_right"),
+            config=ImageConfig(width=80, height=80, h_align="center", v_align="middle"),
         )
         print("图片填充成功")
     except Exception as e:
@@ -69,7 +69,13 @@ def main():
     try:
         with open("fixtures/images/logo.png", "rb") as f:
             image_data = f.read()
-        fill_image(doc, "图片", image_data, mode="match_right", width=80, height=80)
+        fill_image(
+            doc,
+            "图片",
+            image_data,
+            options=FillOptions(mode="match_right"),
+            config=ImageConfig(width=80, height=80),
+        )
         print("图片填充成功")
     except Exception as e:
         print(f"图片填充失败: {e}")

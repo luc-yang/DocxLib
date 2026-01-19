@@ -4,7 +4,13 @@ DocxLib 批量处理示例
 演示如何批量生成多个文档。
 """
 
-from docxlib import load_docx, fill_text, fill_date, save_docx
+from docxlib import (
+    FillOptions,
+    fill_date,
+    fill_text,
+    load_docx,
+    save_docx,
+)
 
 
 def main():
@@ -45,9 +51,15 @@ def main():
         doc = load_docx(template_path)
 
         # 填充数据
-        fill_text(doc, "姓名", item["name"], mode="match_right")
-        fill_text(doc, "年龄", item["age"], mode="match_right")
-        fill_text(doc, "项目", item["project"], mode="match_right")
+        fill_text(
+            doc, "姓名", item["name"], options=FillOptions(mode="match_right")
+        )
+        fill_text(
+            doc, "年龄", item["age"], options=FillOptions(mode="match_right")
+        )
+        fill_text(
+            doc, "项目", item["project"], options=FillOptions(mode="match_right")
+        )
 
         # 填充日期
         fill_date(doc, "日期", item["date"])
