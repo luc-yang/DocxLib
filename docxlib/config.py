@@ -45,7 +45,7 @@ class FontStyle:
         >>> heading_style = FontStyle.heading(level=2)
     """
 
-    font_name: str = DEFAULT_FONT_FAMILY
+    font_family: str = DEFAULT_FONT_FAMILY
     font_size: float = DEFAULT_FONT_SIZE
     color: str = DEFAULT_COLOR
     bold: bool = False

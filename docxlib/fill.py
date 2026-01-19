@@ -166,7 +166,7 @@ def _fill_single_cell_date(
         run_num = paragraph.AppendText(num)
         apply_font_style(
             run_num,
-            FontStyle(style.font_name, style.font_size, DEFAULT_COLOR)
+            FontStyle(style.font_family, style.font_size, DEFAULT_COLOR)
         )
 
         # 添加年月日（使用宋体）

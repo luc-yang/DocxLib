@@ -90,8 +90,8 @@ def apply_font_style(
         >>> apply_font_style(run, FontStyle())
     """
     # 设置字体名称
-    if style.font_name:
-        run.CharacterFormat.FontName = style.font_name
+    if style.font_family:
+        run.CharacterFormat.FontName = style.font_family
 
     # 设置字体大小
     if style.font_size > 0:
