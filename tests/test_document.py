@@ -7,8 +7,8 @@ from pathlib import Path
 import tempfile
 import os
 
-from docxlib import load_docx, save_docx, merge_docs, to_pdf, copy_doc
-from docxlib.errors import DocumentError, ValidationError
+from docxtbl import load_docx, save_docx, merge_docs, to_pdf, copy_doc
+from docxtbl.errors import DocumentError, ValidationError
 
 
 class TestLoadDocx:

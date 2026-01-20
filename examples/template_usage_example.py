@@ -4,7 +4,7 @@ DocxLib 模板变量功能使用示例
 演示如何使用模板变量功能批量生成文档。
 """
 
-from docxlib import load_docx, fill_template, save_docx, extract_template_vars, validate_template_data
+from docxtbl import load_docx, fill_template, save_docx, extract_template_vars, validate_template_data
 
 
 def example_basic_usage():

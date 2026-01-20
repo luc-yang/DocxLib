@@ -4,7 +4,7 @@ DocxLib 基础用法示例
 演示如何加载文档、填充字段、保存文档。
 """
 
-from docxlib import (
+from docxtbl import (
     Alignment,
     Options,
     Style,

@@ -8,7 +8,7 @@ import sys
 
 sys.path.insert(0, r"d:\Code\DocxLib")
 
-from docxlib import (
+from docxtbl import (
     __version__,
     # 异常类
     DocxLibError,

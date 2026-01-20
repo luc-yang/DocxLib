@@ -3,8 +3,8 @@ DocxLib 工具函数测试
 """
 
 import pytest
-from docxlib.utils import validate_date_string, parse_date_string
-from docxlib.errors import ValidationError
+from docxtbl.utils import validate_date_string, parse_date_string
+from docxtbl.errors import ValidationError
 
 
 class TestValidateDateString:

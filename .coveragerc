@@ -2,7 +2,7 @@
 # Coverage configuration for DocxLib
 
 # Source code to measure
-source = docxlib
+source = docxtbl
 
 # Omit files from coverage
 omit =

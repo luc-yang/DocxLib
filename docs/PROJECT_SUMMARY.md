@@ -13,7 +13,7 @@
 
 ```
 DocxLib/
-├── docxlib/                    # 主包目录
+├── docxtbl/                    # 主包目录
 │   ├── __init__.py            # 导出接口 (142 行)
 │   ├── document.py            # 文档操作模块 (189 行)
 │   ├── table.py               # 表格操作模块 (197 行)
@@ -160,7 +160,7 @@ DocxLib/
 ## 快速开始
 
 ```python
-from docxlib import load_docx, fill_text, save_docx
+from docxtbl import load_docx, fill_text, save_docx
 
 # 加载模板
 doc = load_docx("sample.docx")

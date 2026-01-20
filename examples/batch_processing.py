@@ -4,7 +4,7 @@ DocxLib 批量处理示例
 演示如何批量生成多个文档。
 """
 
-from docxlib import (
+from docxtbl import (
     Options,
     fill_date,
     fill_text,

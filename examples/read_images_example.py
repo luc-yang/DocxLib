@@ -3,7 +3,7 @@
 演示如何使用 read_images() 函数提取文档中的图片元数据和字节数据。
 """
 
-from docxlib import load_docx, read_images
+from docxtbl import load_docx, read_images
 import os
 
 

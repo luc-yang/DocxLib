@@ -9,7 +9,7 @@ DocxLib 现在支持使用 `${variable}` 格式的模板变量，可以批量填
 ### 1. 批量变量填充
 
 ```python
-from docxlib import load_docx, fill_template, save_docx
+from docxtbl import load_docx, fill_template, save_docx
 
 # 加载模板
 doc = load_docx("template.docx")
@@ -29,7 +29,7 @@ save_docx(doc, "output.docx")
 ### 2. 提取模板变量
 
 ```python
-from docxlib import load_docx, extract_template_vars
+from docxtbl import load_docx, extract_template_vars
 
 doc = load_docx("template.docx")
 
@@ -41,7 +41,7 @@ print(vars)  # ['name', 'age', 'dept', 'date']
 ### 3. 验证数据完整性
 
 ```python
-from docxlib import load_docx, validate_template_data
+from docxtbl import load_docx, validate_template_data
 
 doc = load_docx("template.docx")
 
@@ -119,11 +119,11 @@ pytest tests/test_template.py -v
 
 ```python
 # 旧代码仍然有效
-from docxlib import replace_all
+from docxtbl import replace_all
 replace_all(doc, "{name}", "张三")
 
 # 新功能提供更好的体验
-from docxlib import fill_template
+from docxtbl import fill_template
 fill_template(doc, {"name": "张三"})
 ```
 
@@ -206,8 +206,8 @@ python scripts/create_test_template.py
 
 ## 相关文件
 
-- 实现: [docxlib/fill.py](docxlib/fill.py)
-- 异常: [docxlib/errors.py](docxlib/errors.py)
-- 常量: [docxlib/constants.py](docxlib/constants.py)
+- 实现: [docxtbl/fill.py](docxtbl/fill.py)
+- 异常: [docxtbl/errors.py](docxtbl/errors.py)
+- 常量: [docxtbl/constants.py](docxtbl/constants.py)
 - 测试: [tests/test_template.py](tests/test_template.py)
 - 示例: [examples/template_usage_example.py](examples/template_usage_example.py)

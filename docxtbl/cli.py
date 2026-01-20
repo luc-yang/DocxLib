@@ -10,7 +10,7 @@ import sys
 
 def cmd_version(args: argparse.Namespace) -> int:
     """显示版本信息"""
-    from docxlib import __version__
+    from docxtbl import __version__
 
     print(f"DocxLib version {__version__}")
     return 0
@@ -18,7 +18,7 @@ def cmd_version(args: argparse.Namespace) -> int:
 
 def cmd_info(args: argparse.Namespace) -> int:
     """显示库信息"""
-    from docxlib import (
+    from docxtbl import (
         __version__,
         DEFAULT_FONT_FAMILY,
         DEFAULT_FONT_SIZE,
@@ -52,7 +52,7 @@ def cmd_test(args: argparse.Namespace) -> int:
 def cmd_validate(args: argparse.Namespace) -> int:
     """验证 DOCX 文件"""
     from pathlib import Path
-    from docxlib import is_valid_docx
+    from docxtbl import is_valid_docx
 
     file_path = Path(args.file)
     if not file_path.exists():
@@ -70,7 +70,7 @@ def cmd_validate(args: argparse.Namespace) -> int:
 def cmd_inspect(args: argparse.Namespace) -> int:
     """检查文档信息"""
     from pathlib import Path
-    from docxlib import load_docx, get_section_count, get_table_dimensions
+    from docxtbl import load_docx, get_section_count, get_table_dimensions
 
     file_path = Path(args.file)
     if not file_path.exists():
@@ -94,7 +94,7 @@ def cmd_inspect(args: argparse.Namespace) -> int:
             print("-" * 30)
 
             try:
-                from docxlib import get_section_table_count
+                from docxtbl import get_section_table_count
 
                 table_count = get_section_table_count(doc, sec_idx)
                 print(f"  Tables: {table_count}")
@@ -126,7 +126,7 @@ def cmd_inspect(args: argparse.Namespace) -> int:
 def cmd_extract_vars(args: argparse.Namespace) -> int:
     """提取模板变量"""
     from pathlib import Path
-    from docxlib import load_docx, extract_template_vars
+    from docxtbl import load_docx, extract_template_vars
     import json
 
     file_path = Path(args.file)
@@ -170,7 +170,7 @@ def cmd_extract_vars(args: argparse.Namespace) -> int:
 def cmd_fill(args: argparse.Namespace) -> int:
     """填充模板文档"""
     from pathlib import Path
-    from docxlib import load_docx, fill_template, save_docx, parse_json
+    from docxtbl import load_docx, fill_template, save_docx, parse_json
 
     template_path = Path(args.template)
     data_path = Path(args.data)
@@ -228,7 +228,7 @@ def cmd_fill(args: argparse.Namespace) -> int:
 def cmd_convert(args: argparse.Namespace) -> int:
     """转换文档格式"""
     from pathlib import Path
-    from docxlib import load_docx, to_pdf_file
+    from docxtbl import load_docx, to_pdf_file
 
     input_path = Path(args.input)
     output_path = Path(args.output) if args.output else None
@@ -278,7 +278,7 @@ def cmd_convert(args: argparse.Namespace) -> int:
 def main() -> int:
     """主函数"""
     parser = argparse.ArgumentParser(
-        prog="docxlib", description="DocxLib - Word document processing library"
+        prog="docxtbl", description="DocxLib - Word document processing library"
     )
 
     parser.add_argument(

@@ -15,7 +15,7 @@
 - 第12行: 奖惩情况
 """
 
-from docxlib import (
+from docxtbl import (
     fill_date,
     load_docx,
     save_docx,

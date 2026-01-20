@@ -8,7 +8,7 @@ from pathlib import Path
 import tempfile
 import pytest
 
-from docxlib.cli import (
+from docxtbl.cli import (
     cmd_version,
     cmd_info,
     cmd_test,
@@ -181,7 +181,7 @@ class TestMain:
         import sys
         old_argv = sys.argv
         try:
-            sys.argv = ["docxlib"]
+            sys.argv = ["docxtbl"]
             result = main()
             # 应该显示帮助并返回 0
             assert result == 0
@@ -195,7 +195,7 @@ class TestMain:
         import sys
         old_argv = sys.argv
         try:
-            sys.argv = ["docxlib", "--version"]
+            sys.argv = ["docxtbl", "--version"]
             result = main()
             assert result == 0
             captured = capsys.readouterr()
@@ -208,7 +208,7 @@ class TestMain:
         import sys
         old_argv = sys.argv
         try:
-            sys.argv = ["docxlib", "version"]
+            sys.argv = ["docxtbl", "version"]
             result = main()
             assert result == 0
             captured = capsys.readouterr()
@@ -221,7 +221,7 @@ class TestMain:
         import sys
         old_argv = sys.argv
         try:
-            sys.argv = ["docxlib", "info"]
+            sys.argv = ["docxtbl", "info"]
             result = main()
             assert result == 0
             captured = capsys.readouterr()

@@ -4,7 +4,7 @@
 """
 
 import pytest
-from docxlib import (
+from docxtbl import (
     load_docx,
     get_table_text,
     get_table_row_text,
@@ -14,7 +14,7 @@ from docxlib import (
     get_cell_style,
     get_paragraph_style,
 )
-from docxlib.errors import PositionError, FillError, DocumentError
+from docxtbl.errors import PositionError, FillError, DocumentError
 
 
 class TestTableEdgeCases:
@@ -233,7 +233,7 @@ class TestIntegrationScenarios:
         assert isinstance(style, dict)
 
         # 3. 验证可以继续操作文档
-        from docxlib import fill_text
+        from docxtbl import fill_text
         original_text = table_data[0][0] if table_data else ""
         fill_text(doc, (1, 1, 1, 1), "新内容")
 

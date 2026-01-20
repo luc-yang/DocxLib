@@ -8,7 +8,7 @@ DocxLib 参数对象配置模块
 from dataclasses import dataclass
 from typing import Literal, Optional
 
-from docxlib.constants import (
+from docxtbl.constants import (
     DEFAULT_COLOR,
     DEFAULT_FONT_FAMILY,
     DEFAULT_FONT_SIZE,

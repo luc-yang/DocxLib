@@ -3,7 +3,7 @@ DocxLib 字段填充模块测试
 """
 
 import pytest
-from docxlib import (
+from docxtbl import (
     load_docx,
     fill_text,
     fill_date,
@@ -13,7 +13,7 @@ from docxlib import (
     Alignment,
     Options,
 )
-from docxlib.errors import PositionError, FillError, ValidationError
+from docxtbl.errors import PositionError, FillError, ValidationError
 
 
 class TestFillText:
@@ -28,7 +28,7 @@ class TestFillText:
 
     def test_fill_text_by_match_right(self):
         """测试 match_right 模式填充"""
-        from docxlib import PositionError
+        from docxtbl import PositionError
         doc = load_docx("fixtures/templates/sample.docx")
         # 尝试查找并填充到右侧
         # 如果找到"姓名"文本，则测试填充到其右侧
@@ -41,7 +41,7 @@ class TestFillText:
 
     def test_fill_text_by_match_down(self):
         """测试 match_down 模式填充"""
-        from docxlib import PositionError
+        from docxtbl import PositionError
         doc = load_docx("fixtures/templates/sample.docx")
         # 尝试查找并填充到下方
         try:
@@ -147,7 +147,7 @@ class TestReplaceAll:
 
     def test_replace_all_success(self):
         """测试成功全局替换"""
-        from docxlib import replace_all
+        from docxtbl import replace_all
 
         doc = load_docx("fixtures/templates/sample.docx")
         replace_all(doc, "测试", "替换后")
@@ -159,7 +159,7 @@ class TestFillTextWildcard:
 
     def test_fill_text_wildcard_all_tables(self):
         """测试通配符所有表格"""
-        from docxlib import get_cell_text, get_section_table_count
+        from docxtbl import get_cell_text, get_section_table_count
 
         doc = load_docx("fixtures/templates/sample.docx")
         # 填充第1节所有表格的第1行第1列
@@ -173,7 +173,7 @@ class TestFillTextWildcard:
 
     def test_fill_text_wildcard_all_sections(self):
         """测试通配符所有节"""
-        from docxlib import get_cell_text, get_section_count, get_section_table_count
+        from docxtbl import get_cell_text, get_section_count, get_section_table_count
 
         doc = load_docx("fixtures/templates/sample.docx")
         # 填充所有节的所有表格的第2行第2列
@@ -200,7 +200,7 @@ class TestMatchModeControl:
 
     def test_match_right_fill_all(self):
         """测试match_right模式填充所有匹配"""
-        from docxlib import find_text
+        from docxtbl import find_text
 
         doc = load_docx("fixtures/templates/sample.docx")
         # 默认填充所有匹配（match_mode="all"是默认值）
@@ -217,7 +217,7 @@ class TestMatchModeControl:
 
     def test_match_right_fill_first(self):
         """测试match_right模式仅填充第一个匹配"""
-        from docxlib import find_text
+        from docxtbl import find_text
 
         doc = load_docx("fixtures/templates/sample.docx")
         # 仅填充第一个匹配
@@ -241,7 +241,7 @@ class TestMatchModeControl:
 
     def test_match_down_fill_all(self):
         """测试match_down模式填充所有匹配"""
-        from docxlib import find_text
+        from docxtbl import find_text
 
         doc = load_docx("fixtures/templates/sample.docx")
         fill_text(
@@ -261,7 +261,7 @@ class TestMatchModeControl:
 
     def test_match_down_fill_first(self):
         """测试match_down模式仅填充第一个匹配"""
-        from docxlib import find_text
+        from docxtbl import find_text
 
         doc = load_docx("fixtures/templates/sample.docx")
         # 使用"姓名"（在第1行第1列），向下填充到第2行
@@ -292,7 +292,7 @@ class TestBackwardCompatibility:
 
     def test_fill_text_without_wildcard_still_works(self):
         """测试无通配符的填充仍然正常工作"""
-        from docxlib import get_cell_text
+        from docxtbl import get_cell_text
 
         doc = load_docx("fixtures/templates/sample.docx")
         # 不使用通配符的传统调用方式
@@ -304,7 +304,7 @@ class TestBackwardCompatibility:
 
     def test_fill_text_without_match_mode_param(self):
         """测试不指定match_mode参数时使用默认值"""
-        from docxlib import find_text
+        from docxtbl import find_text
 
         doc = load_docx("fixtures/templates/sample.docx")
         # 不指定match_mode，应该默认为"all"
@@ -323,7 +323,7 @@ class TestClearCell:
 
     def test_clear_cell_success(self):
         """测试成功清空单元格"""
-        from docxlib import clear_cell
+        from docxtbl import clear_cell
 
         doc = load_docx("fixtures/templates/sample.docx")
         # 先填充内容
@@ -339,7 +339,7 @@ class TestClearCell:
 
     def test_clear_cell_wildcard(self):
         """测试通配符清空多个单元格"""
-        from docxlib import clear_cell, get_cells
+        from docxtbl import clear_cell, get_cells
 
         doc = load_docx("fixtures/templates/sample.docx")
         # 填充多个位置

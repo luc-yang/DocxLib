@@ -10,7 +10,7 @@ DocxLib - Word 文档处理库
     - 样式应用（字体、颜色、格式等）
 
 示例:
-    >>> from docxlib import load_docx, fill_text, Options, save_docx
+    >>> from docxtbl import load_docx, fill_text, Options, save_docx
     >>>
     >>> # 加载模板
     >>> doc = load_docx("sample.docx")

@@ -12,7 +12,7 @@ long_description = (
 )
 
 setup(
-    name="docxlib",
+    name="docxtbl",
     use_scm_version=False,
     version="0.1.0",
     description="A simple and easy-to-use Word document processing library based on Spire.Doc",
@@ -37,7 +37,7 @@ setup(
     },
     entry_points={
         "console_scripts": [
-            "docxlib=docxlib.cli:main",
+            "docxtbl=docxtbl.cli:main",
         ],
     },
     classifiers=[

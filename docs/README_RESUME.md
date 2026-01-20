@@ -25,7 +25,7 @@
 使用 `read_text()` 和 `read_cells()` 函数读取模板中的现有数据：
 
 ```python
-from docxlib import load_docx, read_text, read_cells
+from docxtbl import load_docx, read_text, read_cells
 
 doc = load_docx("fixtures/templates/sample.docx")
 
@@ -43,7 +43,7 @@ education = read_cells(doc, positions, default="")
 使用 `fill_text()` 和 `fill_grid()` 函数填充简历数据：
 
 ```python
-from docxlib import fill_text, fill_grid, Style
+from docxtbl import fill_text, fill_grid, Style
 
 # 填充基本信息（带样式）
 fill_text(
@@ -66,7 +66,7 @@ fill_grid(doc, education_data, position=(1, 1, 6, 1))
 使用 `copy_doc()` 复制模板，为每个人生成独立的简历：
 
 ```python
-from docxlib import copy_doc
+from docxtbl import copy_doc
 
 template = load_docx("fixtures/templates/sample.docx")
 
@@ -126,7 +126,7 @@ data = read_grid(doc, position=(1, 1, 6, 1))
 ### 提取图片信息
 
 ```python
-from docxlib import read_images
+from docxtbl import read_images
 
 images = read_images(doc, include_data=True)
 for img in images:
@@ -140,7 +140,7 @@ for img in images:
 ### 填充照片
 
 ```python
-from docxlib import fill_image, ImageConfig
+from docxtbl import fill_image, ImageConfig
 
 fill_image(
     doc, (1, 1, 1, 1),  # 照片位置
@@ -166,6 +166,6 @@ fill_image(
 ## 相关文件
 
 - [examples/resume_example.py](resume_example.py) - 完整示例代码
-- [docxlib/read.py](../docxlib/read.py) - 读取模块
-- [docxlib/fill.py](../docxlib/fill.py) - 填充模块
+- [docxtbl/read.py](../docxtbl/read.py) - 读取模块
+- [docxtbl/fill.py](../docxtbl/fill.py) - 填充模块
 - [fixtures/templates/sample.docx](../fixtures/templates/sample.docx) - 简历模板

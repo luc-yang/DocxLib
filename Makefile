@@ -30,7 +30,7 @@ test:
 	python tests/test_basic.py
 
 test-cov:
-	pytest tests/ --cov=docxlib --cov-report=html --cov-report=term
+	pytest tests/ --cov=docxtbl --cov-report=html --cov-report=term
 
 test-all:
 	pytest tests/ -v
@@ -61,24 +61,24 @@ docs:
 
 # 代码格式化
 format:
-	black docxlib/ examples/ tests/
+	black docxtbl/ examples/ tests/
 
 # 代码检查
 lint:
-	flake8 docxlib/ examples/ tests/
+	flake8 docxtbl/ examples/ tests/
 
 # 验证文档
 validate:
-	python -m docxlib.cli validate fixtures/templates/sample.docx
+	python -m docxtbl.cli validate fixtures/templates/sample.docx
 
 # 检查文档
 inspect:
-	python -m docxlib.cli inspect fixtures/templates/sample.docx
+	python -m docxtbl.cli inspect fixtures/templates/sample.docx
 
 # 显示信息
 info:
-	python -m docxlib.cli info
+	python -m docxtbl.cli info
 
 # 版本
 version:
-	python -m docxlib.cli version
+	python -m docxtbl.cli version

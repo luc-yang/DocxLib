@@ -1,5 +1,5 @@
 def main():
-    print("Hello from docxlib!")
+    print("Hello from docxtbl!")
 
 
 if __name__ == "__main__":

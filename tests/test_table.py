@@ -3,8 +3,8 @@ DocxLib 表格操作模块测试
 """
 
 import pytest
-from docxlib import load_docx, get_cell, get_cells, find_text, iterate_cells, get_cell_text
-from docxlib.errors import PositionError
+from docxtbl import load_docx, get_cell, get_cells, find_text, iterate_cells, get_cell_text
+from docxtbl.errors import PositionError
 
 
 class TestGetCell:

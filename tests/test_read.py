@@ -1,7 +1,7 @@
 """DocxLib 文档读取功能测试"""
 
 import pytest
-from docxlib import (
+from docxtbl import (
     load_docx,
     get_table_text,
     get_table_row_text,
@@ -11,7 +11,7 @@ from docxlib import (
     get_cell_style,
     get_paragraph_style,
 )
-from docxlib.errors import PositionError, DocumentError
+from docxtbl.errors import PositionError, DocumentError
 
 
 class TestTableContentReading:
@@ -208,7 +208,7 @@ class TestBackwardCompatibility:
     def test_existing_read_functions_work(self):
         """测试现有读取功能仍然可用"""
         doc = load_docx("fixtures/templates/sample.docx")
-        from docxlib import get_cell_text, find_text
+        from docxtbl import get_cell_text, find_text
 
         # 现有功能不应受影响
         text = get_cell_text(doc, 1, 1, 1, 1)
@@ -219,7 +219,7 @@ class TestBackwardCompatibility:
 
     def test_new_functions_are_importable(self):
         """测试新函数可以从顶层导入"""
-        from docxlib import (
+        from docxtbl import (
             get_table_text,
             get_table_row_text,
             get_table_column_text,

@@ -9,7 +9,7 @@ include pyproject.toml
 include setup.py
 include Makefile
 
-recursive-include docxlib *.py
+recursive-include docxtbl *.py
 recursive-include examples *.py
 recursive-include tests *.py
 recursive-include fixtures *

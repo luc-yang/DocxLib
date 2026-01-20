@@ -334,7 +334,7 @@ toml = [
 ]
 
 [[package]]
-name = "docxlib"
+name = "docxtbl"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [

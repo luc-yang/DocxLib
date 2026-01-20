@@ -80,7 +80,7 @@
 
 ## 代码覆盖率分析
 
-### 1. get_table_text (docxlib/table.py:297-339)
+### 1. get_table_text (docxtbl/table.py:297-339)
 
 **覆盖的代码路径**:
 - ✅ 主路径：正常获取表格文本
@@ -91,7 +91,7 @@
 
 ---
 
-### 2. get_table_row_text (docxlib/table.py:341-382)
+### 2. get_table_row_text (docxtbl/table.py:341-382)
 
 **覆盖的代码路径**:
 - ✅ 主路径：正常获取行文本
@@ -102,7 +102,7 @@
 
 ---
 
-### 3. get_table_column_text (docxlib/table.py:384-422)
+### 3. get_table_column_text (docxtbl/table.py:384-422)
 
 **覆盖的代码路径**:
 - ✅ 主路径：正常获取列文本
@@ -113,7 +113,7 @@
 
 ---
 
-### 4. get_document_properties (docxlib/document.py:276-336)
+### 4. get_document_properties (docxtbl/document.py:276-336)
 
 **覆盖的代码路径**:
 - ✅ 主路径：正常获取文档属性
@@ -128,7 +128,7 @@
 
 ---
 
-### 5. get_cell_style (docxlib/style.py:222-332)
+### 5. get_cell_style (docxtbl/style.py:222-332)
 
 **覆盖的代码路径**:
 - ✅ 空单元格处理 (cell.Paragraphs.Count == 0)
@@ -145,7 +145,7 @@
 
 ---
 
-### 6. get_paragraph_style (docxlib/style.py:335-416)
+### 6. get_paragraph_style (docxtbl/style.py:335-416)
 
 **覆盖的代码路径**:
 - ✅ format_obj为None或不存在的处理

@@ -19,7 +19,7 @@ make install-dev          # Install with dev dependencies
 make test                 # Run basic tests (tests/test_basic.py)
 pytest tests/ -v          # Run all tests with verbose output
 pytest tests/test_fill.py # Run specific test file
-pytest tests/ --cov=docxlib --cov-report=html  # Run with coverage
+pytest tests/ --cov=docxtbl --cov-report=html  # Run with coverage
 
 # Code Quality
 make format               # Format code with black
@@ -29,13 +29,13 @@ make lint                 # Check code with flake8
 make build                # Build package for distribution
 
 # CLI Tools
-python -m docxlib.cli validate fixtures/templates/sample.docx
-python -m docxlib.cli inspect fixtures/templates/sample.docx
-python -m docxlib.cli extract-vars template.docx -o vars.json
-python -m docxlib.cli fill template.docx data.json -o output.docx
-python -m docxlib.cli convert input.docx -f pdf -o output.pdf
-python -m docxlib.cli info          # Show library info
-python -m docxlib.cli version       # Show version
+python -m docxtbl.cli validate fixtures/templates/sample.docx
+python -m docxtbl.cli inspect fixtures/templates/sample.docx
+python -m docxtbl.cli extract-vars template.docx -o vars.json
+python -m docxtbl.cli fill template.docx data.json -o output.docx
+python -m docxtbl.cli convert input.docx -f pdf -o output.pdf
+python -m docxtbl.cli info          # Show library info
+python -m docxtbl.cli version       # Show version
 ```
 
 ## Architecture
@@ -43,7 +43,7 @@ python -m docxlib.cli version       # Show version
 ### Module Structure
 
 ```
-docxlib/
+docxtbl/
 ├── __init__.py      # Public API exports (functional interface)
 ├── cli.py           # Command-line interface (validate, inspect, fill, convert)
 ├── config.py        # Configuration classes (Style, Alignment, Options, ImageConfig)
@@ -100,7 +100,7 @@ The `fill_text()` and `fill_image()` functions support three modes via `Options`
 **Image Filling** uses similar modes with `ImageConfig`:
 
 ```python
-from docxlib import ImageConfig
+from docxtbl import ImageConfig
 
 # Direct position
 fill_image(doc, (1, 1, 2, 2), "photo.jpg")
@@ -177,7 +177,7 @@ positions = find_text(doc, "姓名", normalize=False)  # Exact match
 `fill_date()` handles dates with special formatting - the numeric part and "年月日" text use different fonts (common in Chinese documents):
 
 ```python
-from docxlib import fill_date
+from docxtbl import fill_date
 
 # Direct position - numbers use style.font_name, "年月日" uses 宋体
 fill_date(doc, (1, 1, 4, 2), "2024年1月15日")
@@ -203,7 +203,7 @@ DocxLib supports a template variable system for declarative document filling:
 **Variable syntax**: `${variable_name}` or `${variable_name|default_value}`
 
 ```python
-from docxlib import load_docx, fill_template, extract_template_vars
+from docxtbl import load_docx, fill_template, extract_template_vars
 
 # Extract variables from a template
 doc = load_docx("template.docx")
@@ -220,7 +220,7 @@ result = fill_template(doc, data, missing_var_action="ignore")
 # Returns: {"total": 3, "replaced": 3, "missing": []}
 
 # Validate template data before filling
-from docxlib import validate_template_data
+from docxtbl import validate_template_data
 validation = validate_template_data(doc, data)
 # Returns: {"is_valid": true, "required_vars": [...], "missing_vars": []}
 ```
@@ -235,7 +235,7 @@ validation = validate_template_data(doc, data)
 Styles use configuration classes (`Style`, `Alignment`, `ImageConfig`) for a cleaner API:
 
 ```python
-from docxlib import Style, Alignment, ImageConfig
+from docxtbl import Style, Alignment, ImageConfig
 
 # Via Style and Alignment objects
 fill_text(doc, (1,1,2,2), "text",
@@ -249,7 +249,7 @@ fill_text(doc, "正文", "内容", style=Style.body())
 fill_text(doc, "注意", "重要", style=Style.emphasis())
 
 # Via style functions (for direct cell manipulation)
-from docxlib import apply_font_style, apply_cell_alignment
+from docxtbl import apply_font_style, apply_cell_alignment
 cell = get_cell(doc, 1, 1, 2, 2)
 apply_font_style(cell, font_name="黑体", font_size=16, bold=True, color="red")
 apply_cell_alignment(cell, "center")
@@ -276,7 +276,7 @@ for item in data:
 The `read` module provides read functionality that mirrors the `fill` API:
 
 ```python
-from docxlib import read_text, read_grid, read_table, read_cells
+from docxtbl import read_text, read_grid, read_table, read_cells
 
 # Read text from position or by match
 name = read_text(doc, (1, 1, 2, 2))
@@ -319,13 +319,13 @@ Be aware of these constraints when designing features:
 
 ## Import Patterns
 
-The package exposes all public APIs via `docxlib/__init__.py`. Users should import from the top level:
+The package exposes all public APIs via `docxtbl/__init__.py`. Users should import from the top level:
 
 ```python
-from docxlib import load_docx, fill_text, save_docx
+from docxtbl import load_docx, fill_text, save_docx
 ```
 
-Internal modules (e.g., `docxlib.document`) are not part of the public API.
+Internal modules (e.g., `docxtbl.document`) are not part of the public API.
 
 ## Testing Notes
 
@@ -334,5 +334,5 @@ Internal modules (e.g., `docxlib.document`) are not part of the public API.
 - Output files go to `output/` directory (auto-created by `save_docx()`)
 - Use `copy_doc()` in tests to avoid modifying shared template objects
 - Run specific test with: `pytest tests/test_fill.py -v -k test_fill_text`
-- Run tests with coverage: `pytest tests/ --cov=docxlib --cov-report=html`
+- Run tests with coverage: `pytest tests/ --cov=docxtbl --cov-report=html`
 - Test files: test_basic.py, test_fill.py, test_template.py, test_document.py, test_table.py, test_read.py, test_read_edge_cases.py, test_read_module.py, test_utils.py, test_cli.py

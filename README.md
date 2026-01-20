@@ -23,14 +23,14 @@
 ## 安装
 
 ```bash
-pip install docxlib
+pip install docxtbl
 ```
 
 或从源码安装：
 
 ```bash
 git clone https://github.com/luc-yang/DocxLib.git
-cd docxlib
+cd docxtbl
 pip install -e .
 ```
 
@@ -39,7 +39,7 @@ pip install -e .
 ### 基础用法
 
 ```python
-from docxlib import load_docx, fill_text, save_docx
+from docxtbl import load_docx, fill_text, save_docx
 
 # 加载模板
 doc = load_docx("sample.docx")
@@ -54,7 +54,7 @@ save_docx(doc, "output.docx")
 ### 多种填充模式
 
 ```python
-from docxlib import load_docx, fill_text, Options, Style, Alignment, save_docx
+from docxtbl import load_docx, fill_text, Options, Style, Alignment, save_docx
 
 doc = load_docx("sample.docx")
 
@@ -77,7 +77,7 @@ save_docx(doc, "output.docx")
 ### 图片填充
 
 ```python
-from docxlib import load_docx, fill_image, Options, ImageConfig, save_docx
+from docxtbl import load_docx, fill_image, Options, ImageConfig, save_docx
 
 doc = load_docx("sample.docx")
 
@@ -96,7 +96,7 @@ save_docx(doc, "output.docx")
 ### 日期填充
 
 ```python
-from docxlib import load_docx, fill_date, save_docx
+from docxtbl import load_docx, fill_date, save_docx
 
 doc = load_docx("sample.docx")
 
@@ -109,7 +109,7 @@ save_docx(doc, "output.docx")
 ### 网格数据填充
 
 ```python
-from docxlib import load_docx, fill_grid, save_docx
+from docxtbl import load_docx, fill_grid, save_docx
 
 doc = load_docx("sample.docx")
 
@@ -128,7 +128,7 @@ save_docx(doc, "output.docx")
 ### 批量文档生成
 
 ```python
-from docxlib import load_docx, fill_text, Options, save_docx
+from docxtbl import load_docx, fill_text, Options, save_docx
 
 # 批量生成文档
 data = [
@@ -152,7 +152,7 @@ for i, item in enumerate(data):
 ### 文档格式转换
 
 ```python
-from docxlib import load_docx, to_pdf, to_images
+from docxtbl import load_docx, to_pdf, to_images
 
 doc = load_docx("document.docx")
 
@@ -171,7 +171,7 @@ for i, img_bytes in enumerate(images):
 ### 遍历单元格
 
 ```python
-from docxlib import load_docx, iterate_cells
+from docxtbl import load_docx, iterate_cells
 
 doc = load_docx("sample.docx")
 
@@ -185,7 +185,7 @@ for sec, tbl, row, col, cell in iterate_cells(doc):
 ### 查找文本
 
 ```python
-from docxlib import load_docx, find_text
+from docxtbl import load_docx, find_text
 
 doc = load_docx("sample.docx")
 
@@ -207,7 +207,7 @@ for pos in positions:
 - `姓\t名`（中间有制表符）
 
 ```python
-from docxlib import fill_text, Options
+from docxtbl import fill_text, Options
 
 # 默认启用规范化（推荐）
 fill_text(doc, "姓名", "张三", options=Options.match_right())

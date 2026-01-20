@@ -3,7 +3,7 @@ DocxLib 模板变量功能测试
 """
 
 import pytest
-from docxlib import (
+from docxtbl import (
     load_docx,
     fill_template,
     extract_template_vars,
@@ -12,7 +12,7 @@ from docxlib import (
     Style,
     Alignment,
 )
-from docxlib.errors import VariableNotFoundError
+from docxtbl.errors import VariableNotFoundError
 
 
 class TestFillTemplate:
@@ -40,7 +40,7 @@ class TestFillTemplate:
         # 使用 replace_all 来模拟默认值功能
         doc = load_docx("fixtures/templates/sample.docx")
         # 测试变量替换基本功能
-        from docxlib import replace_all
+        from docxtbl import replace_all
         replace_all(doc, "${name|未知}", "张三")
         # 应该不会抛出异常
 
@@ -132,14 +132,14 @@ class TestBackwardCompatibility:
     def test_replace_all_still_works(self):
         """测试 replace_all 仍然可用"""
         doc = load_docx("fixtures/templates/sample.docx")
-        from docxlib import replace_all
+        from docxtbl import replace_all
         replace_all(doc, "{old}", "new")
         # 不抛出异常即通过
 
     def test_existing_fill_functions_work(self):
         """测试现有填充函数仍然可用"""
         doc = load_docx("fixtures/templates/sample.docx")
-        from docxlib import fill_text
+        from docxtbl import fill_text
         fill_text(doc, (1, 1, 1, 1), "测试", style=Style(), alignment=Alignment())
         # 不抛出异常即通过
 

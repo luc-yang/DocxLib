@@ -4,7 +4,7 @@ DocxLib 高级功能示例
 演示图片填充、网格数据填充、文档转换等高级功能。
 """
 
-from docxlib import (
+from docxtbl import (
     Alignment,
     Options,
     ImageConfig,

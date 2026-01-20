@@ -4,7 +4,7 @@ DocxLib 文本匹配示例
 演示如何处理模板中的空格、换行等格式问题。
 """
 
-from docxlib import (
+from docxtbl import (
     Alignment,
     Options,
     Style,

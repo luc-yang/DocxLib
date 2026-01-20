@@ -2,7 +2,7 @@
 
 import pytest
 
-from docxlib import (
+from docxtbl import (
     read_images,
     extract_template_data,
     load_docx,
@@ -13,8 +13,8 @@ from docxlib import (
     read_table,
     read_text,
 )
-from docxlib.config import Options
-from docxlib.errors import FillError, PositionError
+from docxtbl.config import Options
+from docxtbl.errors import FillError, PositionError
 
 
 class TestReadText:

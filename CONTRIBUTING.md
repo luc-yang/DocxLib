@@ -33,7 +33,7 @@
 2. 克隆您的 Fork：
    ```bash
    git clone https://github.com/luc-yang/DocxLib.git
-   cd docxlib
+   cd docxtbl
    ```
 3. 创建开发分支：
    ```bash
@@ -122,7 +122,7 @@ pytest tests/ -v
 pytest tests/test_document.py -v
 
 # 生成覆盖率报告
-pytest tests/ --cov=docxlib --cov-report=html
+pytest tests/ --cov=docxtbl --cov-report=html
 ```
 
 ### 代码格式化
@@ -131,7 +131,7 @@ pytest tests/ --cov=docxlib --cov-report=html
 
 ```bash
 pip install black
-black docxlib/
+black docxtbl/
 ```
 
 ### 代码检查
@@ -140,14 +140,14 @@ black docxlib/
 
 ```bash
 pip install flake8
-flake8 docxlib/
+flake8 docxtbl/
 ```
 
 ## 项目结构
 
 ```
-docxlib/
-├── docxlib/          # 主要代码
+docxtbl/
+├── docxtbl/          # 主要代码
 ├── examples/         # 示例代码
 ├── tests/            # 测试代码
 ├── fixtures/         # 测试数据

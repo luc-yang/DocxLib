@@ -6,7 +6,7 @@
 
 ```bash
 git clone https://github.com/luc-yang/DocxLib.git
-cd docxlib
+cd docxtbl
 ```
 
 ### 2. 创建虚拟环境（推荐）
@@ -34,7 +34,7 @@ uv pip install -e .
 ### 4. 验证安装
 
 ```bash
-python -c "from docxlib import __version__; print(__version__)"
+python -c "from docxtbl import __version__; print(__version__)"
 ```
 
 应该输出：`0.1.0`
@@ -132,7 +132,7 @@ A: 确保：
 A: 使用 `iterate_cells` 函数查看实际的单元格内容：
 
 ```python
-from docxlib import load_docx, iterate_cells
+from docxtbl import load_docx, iterate_cells
 
 doc = load_docx("sample.docx")
 for sec, tbl, row, col, cell in iterate_cells(doc):
